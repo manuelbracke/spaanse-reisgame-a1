@@ -1,0 +1,874 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light">
+  <title>Pasaporte A1 — Spaanse reiswoordenschat</title>
+  <style>
+    :root{
+      --accent:#2563eb;
+      --accent-dark:#1e3a8a;
+      --accent-soft:#dbeafe;
+      --bg:#fff7ed;
+      --card:#ffffff;
+      --ink:#172033;
+      --muted:#667085;
+      --line:rgba(23,32,51,.12);
+      --good:#137333;
+      --bad:#b3261e;
+      --warn:#b56a00;
+      --radius:24px;
+      --shadow:0 16px 40px rgba(16,24,40,.12);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(circle at 12% 4%, rgba(255,255,255,.96), transparent 24rem),
+        radial-gradient(circle at 92% 16%, var(--accent-soft), transparent 20rem),
+        linear-gradient(135deg, var(--bg), #fffef8 48%, #edf7ff);
+    }
+    button,input{font:inherit}
+    button{
+      border:0;
+      border-radius:999px;
+      padding:.88rem 1.05rem;
+      min-height:44px;
+      font-weight:800;
+      color:#fff;
+      background:var(--accent);
+      box-shadow:0 10px 24px rgba(16,24,40,.14);
+      cursor:pointer;
+      touch-action:manipulation;
+      transition:transform .08s ease, filter .12s ease, opacity .12s ease;
+    }
+    button:hover{filter:brightness(1.03)}
+    button:active{transform:translateY(1px) scale(.99)}
+    button:disabled{opacity:.45;cursor:not-allowed;filter:grayscale(.35);box-shadow:none}
+    button.secondary{background:#eef2f7;color:var(--ink);box-shadow:none}
+    button.ghost{background:transparent;color:var(--accent-dark);border:2px solid var(--line);box-shadow:none}
+    button.choice{
+      width:100%;
+      border-radius:18px;
+      background:#f8fafc;
+      color:var(--ink);
+      text-align:left;
+      border:2px solid var(--line);
+      box-shadow:none;
+    }
+    button.choice:hover{border-color:var(--accent)}
+    .wrap{width:min(1120px,100%);margin:0 auto;padding:clamp(.75rem,2.5vw,1.2rem)}
+    .top{
+      position:sticky;top:0;z-index:10;padding:.55rem 0 .75rem;
+      backdrop-filter:blur(16px);
+    }
+    .top-inner{
+      display:grid;gap:.7rem;grid-template-columns:1fr;
+      background:rgba(255,255,255,.84);
+      border:1px solid var(--line);
+      border-radius:22px;
+      padding:.72rem;
+      box-shadow:0 10px 28px rgba(16,24,40,.10);
+    }
+    .brand{display:flex;align-items:center;gap:.72rem;min-width:0}
+    .logo{width:3.15rem;height:3.15rem;display:grid;place-items:center;border-radius:18px;background:var(--accent-soft);font-size:1.85rem;flex:0 0 auto}
+    h1,h2,h3,p{margin:0}
+    h1{font-size:clamp(1.25rem,4vw,2rem);line-height:1.05;letter-spacing:-.02em}
+    h2{font-size:clamp(1.22rem,3.2vw,1.65rem);letter-spacing:-.015em}
+    h3{font-size:1.05rem}
+    .sub,.small{color:var(--muted);line-height:1.45}
+    .sub{font-size:.94rem;margin-top:.18rem}
+    .small{font-size:.92rem}
+    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:.45rem}
+    .stat{background:#fff;border:1px solid var(--line);border-radius:16px;padding:.62rem .56rem;min-width:0}
+    .stat span{display:block;color:var(--muted);font-size:.72rem;white-space:nowrap}
+    .stat strong{display:block;font-size:1rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    main{padding-bottom:2rem}
+    .screen{display:none}
+    .screen.active{display:block;animation:enter .18s ease both}
+    @keyframes enter{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+    .panel,.card{
+      background:rgba(255,255,255,.92);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+    }
+    .panel{padding:clamp(1rem,3vw,1.45rem);margin-top:.7rem}
+    .grid-start{display:grid;grid-template-columns:1fr;gap:1rem;align-items:stretch}
+    .passport{
+      position:relative;overflow:hidden;min-height:230px;
+      border-radius:28px;padding:1.15rem;color:#fff;background:linear-gradient(145deg,rgba(255,255,255,.18),rgba(0,0,0,.10)),var(--accent);
+      display:flex;flex-direction:column;justify-content:space-between;
+    }
+    .passport::after{content:"✈️";position:absolute;right:-1.4rem;bottom:-.95rem;font-size:7.4rem;opacity:.18;transform:rotate(-14deg)}
+    .stamp-row{display:flex;gap:.44rem;flex-wrap:wrap;margin-top:.82rem}
+    .stamp{display:inline-flex;align-items:center;gap:.28rem;padding:.36rem .56rem;border:2px dashed rgba(255,255,255,.74);border-radius:999px;background:rgba(255,255,255,.12);font-weight:850}
+    .countries{display:grid;grid-template-columns:1fr;gap:.8rem;margin-top:1rem}
+    .country{
+      display:grid;gap:.75rem;padding:1rem;border:2px solid var(--line);border-radius:24px;background:#fff;box-shadow:0 10px 24px rgba(16,24,40,.08)
+    }
+    .country.done{opacity:.78;background:#f8fafc}
+    .country-head{display:flex;gap:.72rem;align-items:flex-start}
+    .emoji{font-size:2.25rem;line-height:1}
+    .chips{display:flex;gap:.4rem;flex-wrap:wrap}
+    .chip{display:inline-flex;align-items:center;gap:.22rem;padding:.28rem .52rem;border-radius:999px;font-size:.8rem;font-weight:800;background:var(--accent-soft);color:var(--accent-dark)}
+    .mission{display:grid;grid-template-columns:1fr;gap:1rem;align-items:start}
+    .scene{padding:1rem;border-radius:28px;background:linear-gradient(145deg,#fff,rgba(255,255,255,.82));border:1px solid var(--line);box-shadow:var(--shadow)}
+    .scene-head{display:flex;justify-content:space-between;align-items:center;gap:.7rem;border-bottom:1px solid var(--line);padding-bottom:.8rem;margin-bottom:.9rem}
+    .scene-title{display:flex;align-items:center;gap:.5rem;font-weight:900}
+    .dialogue{display:grid;gap:.64rem}
+    .bubble{border-radius:20px;padding:.82rem;background:#f4f7fb;line-height:1.48}
+    .bubble strong{color:var(--accent-dark)}
+    .bubble.lola{background:#fff7d6;border:1px solid rgba(181,106,0,.22)}
+    .bubble.user{background:var(--accent-soft)}
+    .gap{display:inline-block;padding:0 .36rem;border-radius:.5rem;background:rgba(37,99,235,.13);color:var(--accent-dark);font-weight:900;letter-spacing:.08em}
+    .progress{height:.76rem;width:100%;background:#edf2f7;border-radius:99px;overflow:hidden;margin-top:.95rem}
+    .bar{height:100%;width:0;background:var(--accent);border-radius:inherit;transition:width .2s ease}
+    .side{display:grid;gap:.78rem}
+    .task{padding:1rem;border-radius:28px;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow)}
+    .mode-grid,.answers,.type-row{display:grid;grid-template-columns:1fr;gap:.62rem;margin-top:.85rem}
+    .type-row input{width:100%;min-height:48px;border:2px solid var(--line);border-radius:18px;padding:.9rem 1rem;background:#fbfdff;outline:0}
+    .type-row input:focus{border-color:var(--accent);box-shadow:0 0 0 4px rgba(37,99,235,.14)}
+    .feedback{display:none;margin-top:.85rem;border-radius:20px;padding:.88rem;line-height:1.48}
+    .feedback.show{display:block}
+    .feedback.good{background:#eaf8ef;border:1px solid rgba(19,115,51,.22)}
+    .feedback.bad{background:#fff0ed;border:1px solid rgba(179,38,30,.20)}
+    .mini{padding:.9rem;border-radius:22px;background:rgba(255,255,255,.92);border:1px solid var(--line);box-shadow:0 10px 24px rgba(16,24,40,.08)}
+    .list{display:grid;gap:.46rem;margin-top:.55rem}
+    .item{border-radius:16px;background:#f8fafc;padding:.62rem;font-size:.92rem;line-height:1.4}
+    .actions{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.9rem}
+    .timer{font-size:clamp(2.2rem,10vw,4rem);font-weight:950;line-height:1;color:var(--accent-dark)}
+    .speed-head{display:flex;justify-content:space-between;gap:1rem;align-items:center;margin-bottom:1rem}
+    .results{display:grid;grid-template-columns:1fr;gap:1rem;margin-top:1rem}
+    .big{font-size:clamp(2rem,8vw,3.8rem);font-weight:950;line-height:1;color:var(--accent-dark);margin-top:.35rem;word-break:break-word}
+    .hidden{display:none!important}
+    .shake{animation:shake .28s ease both}
+    .pop{animation:pop .24s ease both}
+    @keyframes pop{50%{transform:scale(1.08)}}
+    @keyframes shake{25%{transform:translateX(-3px)}50%{transform:translateX(3px)}75%{transform:translateX(-2px)}}
+    @media (min-width:760px){
+      .top-inner{grid-template-columns:1.2fr .9fr;align-items:center}
+      .stats{grid-template-columns:repeat(3,minmax(120px,1fr))}
+      .grid-start{grid-template-columns:.9fr 1.4fr}
+      .countries{grid-template-columns:repeat(3,1fr)}
+      .mission{grid-template-columns:minmax(0,1.45fr) minmax(280px,.88fr)}
+      .mode-grid,.answers{grid-template-columns:repeat(2,1fr)}
+      .type-row{grid-template-columns:1fr auto}
+      .results{grid-template-columns:repeat(3,1fr)}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="top">
+      <div class="top-inner" role="banner">
+        <div class="brand">
+          <div class="logo" aria-hidden="true">🧳</div>
+          <div>
+            <h1>Pasaporte A1</h1>
+            <p class="sub">Spaanse reiswoordenschat met Lola 🦜</p>
+          </div>
+        </div>
+        <div class="stats" aria-label="Spelstatus">
+          <div class="stat"><span>Saldo</span><strong id="money">€500</strong></div>
+          <div class="stat"><span>Combo-vlam</span><strong id="combo">🕯️ x1.00</strong></div>
+          <div class="stat"><span>Paspoort</span><strong id="stamps">0/3</strong></div>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section id="start" class="screen active" aria-labelledby="start-title">
+        <div class="panel grid-start">
+          <div class="passport">
+            <div>
+              <h2 id="start-title">Startbudget: €500</h2>
+              <p style="margin-top:.55rem;line-height:1.45">Kies vrij je route. Reizen kost geld; met taalopdrachten verdien je geld terug. Verzamel drie stempels.</p>
+            </div>
+            <div>
+              <p><strong>Reisgenoot:</strong> Lola 🦜</p>
+              <div id="passportStamps" class="stamp-row"><span class="stamp">Nog leeg</span></div>
+            </div>
+          </div>
+          <div>
+            <h2>Kies een land</h2>
+            <p id="mapHelp" class="small" style="margin-top:.35rem">Elk land heeft eigen thema’s, scenario’s, één snelronde van 30 seconden en een souvenir-woord.</p>
+            <div id="countryGrid" class="countries"></div>
+            <div class="actions">
+              <button id="endNow" type="button" class="secondary">Eindscherm bekijken</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="mission" class="screen" aria-labelledby="sceneTitle">
+        <div class="mission">
+          <div class="scene">
+            <div class="scene-head">
+              <div class="scene-title"><span id="sceneEmoji">🌍</span><span id="sceneTitle">Scenario</span></div>
+              <button id="mapBtn" type="button" class="ghost">Kaart</button>
+            </div>
+            <div id="dialogue" class="dialogue"></div>
+            <div class="progress" aria-label="Voortgang"><div id="progressBar" class="bar"></div></div>
+          </div>
+          <aside class="side" aria-label="Opdracht en voortgang">
+            <div class="task">
+              <h2 id="taskTitle">Kies je opdracht</h2>
+              <p id="taskHelp" class="small">Meerkeuze is veilig. Typen is moeilijker, maar levert meer op.</p>
+              <div id="modeBox" class="mode-grid">
+                <button id="chooseMc" type="button">Meerkeuze · €10</button>
+                <button id="chooseType" type="button">Typen · €25</button>
+              </div>
+              <div id="answers" class="answers hidden"></div>
+              <div id="typeBox" class="type-row hidden">
+                <input id="typedAnswer" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Typ het Spaanse woord...">
+                <button id="checkTyped" type="button">Controleer</button>
+              </div>
+              <div id="feedback" class="feedback" role="status" aria-live="polite"></div>
+              <div id="nextBox" class="actions hidden"><button id="nextQuestion" type="button">Volgende vraag</button></div>
+            </div>
+            <div class="mini">
+              <h3>🎒 Rugzak</h3>
+              <p id="bag" class="small" style="margin-top:.35rem">Nog geen souvenirs.</p>
+            </div>
+            <div class="mini">
+              <h3>🧠 Leitner-wachtrij</h3>
+              <div id="queue" class="list"><div class="item small">Nog leeg.</div></div>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section id="speed" class="screen" aria-labelledby="speedTitle">
+        <div class="panel">
+          <div class="speed-head">
+            <div>
+              <h2 id="speedTitle">Snelronde</h2>
+              <p class="small">30 seconden. Kies zo snel mogelijk. Elk juist antwoord levert €8 × multiplier op.</p>
+            </div>
+            <div id="timer" class="timer">30</div>
+          </div>
+          <div class="task">
+            <h2 id="speedQuestion">Klaar?</h2>
+            <p id="speedHelp" class="small">Druk op start.</p>
+            <div id="speedAnswers" class="answers"></div>
+            <div id="speedFeedback" class="feedback" role="status" aria-live="polite"></div>
+            <div class="actions"><button id="startSpeed" type="button">Start snelronde</button></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="stamp" class="screen" aria-labelledby="stampTitle">
+        <div class="panel">
+          <h2 id="stampTitle">Stempel verdiend</h2>
+          <p id="stampText" style="margin-top:.5rem;line-height:1.5"></p>
+          <div class="results">
+            <div class="mini"><h3>Stempel</h3><div id="stampEmoji" class="big">🛂</div></div>
+            <div class="mini"><h3>Souvenir-woord</h3><div id="souvenirWord" class="big">—</div><p id="souvenirNl" class="small"></p></div>
+            <div class="mini"><h3>Saldo</h3><div id="stampMoney" class="big">€0</div></div>
+          </div>
+          <div class="actions">
+            <button id="continueTrip" type="button">Verder reizen</button>
+            <button id="finishTrip" type="button" class="secondary">Eindscherm bekijken</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="end" class="screen" aria-labelledby="endTitle">
+        <div class="panel">
+          <h2 id="endTitle">🏁 Einde van je reis</h2>
+          <p class="small" style="margin-top:.35rem">Route, saldo en persoonlijke herhaallijst.</p>
+          <div class="results">
+            <div class="mini"><h3>Saldo</h3><div id="endMoney" class="big">€0</div></div>
+            <div class="mini"><h3>Stempels</h3><div id="endStampCount" class="big">0/3</div></div>
+            <div class="mini"><h3>Beste combo</h3><div id="endCombo" class="big">x1.00</div></div>
+          </div>
+          <div class="results">
+            <div class="mini"><h3>🗺️ Route</h3><div id="endRoute" class="list"></div></div>
+            <div class="mini"><h3>🎁 Souvenirs</h3><div id="endSouvenirs" class="list"></div></div>
+            <div class="mini"><h3>🧠 Herhaallijst</h3><div id="endReview" class="list"></div></div>
+          </div>
+          <div class="actions"><button id="restart" type="button">Opnieuw spelen</button></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- =========================================================
+       JSON WOORDENLIJST — VERVANG ALLEEN DE ARRAY HIERONDER
+       Structuur per item:
+       { "es": "...", "nl": "...", "thema": "...", "afleiders": ["...", "..."], "zin": "... ____ ..." }
+       Thema's: balie, vervoer, restaurant, markt, hulp
+       ========================================================= -->
+  <script id="word-data" type="application/json">
+[
+  { "es": "la habitación", "nl": "de kamer", "thema": "balie", "afleiders": ["la mesa", "la estación"], "zin": "Tengo una reserva para ____ ." },
+  { "es": "la llave", "nl": "de sleutel", "thema": "balie", "afleiders": ["la cuenta", "el tren"], "zin": "¿Puede darme ____ de mi habitación?" },
+  { "es": "el pasaporte", "nl": "het paspoort", "thema": "balie", "afleiders": ["el menú", "el mercado"], "zin": "Aquí tiene ____ para registrarme." },
+  { "es": "la reserva", "nl": "de reservatie", "thema": "balie", "afleiders": ["la playa", "la ayuda"], "zin": "Tengo ____ a nombre de Lola." },
+  { "es": "el ascensor", "nl": "de lift", "thema": "balie", "afleiders": ["el autobús", "el queso"], "zin": "¿Dónde está ____?" },
+  { "es": "la recepción", "nl": "de receptie", "thema": "balie", "afleiders": ["la plaza", "la salida"], "zin": "Voy a preguntar en ____ ." },
+
+  { "es": "el tren", "nl": "de trein", "thema": "vervoer", "afleiders": ["el pan", "el hotel"], "zin": "Tomamos ____ a Madrid." },
+  { "es": "el billete", "nl": "het ticket", "thema": "vervoer", "afleiders": ["el vaso", "el mapa"], "zin": "Necesito ____ para Valencia." },
+  { "es": "la estación", "nl": "het station", "thema": "vervoer", "afleiders": ["la ensalada", "la habitación"], "zin": "¿Dónde está ____ de autobuses?" },
+  { "es": "la salida", "nl": "het vertrek / de uitgang", "thema": "vervoer", "afleiders": ["la comida", "la llave"], "zin": "La próxima ____ es a las ocho." },
+  { "es": "el mapa", "nl": "de kaart", "thema": "vervoer", "afleiders": ["el agua", "el camarero"], "zin": "No entiendo ____ de la ciudad." },
+  { "es": "el autobús", "nl": "de bus", "thema": "vervoer", "afleiders": ["el pescado", "el dinero"], "zin": "¿Qué número tiene ____ al centro?" },
+
+  { "es": "la mesa", "nl": "de tafel", "thema": "restaurant", "afleiders": ["la maleta", "la calle"], "zin": "Queremos ____ para dos personas." },
+  { "es": "el menú", "nl": "de menukaart", "thema": "restaurant", "afleiders": ["el tren", "el pasaporte"], "zin": "¿Puede traer ____?" },
+  { "es": "el agua", "nl": "het water", "thema": "restaurant", "afleiders": ["el billete", "el precio"], "zin": "Quiero ____ sin gas, por favor." },
+  { "es": "la cuenta", "nl": "de rekening", "thema": "restaurant", "afleiders": ["la reserva", "la estación"], "zin": "¿Nos trae ____, por favor?" },
+  { "es": "el camarero", "nl": "de ober", "thema": "restaurant", "afleiders": ["el museo", "el autobús"], "zin": "____ recomienda la sopa." },
+  { "es": "el pan", "nl": "het brood", "thema": "restaurant", "afleiders": ["el mapa", "el bolso"], "zin": "¿Tiene ____ sin gluten?" },
+
+  { "es": "el mercado", "nl": "de markt", "thema": "markt", "afleiders": ["el hotel", "el tren"], "zin": "Compramos fruta en ____ ." },
+  { "es": "el precio", "nl": "de prijs", "thema": "markt", "afleiders": ["el agua", "el ascensor"], "zin": "¿Cuál es ____ de las naranjas?" },
+  { "es": "la fruta", "nl": "het fruit", "thema": "markt", "afleiders": ["la llave", "la salida"], "zin": "Me gusta ____ fresca." },
+  { "es": "el dinero", "nl": "het geld", "thema": "markt", "afleiders": ["el menú", "el tren"], "zin": "No tengo mucho ____ ." },
+  { "es": "la bolsa", "nl": "de zak / tas", "thema": "markt", "afleiders": ["la cuenta", "la reserva"], "zin": "Necesito ____ para las manzanas." },
+  { "es": "barato", "nl": "goedkoop", "thema": "markt", "afleiders": ["cerrado", "perdido"], "zin": "Este queso es muy ____ ." },
+
+  { "es": "ayuda", "nl": "hulp", "thema": "hulp", "afleiders": ["cuenta", "fruta"], "zin": "Necesito ____, por favor." },
+  { "es": "perdido", "nl": "verdwaald", "thema": "hulp", "afleiders": ["barato", "abierto"], "zin": "Estoy ____ en esta calle." },
+  { "es": "el hospital", "nl": "het ziekenhuis", "thema": "hulp", "afleiders": ["el mercado", "el menú"], "zin": "¿Dónde está ____ más cercano?" },
+  { "es": "la farmacia", "nl": "de apotheek", "thema": "hulp", "afleiders": ["la mesa", "la estación"], "zin": "Busco ____ porque me duele la cabeza." },
+  { "es": "la policía", "nl": "de politie", "thema": "hulp", "afleiders": ["la fruta", "la llave"], "zin": "Tengo que llamar a ____ ." },
+  { "es": "abierto", "nl": "open", "thema": "hulp", "afleiders": ["caro", "perdido"], "zin": "¿Está ____ el museo?" }
+]
+  </script>
+  <!-- ======================= EINDE JSON WOORDENLIJST ======================= -->
+
+  <script>
+  (() => {
+    "use strict";
+
+    /**********************************************************************
+     * ENGINE — gescheiden van de woordenlijst hierboven.
+     * De engine leest exact één externe data-bron: de JSON-array #word-data.
+     **********************************************************************/
+
+    const TEMPLATES = Object.freeze({
+      balie: {
+        emoji: "🏨", title: "Aan de balie", speaker: "Receptionist",
+        setup: "Je staat aan een balie. Lola probeert beleefd te knikken, maar ze knikt met haar hele lijf.",
+        prompt: word => `Welk Spaans woord betekent <strong>${safe(word.nl)}</strong>?`,
+        lola: word => `Lola 🦜 legt uit: “Aan de balie heb je praktische woorden nodig. <strong>${safe(word.es)}</strong> betekent <strong>${safe(word.nl)}</strong>.”`
+      },
+      vervoer: {
+        emoji: "🚌", title: "Vervoer", speaker: "Chauffeur",
+        setup: "Je zoekt bus, trein of uitgang. Lola leest de kaart ondersteboven en doet alsof dat Spaans is.",
+        prompt: word => `Welk Spaans vervoerwoord betekent <strong>${safe(word.nl)}</strong>?`,
+        lola: word => `Lola 🦜 tikt tegen het raam: “Voor onderweg is <strong>${safe(word.es)}</strong> handig. Dat is <strong>${safe(word.nl)}</strong>.”`
+      },
+      restaurant: {
+        emoji: "🍽️", title: "Restaurant", speaker: "Camarero",
+        setup: "Je zit aan tafel. Lola is zogezegd niet hongerig, maar kijkt al drie minuten naar het brood.",
+        prompt: word => `Welk Spaans restaurantwoord betekent <strong>${safe(word.nl)}</strong>?`,
+        lola: word => `Lola 🦜 wijst naar het bord: “In een restaurant zeg je <strong>${safe(word.es)}</strong> voor <strong>${safe(word.nl)}</strong>.”`
+      },
+      markt: {
+        emoji: "🍊", title: "Markt", speaker: "Vendedor",
+        setup: "Je loopt over een drukke markt. Lola wil onderhandelen, maar biedt veren aan als betaalmiddel.",
+        prompt: word => `Welk Spaans marktwoord betekent <strong>${safe(word.nl)}</strong>?`,
+        lola: word => `Lola 🦜 kraakt een nootje: “Op de markt helpt <strong>${safe(word.es)}</strong>: dat betekent <strong>${safe(word.nl)}</strong>.”`
+      },
+      hulp: {
+        emoji: "🆘", title: "Hulp vragen", speaker: "Vecina",
+        setup: "Er loopt iets mis op reis. Niet panikeren: Lola panikeert al genoeg voor twee.",
+        prompt: word => `Welk Spaans hulpwoord betekent <strong>${safe(word.nl)}</strong>?`,
+        lola: word => `Lola 🦜 blijft kalm: “Bij hulp vragen is <strong>${safe(word.es)}</strong> belangrijk. Het betekent <strong>${safe(word.nl)}</strong>.”`
+      }
+    });
+
+    const COUNTRIES = Object.freeze({
+      mexico: {
+        id: "mexico", name: "Mexico", emoji: "🇲🇽", cost: 95, color: "#d64545", soft: "#ffeceb",
+        themes: ["markt", "restaurant"],
+        scenario: "Markt, taco’s en Lola die denkt dat afdingen hetzelfde is als luid Spaans roepen.",
+        souvenir: { es: "el zócalo", nl: "het centrale plein" }
+      },
+      spanje: {
+        id: "spanje", name: "Spanje", emoji: "🇪🇸", cost: 70, color: "#f1a208", soft: "#fff4d6",
+        themes: ["balie", "vervoer"],
+        scenario: "Hotelbalie, treinperron en Lola die bijna incheckt als Señora Plumas.",
+        souvenir: { es: "la tapa", nl: "klein hapje bij een drankje" }
+      },
+      argentinie: {
+        id: "argentinie", name: "Argentinië", emoji: "🇦🇷", cost: 120, color: "#2d9cdb", soft: "#e4f6ff",
+        themes: ["hulp", "restaurant"],
+        scenario: "Buenos Aires, brede lanen en Lola die dramatisch om hulp roept voor één ontbrekende broodkorst.",
+        souvenir: { es: "el mate", nl: "Argentijnse kruidenthee" }
+      }
+    });
+
+    const CONSEQUENCES = Object.freeze([
+      "Je bestelt per ongeluk een lift met extra kaas. De ober schrijft het ernstig op.",
+      "Lola herhaalt je antwoord zo luid dat drie toeristen spontaan beginnen mee te oefenen.",
+      "De receptionist geeft je een stadsplan uit 1998 en zegt: ‘Veel avontuur!’",
+      "Je vraagt naar de bus, maar wijst naar een sinaasappel. De marktverkoper applaudisseert.",
+      "Lola roept ‘¡Drama!’ en valt theatraal achterover in je rugzak."
+    ]);
+
+    const WORDS = readWords();
+    validateWords(WORDS);
+
+    const $ = selector => document.querySelector(selector);
+    const $$ = selector => Array.from(document.querySelectorAll(selector));
+
+    const ui = {
+      money: $("#money"), combo: $("#combo"), stamps: $("#stamps"), passportStamps: $("#passportStamps"),
+      countryGrid: $("#countryGrid"), mapHelp: $("#mapHelp"), endNow: $("#endNow"),
+      sceneEmoji: $("#sceneEmoji"), sceneTitle: $("#sceneTitle"), dialogue: $("#dialogue"), progressBar: $("#progressBar"),
+      taskTitle: $("#taskTitle"), taskHelp: $("#taskHelp"), modeBox: $("#modeBox"), chooseMc: $("#chooseMc"), chooseType: $("#chooseType"),
+      answers: $("#answers"), typeBox: $("#typeBox"), typedAnswer: $("#typedAnswer"), checkTyped: $("#checkTyped"), feedback: $("#feedback"), nextBox: $("#nextBox"), nextQuestion: $("#nextQuestion"), mapBtn: $("#mapBtn"),
+      bag: $("#bag"), queue: $("#queue"),
+      speedTitle: $("#speedTitle"), timer: $("#timer"), speedQuestion: $("#speedQuestion"), speedHelp: $("#speedHelp"), speedAnswers: $("#speedAnswers"), speedFeedback: $("#speedFeedback"), startSpeed: $("#startSpeed"),
+      stampTitle: $("#stampTitle"), stampText: $("#stampText"), stampEmoji: $("#stampEmoji"), souvenirWord: $("#souvenirWord"), souvenirNl: $("#souvenirNl"), stampMoney: $("#stampMoney"), continueTrip: $("#continueTrip"), finishTrip: $("#finishTrip"),
+      endMoney: $("#endMoney"), endStampCount: $("#endStampCount"), endCombo: $("#endCombo"), endRoute: $("#endRoute"), endSouvenirs: $("#endSouvenirs"), endReview: $("#endReview"), restart: $("#restart")
+    };
+
+    const state = freshState();
+    const countryIds = Object.keys(COUNTRIES);
+
+    function freshState(){
+      return {
+        money: 500,
+        combo: 0,
+        multiplier: 1,
+        bestMultiplier: 1,
+        visited: [],
+        route: [],
+        souvenirs: [],
+        wrongWords: new Map(),
+        leitner: new Map(),
+        currentCountryId: null,
+        currentWord: null,
+        currentMode: null,
+        answeredInCountry: 0,
+        targetPerCountry: 6,
+        questionsSinceReview: 0,
+        speed: { active:false, timerId:null, left:30, score:0, currentWord:null }
+      };
+    }
+
+    function readWords(){
+      const el = document.getElementById("word-data");
+      try { return JSON.parse(el.textContent.trim()); }
+      catch(error){ throw new Error("De JSON-woordenlijst is ongeldig: " + error.message); }
+    }
+
+    function validateWords(list){
+      if(!Array.isArray(list)) throw new Error("De woordenlijst moet één JSON-array zijn.");
+      const allowed = Object.keys(TEMPLATES);
+      list.forEach((w,i)=>{
+        const ok = w && typeof w.es === "string" && w.es.trim() &&
+          typeof w.nl === "string" && w.nl.trim() &&
+          typeof w.thema === "string" && allowed.includes(w.thema) &&
+          Array.isArray(w.afleiders) && w.afleiders.length === 2 && w.afleiders.every(x => typeof x === "string" && x.trim()) &&
+          typeof w.zin === "string" && w.zin.includes("____");
+        if(!ok) throw new Error(`Ongeldig woorditem op index ${i}. Controleer es, nl, thema, afleiders[2] en zin met ____.`);
+      });
+    }
+
+    function show(screenId){
+      $$(".screen").forEach(s => s.classList.toggle("active", s.id === screenId));
+      window.scrollTo({ top:0, behavior:"smooth" });
+    }
+
+    function setCountryAccent(country){
+      const root = document.documentElement;
+      root.style.setProperty("--accent", country ? country.color : "#2563eb");
+      root.style.setProperty("--accent-soft", country ? country.soft : "#dbeafe");
+      root.style.setProperty("--accent-dark", country ? darken(country.color, .32) : "#1e3a8a");
+    }
+
+    function darken(hex, amount){
+      const n = parseInt(hex.replace("#", ""), 16);
+      const r = Math.round(((n >> 16) & 255) * (1 - amount));
+      const g = Math.round(((n >> 8) & 255) * (1 - amount));
+      const b = Math.round((n & 255) * (1 - amount));
+      return `rgb(${r}, ${g}, ${b})`;
+    }
+
+    function euro(n){ return `€${Math.round(n)}`; }
+
+    function updateHud(){
+      ui.money.textContent = euro(state.money);
+      ui.money.classList.remove("pop"); void ui.money.offsetWidth; ui.money.classList.add("pop");
+      ui.combo.textContent = `${state.combo ? "🔥" : "🕯️"} x${state.multiplier.toFixed(2)}`;
+      ui.stamps.textContent = `${state.visited.length}/${countryIds.length}`;
+      ui.passportStamps.innerHTML = state.visited.length
+        ? state.visited.map(id => `<span class="stamp">${COUNTRIES[id].emoji} ${safe(COUNTRIES[id].name)}</span>`).join("")
+        : `<span class="stamp">Nog leeg</span>`;
+      ui.bag.textContent = state.souvenirs.length
+        ? state.souvenirs.map(s => `${s.emoji} ${s.es} = ${s.nl}`).join(" · ")
+        : "Nog geen souvenirs.";
+      renderLeitner();
+    }
+
+    function renderLeitner(){
+      const items = Array.from(state.leitner.values());
+      ui.queue.innerHTML = items.length
+        ? items.map(item => `<div class="item"><strong>${safe(item.word.es)}</strong> = ${safe(item.word.nl)}<br><span class="small">Nog ${2 - item.correct}/2 juiste herhalingen nodig</span></div>`).join("")
+        : `<div class="item small">Nog leeg.</div>`;
+    }
+
+    function renderMap(){
+      setCountryAccent(null);
+      const affordableUnvisited = countryIds.some(id => !state.visited.includes(id) && state.money >= COUNTRIES[id].cost);
+      ui.mapHelp.textContent = affordableUnvisited
+        ? "Kies vrij je volgende bestemming. Een gestempeld land kan je niet opnieuw spelen."
+        : state.visited.length === countryIds.length
+          ? "Je hebt alle landen bezocht. Bekijk je eindscherm."
+          : "Je saldo is te laag voor een nieuwe reis. Bekijk je eindscherm of speel opnieuw.";
+
+      ui.countryGrid.innerHTML = countryIds.map(id => {
+        const c = COUNTRIES[id];
+        const done = state.visited.includes(id);
+        const canGo = !done && state.money >= c.cost;
+        const themes = c.themes.map(t => `<span class="chip">${TEMPLATES[t].emoji} ${safe(TEMPLATES[t].title)}</span>`).join("");
+        const label = done ? "Stempel behaald" : canGo ? `Reis voor ${euro(c.cost)}` : `Te duur: ${euro(c.cost)}`;
+        return `<article class="country ${done ? "done" : ""}" style="border-color:${c.color}55">
+          <div class="country-head"><div class="emoji" aria-hidden="true">${c.emoji}</div><div><h3>${safe(c.name)}</h3><p class="small">${safe(c.scenario)}</p></div></div>
+          <div class="chips">${themes}</div>
+          <button type="button" data-country="${id}" ${canGo ? "" : "disabled"}>${label}</button>
+        </article>`;
+      }).join("");
+
+      ui.countryGrid.querySelectorAll("button[data-country]").forEach(btn => btn.addEventListener("click", () => startCountry(btn.dataset.country)));
+      updateHud();
+      show("start");
+    }
+
+    function startCountry(id){
+      const c = COUNTRIES[id];
+      if(!c || state.visited.includes(id) || state.money < c.cost) return;
+      state.money -= c.cost;
+      state.currentCountryId = id;
+      state.answeredInCountry = 0;
+      state.questionsSinceReview = 0;
+      state.route.push({ id, paid:c.cost, earned:0, speedScore:0 });
+      setCountryAccent(c);
+      updateHud();
+      nextNormalQuestion();
+      show("mission");
+    }
+
+    function nextNormalQuestion(){
+      if(state.answeredInCountry >= state.targetPerCountry){
+        prepareSpeedRound();
+        return;
+      }
+      state.currentWord = chooseWord();
+      state.currentMode = null;
+      resetTask();
+      renderScenario(state.currentWord);
+      updateHud();
+    }
+
+    function chooseWord(){
+      const due = Array.from(state.leitner.values());
+      if(due.length && (state.questionsSinceReview >= 2 || Math.random() < .45)){
+        state.questionsSinceReview = 0;
+        return sample(due).word;
+      }
+      state.questionsSinceReview += 1;
+      const c = COUNTRIES[state.currentCountryId];
+      const pool = WORDS.filter(w => c.themes.includes(w.thema));
+      return sample(pool);
+    }
+
+    function renderScenario(word){
+      const c = COUNTRIES[state.currentCountryId];
+      const t = TEMPLATES[word.thema];
+      ui.sceneEmoji.textContent = `${c.emoji} ${t.emoji}`;
+      ui.sceneTitle.textContent = `${c.name} · ${t.title}`;
+      const sentence = safe(word.zin).replace("____", `<span class="gap">____</span>`);
+      ui.dialogue.innerHTML = `<div class="bubble lola"><strong>Lola 🦜:</strong> ${safe(t.setup)}</div>
+        <div class="bubble"><strong>${safe(t.speaker)}:</strong> ${sentence}</div>
+        <div class="bubble user"><strong>Jouw opdracht:</strong> ${t.prompt(word)}</div>`;
+      ui.progressBar.style.width = `${Math.round((state.answeredInCountry / state.targetPerCountry) * 100)}%`;
+    }
+
+    function resetTask(){
+      ui.taskTitle.textContent = "Kies je opdracht";
+      ui.taskHelp.textContent = "Meerkeuze is veilig. Typen is moeilijker, maar levert meer op.";
+      ui.modeBox.classList.remove("hidden");
+      ui.answers.classList.add("hidden");
+      ui.typeBox.classList.add("hidden");
+      ui.nextBox.classList.add("hidden");
+      ui.answers.innerHTML = "";
+      ui.typedAnswer.value = "";
+      ui.typedAnswer.disabled = false;
+      ui.checkTyped.disabled = false;
+      ui.feedback.className = "feedback";
+      ui.feedback.innerHTML = "";
+    }
+
+    function chooseMode(mode){
+      state.currentMode = mode;
+      ui.modeBox.classList.add("hidden");
+      ui.taskTitle.textContent = mode === "mc" ? "Meerkeuze" : "Typen";
+      ui.taskHelp.textContent = mode === "mc"
+        ? "Kies het Spaanse woord dat in de zin past."
+        : "Typ het Spaanse woord. Accenten en lidwoorden worden soepel beoordeeld.";
+      if(mode === "mc") renderMultipleChoice();
+      else renderTypeQuestion();
+    }
+
+    function renderMultipleChoice(){
+      const w = state.currentWord;
+      const options = shuffle([w.es, ...w.afleiders]);
+      ui.answers.classList.remove("hidden");
+      ui.answers.innerHTML = options.map(option => `<button class="choice" type="button" data-answer="${attr(option)}">${safe(option)}</button>`).join("");
+      ui.answers.querySelectorAll("button").forEach(btn => btn.addEventListener("click", () => evaluate(btn.dataset.answer)));
+    }
+
+    function renderTypeQuestion(){
+      ui.typeBox.classList.remove("hidden");
+      setTimeout(() => ui.typedAnswer.focus(), 50);
+    }
+
+    function evaluate(rawAnswer){
+      const w = state.currentWord;
+      const correct = isCorrect(rawAnswer, w.es);
+      ui.answers.querySelectorAll("button").forEach(btn => { btn.disabled = true; });
+      ui.typedAnswer.disabled = true;
+      ui.checkTyped.disabled = true;
+      applyResult(correct, rawAnswer);
+    }
+
+    function applyResult(correct, rawAnswer){
+      const w = state.currentWord;
+      const base = state.currentMode === "type" ? 25 : 10;
+      if(correct){
+        const reward = Math.round(base * state.multiplier);
+        state.money += reward;
+        state.combo += 1;
+        state.multiplier = round2(state.multiplier + .2);
+        state.bestMultiplier = Math.max(state.bestMultiplier, state.multiplier);
+        state.answeredInCountry += 1;
+        addEarned(reward);
+        markLeitnerCorrect(w);
+        feedback(true, `Juist. <strong>${safe(w.es)}</strong> = ${safe(w.nl)}. Je verdient <strong>${euro(reward)}</strong>. De combo-vlam groeit.`);
+      } else {
+        state.combo = 0;
+        state.multiplier = 1;
+        addWrong(w);
+        document.querySelector(".task").classList.remove("shake"); void document.querySelector(".task").offsetWidth; document.querySelector(".task").classList.add("shake");
+        const consequence = sample(CONSEQUENCES);
+        feedback(false, `<strong>Niet juist.</strong> Jij koos: “${safe(rawAnswer || "niets")}”. Het juiste antwoord is <strong>${safe(w.es)}</strong>.<br><br>🎭 ${safe(consequence)}<br><br>${TEMPLATES[w.thema].lola(w)}`);
+      }
+      ui.nextBox.classList.remove("hidden");
+      updateHud();
+    }
+
+    function feedback(ok, html){
+      ui.feedback.className = `feedback show ${ok ? "good" : "bad"}`;
+      ui.feedback.innerHTML = html;
+    }
+
+    function addEarned(amount){
+      const r = state.route[state.route.length - 1];
+      if(r) r.earned += amount;
+    }
+
+    function addWrong(word){
+      state.wrongWords.set(word.es, word);
+      if(!state.leitner.has(word.es)) state.leitner.set(word.es, { word, correct:0 });
+    }
+
+    function markLeitnerCorrect(word){
+      const item = state.leitner.get(word.es);
+      if(!item) return;
+      item.correct += 1;
+      if(item.correct >= 2) state.leitner.delete(word.es);
+    }
+
+    function prepareSpeedRound(){
+      state.speed.active = false;
+      state.speed.left = 30;
+      state.speed.score = 0;
+      state.speed.currentWord = null;
+      ui.timer.textContent = "30";
+      ui.speedTitle.textContent = `${COUNTRIES[state.currentCountryId].emoji} ${COUNTRIES[state.currentCountryId].name} · snelronde`;
+      ui.speedQuestion.textContent = "Klaar voor 30 seconden?";
+      ui.speedHelp.textContent = "Kies het juiste Spaanse woord. Fouten gaan ook naar je Leitner-wachtrij.";
+      ui.speedAnswers.innerHTML = "";
+      ui.speedFeedback.className = "feedback";
+      ui.startSpeed.classList.remove("hidden");
+      show("speed");
+    }
+
+    function startSpeed(){
+      clearInterval(state.speed.timerId);
+      state.speed.active = true;
+      state.speed.left = 30;
+      state.speed.score = 0;
+      ui.startSpeed.classList.add("hidden");
+      ui.speedFeedback.className = "feedback";
+      ui.timer.textContent = String(state.speed.left);
+      renderSpeedQuestion();
+      state.speed.timerId = setInterval(() => {
+        state.speed.left -= 1;
+        ui.timer.textContent = String(state.speed.left);
+        if(state.speed.left <= 0) finishSpeed();
+      }, 1000);
+    }
+
+    function renderSpeedQuestion(){
+      if(!state.speed.active) return;
+      const c = COUNTRIES[state.currentCountryId];
+      const pool = WORDS.filter(w => c.themes.includes(w.thema));
+      const w = sample(pool);
+      state.speed.currentWord = w;
+      ui.speedQuestion.innerHTML = `Welk Spaans woord betekent <strong>${safe(w.nl)}</strong>?`;
+      ui.speedHelp.innerHTML = safe(w.zin).replace("____", `<span class="gap">____</span>`);
+      ui.speedAnswers.innerHTML = shuffle([w.es, ...w.afleiders]).map(option => `<button class="choice" type="button" data-answer="${attr(option)}">${safe(option)}</button>`).join("");
+      ui.speedAnswers.querySelectorAll("button").forEach(btn => btn.addEventListener("click", () => evaluateSpeed(btn.dataset.answer)));
+    }
+
+    function evaluateSpeed(answer){
+      if(!state.speed.active) return;
+      const w = state.speed.currentWord;
+      if(isCorrect(answer, w.es)){
+        const reward = Math.round(8 * state.multiplier);
+        state.money += reward;
+        addEarned(reward);
+        state.speed.score += 1;
+        state.combo += 1;
+        state.multiplier = round2(state.multiplier + .1);
+        state.bestMultiplier = Math.max(state.bestMultiplier, state.multiplier);
+        markLeitnerCorrect(w);
+        speedFeedback(true, `+${euro(reward)} · ${safe(w.es)} = ${safe(w.nl)}`);
+      } else {
+        state.combo = 0;
+        state.multiplier = 1;
+        addWrong(w);
+        speedFeedback(false, `Oei. ${safe(w.es)} = ${safe(w.nl)}. Lola zet het in je wachtrij.`);
+      }
+      updateHud();
+      renderSpeedQuestion();
+    }
+
+    function speedFeedback(ok, text){
+      ui.speedFeedback.className = `feedback show ${ok ? "good" : "bad"}`;
+      ui.speedFeedback.textContent = text;
+    }
+
+    function finishSpeed(){
+      clearInterval(state.speed.timerId);
+      state.speed.active = false;
+      const r = state.route[state.route.length - 1];
+      if(r) r.speedScore = state.speed.score;
+      ui.speedAnswers.innerHTML = "";
+      ui.speedQuestion.textContent = `Snelronde klaar: ${state.speed.score} juiste antwoorden.`;
+      ui.speedHelp.textContent = "Je krijgt nu je paspoortstempel.";
+      setTimeout(awardStamp, 650);
+    }
+
+    function awardStamp(){
+      const c = COUNTRIES[state.currentCountryId];
+      if(!state.visited.includes(c.id)){
+        state.visited.push(c.id);
+        state.souvenirs.push({ emoji:c.emoji, ...c.souvenir });
+      }
+      updateHud();
+      ui.stampTitle.textContent = `${c.emoji} Stempel voor ${c.name}`;
+      ui.stampText.innerHTML = `Je rondde de scenario’s en snelronde af. Lola 🦜 noemt je Spaans “voldoende verstaanbaar voor mens én vogel”.`;
+      ui.stampEmoji.textContent = `${c.emoji}🛂`;
+      ui.souvenirWord.textContent = c.souvenir.es;
+      ui.souvenirNl.textContent = `= ${c.souvenir.nl}`;
+      ui.stampMoney.textContent = euro(state.money);
+      show("stamp");
+    }
+
+    function finishGame(){
+      clearInterval(state.speed.timerId);
+      ui.endMoney.textContent = euro(state.money);
+      ui.endStampCount.textContent = `${state.visited.length}/${countryIds.length}`;
+      ui.endCombo.textContent = `x${state.bestMultiplier.toFixed(2)}`;
+      ui.endRoute.innerHTML = state.route.length
+        ? state.route.map((r,i)=>{
+            const c = COUNTRIES[r.id];
+            return `<div class="item"><strong>${i+1}. ${c.emoji} ${safe(c.name)}</strong><br>Reiskost: ${euro(r.paid)} · Verdiend: ${euro(r.earned)} · Snelronde: ${r.speedScore} juist</div>`;
+          }).join("")
+        : `<div class="item small">Je bent nog niet vertrokken.</div>`;
+      ui.endSouvenirs.innerHTML = state.souvenirs.length
+        ? state.souvenirs.map(s => `<div class="item"><strong>${s.emoji} ${safe(s.es)}</strong><br>${safe(s.nl)}</div>`).join("")
+        : `<div class="item small">Nog geen souvenirs.</div>`;
+      const wrong = Array.from(state.wrongWords.values());
+      ui.endReview.innerHTML = wrong.length
+        ? wrong.map(w => `<div class="item"><strong>${safe(w.es)}</strong> = ${safe(w.nl)}<br><span class="small">Thema: ${safe(TEMPLATES[w.thema].title)} · voorbeeld: ${safe(w.zin).replace("____", safe(w.es))}</span></div>`).join("")
+        : `<div class="item small">Geen foute woorden. Lola is verdacht stil.</div>`;
+      show("end");
+    }
+
+    function restartGame(){
+      clearInterval(state.speed.timerId);
+      const fresh = freshState();
+      for(const key of Object.keys(state)) state[key] = fresh[key];
+      renderMap();
+    }
+
+    function isCorrect(answer, correct){
+      const a = normalize(answer);
+      const c = normalize(correct);
+      return a === c || stripArticle(a) === stripArticle(c);
+    }
+
+    function stripArticle(value){
+      return value.replace(/^(el|la|los|las|un|una|unos|unas)\s+/, "").trim();
+    }
+
+    function normalize(value){
+      return String(value || "")
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[¡!¿?.,;:]/g, "")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    function shuffle(list){
+      const copy = list.slice();
+      for(let i = copy.length - 1; i > 0; i--){
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function sample(list){ return list[Math.floor(Math.random() * list.length)]; }
+    function round2(n){ return Math.round(n * 100) / 100; }
+
+    function safe(value){
+      return String(value).replace(/[&<>"']/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[ch]));
+    }
+    function attr(value){ return safe(value); }
+
+    ui.chooseMc.addEventListener("click", () => chooseMode("mc"));
+    ui.chooseType.addEventListener("click", () => chooseMode("type"));
+    ui.checkTyped.addEventListener("click", () => evaluate(ui.typedAnswer.value));
+    ui.typedAnswer.addEventListener("keydown", event => { if(event.key === "Enter" && !ui.checkTyped.disabled) evaluate(ui.typedAnswer.value); });
+    ui.nextQuestion.addEventListener("click", nextNormalQuestion);
+    ui.mapBtn.addEventListener("click", renderMap);
+    ui.startSpeed.addEventListener("click", startSpeed);
+    ui.continueTrip.addEventListener("click", () => state.visited.length >= countryIds.length ? finishGame() : renderMap());
+    ui.finishTrip.addEventListener("click", finishGame);
+    ui.endNow.addEventListener("click", finishGame);
+    ui.restart.addEventListener("click", restartGame);
+
+    renderMap();
+  })();
+  </script>
+</body>
+</html>
