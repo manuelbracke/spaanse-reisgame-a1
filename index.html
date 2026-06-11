@@ -7,237 +7,217 @@
   <title>Pasaporte A1 — Spaanse reiswoordenschat</title>
   <style>
     :root{
-      --accent:#2563eb;
-      --accent-dark:#1e3a8a;
-      --accent-soft:#dbeafe;
-      --bg:#fff7ed;
-      --card:#ffffff;
-      --ink:#172033;
-      --muted:#667085;
-      --line:rgba(23,32,51,.12);
-      --good:#137333;
-      --bad:#b3261e;
-      --warn:#b56a00;
-      --radius:24px;
-      --shadow:0 16px 40px rgba(16,24,40,.12);
+      --accent:#2563eb; --accent-dark:#1e3a8a; --accent-soft:#dbeafe;
+      --bg:#fff7ed; --card:#ffffff; --ink:#172033; --muted:#667085;
+      --line:rgba(23,32,51,.12); --good:#137333; --bad:#b3261e; --warn:#b56a00;
+      --radius:24px; --shadow:0 16px 40px rgba(16,24,40,.12);
+      --tap:52px;
     }
     *{box-sizing:border-box}
-    html{scroll-behavior:smooth}
+    html{min-width:320px; -webkit-text-size-adjust:100%; text-size-adjust:100%; scroll-behavior:smooth;}
     body{
-      margin:0;
-      min-height:100vh;
+      margin:0; min-height:100vh; min-height:100svh; min-height:calc(var(--vh, 1vh) * 100);
+      overflow-x:hidden; overscroll-behavior-y:contain;
       font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
       color:var(--ink);
-      background:
-        radial-gradient(circle at 12% 4%, rgba(255,255,255,.96), transparent 24rem),
-        radial-gradient(circle at 92% 16%, var(--accent-soft), transparent 20rem),
-        linear-gradient(135deg, var(--bg), #fffef8 48%, #edf7ff);
+      background:radial-gradient(circle at 12% 4%, rgba(255,255,255,.96), transparent 24rem),
+                 radial-gradient(circle at 92% 16%, var(--accent-soft), transparent 20rem),
+                 linear-gradient(135deg,var(--bg),#fffef8 48%,#edf7ff);
     }
-    button,input{font:inherit}
+    button,input{font:inherit;font-size:16px}
     button{
-      border:0;
-      border-radius:999px;
-      padding:.88rem 1.05rem;
-      min-height:44px;
-      font-weight:800;
-      color:#fff;
-      background:var(--accent);
-      box-shadow:0 10px 24px rgba(16,24,40,.14);
-      cursor:pointer;
-      touch-action:manipulation;
+      border:0; border-radius:999px; padding:.9rem 1.05rem; min-height:var(--tap); line-height:1.15;
+      font-weight:850; color:#fff; background:var(--accent); box-shadow:0 10px 24px rgba(16,24,40,.14);
+      cursor:pointer; touch-action:manipulation; -webkit-tap-highlight-color:transparent;
       transition:transform .08s ease, filter .12s ease, opacity .12s ease;
     }
-    button:hover{filter:brightness(1.03)}
-    button:active{transform:translateY(1px) scale(.99)}
+    button:hover{filter:brightness(1.03)} button:active{transform:translateY(1px) scale(.99)}
     button:disabled{opacity:.45;cursor:not-allowed;filter:grayscale(.35);box-shadow:none}
-    button.secondary{background:#eef2f7;color:var(--ink);box-shadow:none}
-    button.ghost{background:transparent;color:var(--accent-dark);border:2px solid var(--line);box-shadow:none}
-    button.choice{
-      width:100%;
-      border-radius:18px;
-      background:#f8fafc;
-      color:var(--ink);
-      text-align:left;
-      border:2px solid var(--line);
-      box-shadow:none;
-    }
-    button.choice:hover{border-color:var(--accent)}
-    .wrap{width:min(1120px,100%);margin:0 auto;padding:clamp(.75rem,2.5vw,1.2rem)}
-    .top{
-      position:sticky;top:0;z-index:10;padding:.55rem 0 .75rem;
-      backdrop-filter:blur(16px);
-    }
-    .top-inner{
-      display:grid;gap:.7rem;grid-template-columns:1fr;
-      background:rgba(255,255,255,.84);
-      border:1px solid var(--line);
-      border-radius:22px;
-      padding:.72rem;
-      box-shadow:0 10px 28px rgba(16,24,40,.10);
-    }
-    .brand{display:flex;align-items:center;gap:.72rem;min-width:0}
-    .logo{width:3.15rem;height:3.15rem;display:grid;place-items:center;border-radius:18px;background:var(--accent-soft);font-size:1.85rem;flex:0 0 auto}
-    h1,h2,h3,p{margin:0}
-    h1{font-size:clamp(1.25rem,4vw,2rem);line-height:1.05;letter-spacing:-.02em}
-    h2{font-size:clamp(1.22rem,3.2vw,1.65rem);letter-spacing:-.015em}
-    h3{font-size:1.05rem}
-    .sub,.small{color:var(--muted);line-height:1.45}
-    .sub{font-size:.94rem;margin-top:.18rem}
-    .small{font-size:.92rem}
-    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:.45rem}
-    .stat{background:#fff;border:1px solid var(--line);border-radius:16px;padding:.62rem .56rem;min-width:0}
-    .stat span{display:block;color:var(--muted);font-size:.72rem;white-space:nowrap}
-    .stat strong{display:block;font-size:1rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    main{padding-bottom:2rem}
-    .screen{display:none}
-    .screen.active{display:block;animation:enter .18s ease both}
-    @keyframes enter{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
-    .panel,.card{
-      background:rgba(255,255,255,.92);
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-    }
-    .panel{padding:clamp(1rem,3vw,1.45rem);margin-top:.7rem}
-    .grid-start{display:grid;grid-template-columns:1fr;gap:1rem;align-items:stretch}
-    .passport{
-      position:relative;overflow:hidden;min-height:230px;
-      border-radius:28px;padding:1.15rem;color:#fff;background:linear-gradient(145deg,rgba(255,255,255,.18),rgba(0,0,0,.10)),var(--accent);
-      display:flex;flex-direction:column;justify-content:space-between;
-    }
-    .passport::after{content:"✈️";position:absolute;right:-1.4rem;bottom:-.95rem;font-size:7.4rem;opacity:.18;transform:rotate(-14deg)}
-    .stamp-row{display:flex;gap:.44rem;flex-wrap:wrap;margin-top:.82rem}
-    .stamp{display:inline-flex;align-items:center;gap:.28rem;padding:.36rem .56rem;border:2px dashed rgba(255,255,255,.74);border-radius:999px;background:rgba(255,255,255,.12);font-weight:850}
-    .countries{display:grid;grid-template-columns:1fr;gap:.8rem;margin-top:1rem}
-    .country{
-      display:grid;gap:.75rem;padding:1rem;border:2px solid var(--line);border-radius:24px;background:#fff;box-shadow:0 10px 24px rgba(16,24,40,.08)
-    }
-    .country.done{opacity:.78;background:#f8fafc}
-    .country-head{display:flex;gap:.72rem;align-items:flex-start}
-    .emoji{font-size:2.25rem;line-height:1}
-    .chips{display:flex;gap:.4rem;flex-wrap:wrap}
-    .chip{display:inline-flex;align-items:center;gap:.22rem;padding:.28rem .52rem;border-radius:999px;font-size:.8rem;font-weight:800;background:var(--accent-soft);color:var(--accent-dark)}
-    .mission{display:grid;grid-template-columns:1fr;gap:1rem;align-items:start}
-    .scene{padding:1rem;border-radius:28px;background:linear-gradient(145deg,#fff,rgba(255,255,255,.82));border:1px solid var(--line);box-shadow:var(--shadow)}
-    .scene-head{display:flex;justify-content:space-between;align-items:center;gap:.7rem;border-bottom:1px solid var(--line);padding-bottom:.8rem;margin-bottom:.9rem}
-    .scene-title{display:flex;align-items:center;gap:.5rem;font-weight:900}
-    .dialogue{display:grid;gap:.64rem}
-    .bubble{border-radius:20px;padding:.82rem;background:#f4f7fb;line-height:1.48}
-    .bubble strong{color:var(--accent-dark)}
-    .bubble.lola{background:#fff7d6;border:1px solid rgba(181,106,0,.22)}
-    .bubble.user{background:var(--accent-soft)}
-    .gap{display:inline-block;padding:0 .36rem;border-radius:.5rem;background:rgba(37,99,235,.13);color:var(--accent-dark);font-weight:900;letter-spacing:.08em}
-    .progress{height:.76rem;width:100%;background:#edf2f7;border-radius:99px;overflow:hidden;margin-top:.95rem}
-    .bar{height:100%;width:0;background:var(--accent);border-radius:inherit;transition:width .2s ease}
-    .side{display:grid;gap:.78rem}
-    .task{padding:1rem;border-radius:28px;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow)}
-    .mode-grid,.answers,.type-row{display:grid;grid-template-columns:1fr;gap:.62rem;margin-top:.85rem}
-    .type-row input{width:100%;min-height:48px;border:2px solid var(--line);border-radius:18px;padding:.9rem 1rem;background:#fbfdff;outline:0}
-    .type-row input:focus{border-color:var(--accent);box-shadow:0 0 0 4px rgba(37,99,235,.14)}
-    .feedback{display:none;margin-top:.85rem;border-radius:20px;padding:.88rem;line-height:1.48}
-    .feedback.show{display:block}
-    .feedback.good{background:#eaf8ef;border:1px solid rgba(19,115,51,.22)}
-    .feedback.bad{background:#fff0ed;border:1px solid rgba(179,38,30,.20)}
-    .mini{padding:.9rem;border-radius:22px;background:rgba(255,255,255,.92);border:1px solid var(--line);box-shadow:0 10px 24px rgba(16,24,40,.08)}
-    .list{display:grid;gap:.46rem;margin-top:.55rem}
-    .item{border-radius:16px;background:#f8fafc;padding:.62rem;font-size:.92rem;line-height:1.4}
-    .actions{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.9rem}
-    .timer{font-size:clamp(2.2rem,10vw,4rem);font-weight:950;line-height:1;color:var(--accent-dark)}
+    button.secondary{background:#fff;color:var(--accent-dark);border:1px solid var(--line);box-shadow:none}
+    button.ghost{background:transparent;color:var(--accent-dark);border:1px solid var(--line);box-shadow:none}
+    button.danger{background:var(--bad)}
+    .wrap{width:min(1120px,100%); margin:0 auto; padding:calc(1rem + env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) calc(1rem + env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left));}
+    header{position:sticky;top:0;z-index:20;margin:-.25rem 0 1rem;padding:.7rem 0 .85rem;backdrop-filter:blur(12px);background:linear-gradient(180deg,rgba(255,247,237,.96),rgba(255,247,237,.76));}
+    .topbar{display:grid;grid-template-columns:1fr auto;gap:.85rem;align-items:center}
+    .brand{display:flex;gap:.8rem;align-items:center;min-width:0}
+    .logo{width:3.1rem;height:3.1rem;border-radius:1rem;display:grid;place-items:center;background:var(--accent);color:#fff;font-size:1.8rem;box-shadow:var(--shadow);flex:none}
+    h1,h2,h3,p{margin:0} h1{font-size:clamp(1.35rem,5vw,2.7rem);line-height:1.02;letter-spacing:-.045em} h2{font-size:clamp(1.25rem,4.5vw,2rem);line-height:1.08;letter-spacing:-.03em} h3{font-size:1rem}
+    .small{font-size:.94rem;color:var(--muted);line-height:1.42} .tiny{font-size:.82rem;color:var(--muted);line-height:1.35}
+    .lang-switch{display:flex;gap:.35rem;align-items:center;justify-content:flex-end;flex-wrap:wrap}
+    .lang-switch button{min-height:42px;padding:.62rem .82rem;box-shadow:none;border:1px solid var(--line);background:#fff;color:var(--accent-dark)}
+    .lang-switch button.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+    .hud{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.55rem;margin-top:.85rem}
+    .chip{background:rgba(255,255,255,.82);border:1px solid var(--line);border-radius:999px;padding:.65rem .75rem;display:flex;align-items:center;justify-content:center;gap:.35rem;font-weight:850;min-width:0;white-space:nowrap;box-shadow:0 6px 16px rgba(16,24,40,.06)}
+    .chip span{overflow:hidden;text-overflow:ellipsis} .flame{filter:drop-shadow(0 0 6px rgba(245,124,0,.35))}
+    main{display:block} .screen{display:none} .screen.active{display:block;animation:rise .18s ease-out}
+    @keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+    .panel{background:rgba(255,255,255,.90);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:clamp(1rem,3.5vw,1.5rem);overflow:hidden}
+    .hero{display:grid;grid-template-columns:1.2fr .8fr;gap:1rem;align-items:stretch}
+    .countries{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.8rem;margin-top:1rem}
+    .country-card{position:relative;text-align:left;border-radius:24px;padding:1rem;min-height:11.5rem;color:#fff;background:var(--accent);overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;box-shadow:var(--shadow)}
+    .country-card::after{content:"";position:absolute;right:-2.2rem;bottom:-2.6rem;width:8rem;height:8rem;border-radius:999px;background:rgba(255,255,255,.22)}
+    .country-card .emoji{font-size:2.5rem} .country-card strong{font-size:1.18rem} .country-card .meta{position:relative;z-index:1;color:rgba(255,255,255,.92);font-size:.9rem;line-height:1.35}
+    .country-card[disabled]{opacity:.55}
+    .notice{margin-top:.9rem;border-radius:18px;border:1px solid rgba(181,106,0,.22);background:rgba(255,247,204,.7);padding:.8rem;line-height:1.45;color:#6d4200}
+    .grid{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(270px,.75fr);gap:1rem;align-items:start}
+    .scene{display:flex;gap:.75rem;align-items:flex-start;background:linear-gradient(135deg,var(--accent-soft),rgba(255,255,255,.88));border:1px solid var(--line);border-radius:22px;padding:1rem;margin:.9rem 0}
+    .scene .avatar{font-size:2.2rem;line-height:1;flex:none}
+    .task{border-radius:24px;border:1px solid var(--line);background:#fff;padding:1rem}
+    .question-line{font-size:clamp(1.15rem,4.4vw,1.55rem);font-weight:900;letter-spacing:-.02em;line-height:1.18;margin:.45rem 0 .6rem}
+    .gap{display:inline-block;border-bottom:3px solid var(--accent);min-width:4.2rem;text-align:center;color:var(--accent-dark);font-weight:900}
+    .actions{display:flex;flex-wrap:wrap;gap:.65rem;margin-top:.9rem;align-items:center}
+    .actions > *{flex:0 1 auto}
+    .answers{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,13.5rem),1fr));gap:.65rem;margin-top:.8rem}
+    .choice{width:100%;text-align:center;border-radius:18px;background:#fff;color:var(--accent-dark);border:1px solid var(--line);box-shadow:none;justify-content:center}
+    .choice:hover{background:var(--accent-soft)}
+    .type-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.65rem;margin-top:.8rem}
+    input{width:100%;min-height:var(--tap);border-radius:999px;border:1px solid var(--line);padding:.9rem 1rem;background:#fff;color:var(--ink);outline:none}
+    input:focus{border-color:var(--accent);box-shadow:0 0 0 4px color-mix(in srgb, var(--accent) 18%, transparent)}
+    .feedback{display:none;margin-top:.85rem;border-radius:18px;padding:.9rem;line-height:1.45;border:1px solid var(--line);background:#f8fafc}
+    .feedback.show{display:block} .feedback.good{border-color:rgba(19,115,51,.25);background:rgba(231,245,234,.92);color:#0b4f23} .feedback.bad{border-color:rgba(179,38,30,.25);background:rgba(255,235,232,.92);color:#7c1b15}
+    .mini{background:rgba(255,255,255,.86);border:1px solid var(--line);border-radius:20px;padding:.9rem;min-width:0}
+    .mini + .mini{margin-top:.75rem}
+    .list{display:grid;gap:.55rem;margin-top:.55rem} .item{border:1px solid var(--line);background:#fff;border-radius:16px;padding:.75rem;line-height:1.35}
+    .big{font-size:clamp(1.6rem,8vw,2.5rem);font-weight:950;letter-spacing:-.05em}
     .speed-head{display:flex;justify-content:space-between;gap:1rem;align-items:center;margin-bottom:1rem}
-    .results{display:grid;grid-template-columns:1fr;gap:1rem;margin-top:1rem}
-    .big{font-size:clamp(2rem,8vw,3.8rem);font-weight:950;line-height:1;color:var(--accent-dark);margin-top:.35rem;word-break:break-word}
+    .timer{width:4.4rem;height:4.4rem;border-radius:999px;display:grid;place-items:center;background:var(--accent);color:#fff;font-size:1.75rem;font-weight:950;box-shadow:var(--shadow);flex:none}
+    .results{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.8rem;margin-top:1rem}
     .hidden{display:none!important}
-    .shake{animation:shake .28s ease both}
-    .pop{animation:pop .24s ease both}
-    @keyframes pop{50%{transform:scale(1.08)}}
-    @keyframes shake{25%{transform:translateX(-3px)}50%{transform:translateX(3px)}75%{transform:translateX(-2px)}}
-    @media (min-width:760px){
-      .top-inner{grid-template-columns:1.2fr .9fr;align-items:center}
-      .stats{grid-template-columns:repeat(3,minmax(120px,1fr))}
-      .grid-start{grid-template-columns:.9fr 1.4fr}
-      .countries{grid-template-columns:repeat(3,1fr)}
-      .mission{grid-template-columns:minmax(0,1.45fr) minmax(280px,.88fr)}
-      .mode-grid,.answers{grid-template-columns:repeat(2,1fr)}
-      .type-row{grid-template-columns:1fr auto}
-      .results{grid-template-columns:repeat(3,1fr)}
+    .shake{animation:shake .25s ease-in-out} @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+    footer{text-align:center;margin-top:1rem}
+    a{color:var(--accent-dark)}
+
+    @media (max-width:760px){
+      :root{--radius:20px;--tap:54px}
+      .wrap{padding:calc(.75rem + env(safe-area-inset-top)) max(.75rem, env(safe-area-inset-right)) calc(.9rem + env(safe-area-inset-bottom)) max(.75rem, env(safe-area-inset-left));}
+      header{position:static;margin:0 0 .75rem;padding:.2rem 0 .65rem;background:transparent;backdrop-filter:none}
+      .topbar{grid-template-columns:1fr;gap:.65rem}
+      .brand{align-items:flex-start} .logo{width:2.75rem;height:2.75rem;font-size:1.55rem;border-radius:.9rem}
+      .lang-switch{justify-content:stretch;display:grid;grid-template-columns:1fr 1fr;width:100%}
+      .lang-switch button{width:100%;min-height:46px}
+      .hud{grid-template-columns:repeat(2,minmax(0,1fr));gap:.45rem}
+      .chip{border-radius:16px;padding:.62rem .55rem;font-size:.92rem}
+      .hero,.grid{grid-template-columns:1fr}
+      .countries{grid-template-columns:1fr;gap:.65rem}
+      .country-card{min-height:8.2rem;border-radius:20px;padding:.95rem}
+      .panel{border-radius:20px;padding:.9rem}
+      .scene{border-radius:18px;padding:.8rem;margin:.75rem 0}
+      .task{border-radius:18px;padding:.85rem}
+      .actions{display:grid;grid-template-columns:1fr;gap:.55rem}
+      .actions > button{width:100%}
+      .answers{grid-template-columns:1fr;gap:.55rem}
+      .choice{border-radius:16px;min-height:56px}
+      .type-row{grid-template-columns:1fr;gap:.55rem}
+      .type-row button{width:100%}
+      .speed-head{align-items:flex-start}
+      .timer{width:3.75rem;height:3.75rem;font-size:1.5rem}
+      .results{grid-template-columns:1fr;gap:.65rem}
+      .mini + .mini{margin-top:.65rem}
+      .small{font-size:.91rem}
     }
+    @media (max-width:390px){
+      .hud{grid-template-columns:1fr}
+      .chip{justify-content:flex-start}
+      h1{font-size:1.35rem}
+      .logo{display:none}
+    }
+    @media (max-height:560px) and (orientation:landscape){
+      header{position:static;background:transparent;backdrop-filter:none}
+      .hud{grid-template-columns:repeat(4,minmax(0,1fr))}
+      .country-card{min-height:7.4rem}
+    }
+    @media (hover:none){button:hover{filter:none} .choice:hover{background:#fff}}
+    @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
   </style>
 </head>
 <body>
   <div class="wrap">
-    <header class="top">
-      <div class="top-inner" role="banner">
+    <header>
+      <div class="topbar">
         <div class="brand">
           <div class="logo" aria-hidden="true">🧳</div>
           <div>
             <h1>Pasaporte A1</h1>
-            <p class="sub">Spaanse reiswoordenschat met Lola 🦜</p>
+            <p id="tagline" class="small">Spaanse reiswoordenschat als browsergame.</p>
           </div>
         </div>
-        <div class="stats" aria-label="Spelstatus">
-          <div class="stat"><span>Saldo</span><strong id="money">€500</strong></div>
-          <div class="stat"><span>Combo-vlam</span><strong id="combo">🕯️ x1.00</strong></div>
-          <div class="stat"><span>Paspoort</span><strong id="stamps">0/3</strong></div>
+        <div class="lang-switch" role="group" aria-label="Language / taal">
+          <button id="langNl" type="button" data-lang="nl" class="active" aria-pressed="true">Nederlands</button>
+          <button id="langEn" type="button" data-lang="en" aria-pressed="false">English</button>
         </div>
+      </div>
+      <div class="hud" aria-live="polite">
+        <div class="chip"><span>💶</span><span id="money">€500</span></div>
+        <div class="chip"><span class="flame">🔥</span><span id="combo">x1.00</span></div>
+        <div class="chip"><span>🛂</span><span id="stamps">0/3</span></div>
+        <div class="chip"><span>🧠</span><span id="leitnerCount">0</span></div>
       </div>
     </header>
 
     <main>
-      <section id="start" class="screen active" aria-labelledby="start-title">
-        <div class="panel grid-start">
-          <div class="passport">
-            <div>
-              <h2 id="start-title">Startbudget: €500</h2>
-              <p style="margin-top:.55rem;line-height:1.45">Kies vrij je route. Reizen kost geld; met taalopdrachten verdien je geld terug. Verzamel drie stempels.</p>
-            </div>
-            <div>
-              <p><strong>Reisgenoot:</strong> Lola 🦜</p>
-              <div id="passportStamps" class="stamp-row"><span class="stamp">Nog leeg</span></div>
-            </div>
-          </div>
-          <div>
-            <h2>Kies een land</h2>
-            <p id="mapHelp" class="small" style="margin-top:.35rem">Elk land heeft eigen thema’s, scenario’s, één snelronde van 30 seconden en een souvenir-woord.</p>
-            <div id="countryGrid" class="countries"></div>
+      <section id="map" class="screen active" aria-labelledby="mapTitle">
+        <div class="hero">
+          <div class="panel">
+            <h2 id="mapTitle">Kies je volgende land</h2>
+            <p id="mapIntro" class="small" style="margin-top:.45rem">Je start met €500. Reizen kost geld. Taalopdrachten leveren geld op.</p>
+            <div id="mapNotice" class="notice hidden"></div>
+            <div id="countries" class="countries"></div>
             <div class="actions">
               <button id="endNow" type="button" class="secondary">Eindscherm bekijken</button>
             </div>
           </div>
+          <aside>
+            <div class="mini">
+              <h3 id="howTitle">🎯 Doel</h3>
+              <p id="howText" class="small" style="margin-top:.35rem">Bezoek de drie landen, verzamel stempels en leer je fout beantwoorde woorden verplicht opnieuw.</p>
+            </div>
+            <div class="mini">
+              <h3 id="rulesTitle">🔥 Combo-vlam</h3>
+              <p id="rulesText" class="small" style="margin-top:.35rem">Elk juist antwoord verhoogt je multiplier. Eén fout antwoord dooft de vlam.</p>
+            </div>
+            <div class="mini">
+              <h3 id="leitnerTitleMap">🧠 Leitner verplicht</h3>
+              <div id="queueMap" class="list"><div class="item small">Nog leeg.</div></div>
+            </div>
+          </aside>
         </div>
       </section>
 
-      <section id="mission" class="screen" aria-labelledby="sceneTitle">
-        <div class="mission">
-          <div class="scene">
-            <div class="scene-head">
-              <div class="scene-title"><span id="sceneEmoji">🌍</span><span id="sceneTitle">Scenario</span></div>
-              <button id="mapBtn" type="button" class="ghost">Kaart</button>
+      <section id="question" class="screen" aria-labelledby="scenarioTitle">
+        <div class="grid">
+          <div class="panel">
+            <p id="countryLine" class="small"></p>
+            <div class="scene">
+              <div id="scenarioEmoji" class="avatar">🏨</div>
+              <div>
+                <h2 id="scenarioTitle">Scenario</h2>
+                <p id="scenarioSetup" class="small" style="margin-top:.3rem"></p>
+              </div>
             </div>
-            <div id="dialogue" class="dialogue"></div>
-            <div class="progress" aria-label="Voortgang"><div id="progressBar" class="bar"></div></div>
-          </div>
-          <aside class="side" aria-label="Opdracht en voortgang">
-            <div class="task">
-              <h2 id="taskTitle">Kies je opdracht</h2>
-              <p id="taskHelp" class="small">Meerkeuze is veilig. Typen is moeilijker, maar levert meer op.</p>
-              <div id="modeBox" class="mode-grid">
+            <div id="taskBox" class="task">
+              <p id="reviewBadge" class="small hidden"></p>
+              <p id="sentence" class="small"></p>
+              <div id="prompt" class="question-line"></div>
+              <div id="modeChooser" class="actions">
                 <button id="chooseMc" type="button">Meerkeuze · €10</button>
-                <button id="chooseType" type="button">Typen · €25</button>
+                <button id="chooseType" type="button" class="secondary">Typen · €25</button>
               </div>
-              <div id="answers" class="answers hidden"></div>
-              <div id="typeBox" class="type-row hidden">
-                <input id="typedAnswer" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Typ het Spaanse woord...">
-                <button id="checkTyped" type="button">Controleer</button>
-              </div>
+              <div id="answerArea"></div>
               <div id="feedback" class="feedback" role="status" aria-live="polite"></div>
               <div id="nextBox" class="actions hidden"><button id="nextQuestion" type="button">Volgende vraag</button></div>
             </div>
+          </div>
+          <aside>
             <div class="mini">
-              <h3>🎒 Rugzak</h3>
+              <h3 id="progressTitle">📍 Voortgang</h3>
+              <p id="progressText" class="small" style="margin-top:.35rem"></p>
+            </div>
+            <div class="mini">
+              <h3 id="bagTitle">🎒 Rugzak</h3>
               <p id="bag" class="small" style="margin-top:.35rem">Nog geen souvenirs.</p>
             </div>
             <div class="mini">
-              <h3>🧠 Leitner-wachtrij</h3>
+              <h3 id="leitnerTitle">🧠 Leitner-wachtrij</h3>
               <div id="queue" class="list"><div class="item small">Nog leeg.</div></div>
             </div>
           </aside>
@@ -249,7 +229,7 @@
           <div class="speed-head">
             <div>
               <h2 id="speedTitle">Snelronde</h2>
-              <p class="small">30 seconden. Kies zo snel mogelijk. Elk juist antwoord levert €8 × multiplier op.</p>
+              <p id="speedIntro" class="small">30 seconden. Kies zo snel mogelijk.</p>
             </div>
             <div id="timer" class="timer">30</div>
           </div>
@@ -268,9 +248,9 @@
           <h2 id="stampTitle">Stempel verdiend</h2>
           <p id="stampText" style="margin-top:.5rem;line-height:1.5"></p>
           <div class="results">
-            <div class="mini"><h3>Stempel</h3><div id="stampEmoji" class="big">🛂</div></div>
-            <div class="mini"><h3>Souvenir-woord</h3><div id="souvenirWord" class="big">—</div><p id="souvenirNl" class="small"></p></div>
-            <div class="mini"><h3>Saldo</h3><div id="stampMoney" class="big">€0</div></div>
+            <div class="mini"><h3 id="stampLabel">Stempel</h3><div id="stampEmoji" class="big">🛂</div></div>
+            <div class="mini"><h3 id="souvenirLabel">Souvenir-woord</h3><div id="souvenirWord" class="big">—</div><p id="souvenirMeaning" class="small"></p></div>
+            <div class="mini"><h3 id="balanceLabel">Saldo</h3><div id="stampMoney" class="big">€0</div></div>
           </div>
           <div class="actions">
             <button id="continueTrip" type="button">Verder reizen</button>
@@ -282,65 +262,364 @@
       <section id="end" class="screen" aria-labelledby="endTitle">
         <div class="panel">
           <h2 id="endTitle">🏁 Einde van je reis</h2>
-          <p class="small" style="margin-top:.35rem">Route, saldo en persoonlijke herhaallijst.</p>
+          <p id="endIntro" class="small" style="margin-top:.35rem">Route, saldo en persoonlijke herhaallijst.</p>
           <div class="results">
-            <div class="mini"><h3>Saldo</h3><div id="endMoney" class="big">€0</div></div>
-            <div class="mini"><h3>Stempels</h3><div id="endStampCount" class="big">0/3</div></div>
-            <div class="mini"><h3>Beste combo</h3><div id="endCombo" class="big">x1.00</div></div>
+            <div class="mini"><h3 id="endMoneyLabel">Saldo</h3><div id="endMoney" class="big">€0</div></div>
+            <div class="mini"><h3 id="endStampLabel">Stempels</h3><div id="endStampCount" class="big">0/3</div></div>
+            <div class="mini"><h3 id="endComboLabel">Beste combo</h3><div id="endCombo" class="big">x1.00</div></div>
           </div>
           <div class="results">
-            <div class="mini"><h3>🗺️ Route</h3><div id="endRoute" class="list"></div></div>
-            <div class="mini"><h3>🎁 Souvenirs</h3><div id="endSouvenirs" class="list"></div></div>
-            <div class="mini"><h3>🧠 Herhaallijst</h3><div id="endReview" class="list"></div></div>
+            <div class="mini"><h3 id="routeTitle">🗺️ Route</h3><div id="endRoute" class="list"></div></div>
+            <div class="mini"><h3 id="souvenirsTitle">🎁 Souvenirs</h3><div id="endSouvenirs" class="list"></div></div>
+            <div class="mini"><h3 id="reviewTitle">🧠 Herhaallijst</h3><div id="endReview" class="list"></div></div>
           </div>
           <div class="actions"><button id="restart" type="button">Opnieuw spelen</button></div>
         </div>
       </section>
     </main>
+    <footer><p id="footerNote" class="tiny">Eén HTML-bestand · vanilla JavaScript · emoji graphics · data en engine gescheiden.</p></footer>
   </div>
 
   <!-- =========================================================
        JSON WOORDENLIJST — VERVANG ALLEEN DE ARRAY HIERONDER
-       Structuur per item:
+       Verplicht per item:
        { "es": "...", "nl": "...", "thema": "...", "afleiders": ["...", "..."], "zin": "... ____ ..." }
+       Optioneel maar aanbevolen voor Engelstalige spelers:
+       { "en": "..." }
        Thema's: balie, vervoer, restaurant, markt, hulp
        ========================================================= -->
   <script id="word-data" type="application/json">
 [
-  { "es": "la habitación", "nl": "de kamer", "thema": "balie", "afleiders": ["la mesa", "la estación"], "zin": "Tengo una reserva para ____ ." },
-  { "es": "la llave", "nl": "de sleutel", "thema": "balie", "afleiders": ["la cuenta", "el tren"], "zin": "¿Puede darme ____ de mi habitación?" },
-  { "es": "el pasaporte", "nl": "het paspoort", "thema": "balie", "afleiders": ["el menú", "el mercado"], "zin": "Aquí tiene ____ para registrarme." },
-  { "es": "la reserva", "nl": "de reservatie", "thema": "balie", "afleiders": ["la playa", "la ayuda"], "zin": "Tengo ____ a nombre de Lola." },
-  { "es": "el ascensor", "nl": "de lift", "thema": "balie", "afleiders": ["el autobús", "el queso"], "zin": "¿Dónde está ____?" },
-  { "es": "la recepción", "nl": "de receptie", "thema": "balie", "afleiders": ["la plaza", "la salida"], "zin": "Voy a preguntar en ____ ." },
-
-  { "es": "el tren", "nl": "de trein", "thema": "vervoer", "afleiders": ["el pan", "el hotel"], "zin": "Tomamos ____ a Madrid." },
-  { "es": "el billete", "nl": "het ticket", "thema": "vervoer", "afleiders": ["el vaso", "el mapa"], "zin": "Necesito ____ para Valencia." },
-  { "es": "la estación", "nl": "het station", "thema": "vervoer", "afleiders": ["la ensalada", "la habitación"], "zin": "¿Dónde está ____ de autobuses?" },
-  { "es": "la salida", "nl": "het vertrek / de uitgang", "thema": "vervoer", "afleiders": ["la comida", "la llave"], "zin": "La próxima ____ es a las ocho." },
-  { "es": "el mapa", "nl": "de kaart", "thema": "vervoer", "afleiders": ["el agua", "el camarero"], "zin": "No entiendo ____ de la ciudad." },
-  { "es": "el autobús", "nl": "de bus", "thema": "vervoer", "afleiders": ["el pescado", "el dinero"], "zin": "¿Qué número tiene ____ al centro?" },
-
-  { "es": "la mesa", "nl": "de tafel", "thema": "restaurant", "afleiders": ["la maleta", "la calle"], "zin": "Queremos ____ para dos personas." },
-  { "es": "el menú", "nl": "de menukaart", "thema": "restaurant", "afleiders": ["el tren", "el pasaporte"], "zin": "¿Puede traer ____?" },
-  { "es": "el agua", "nl": "het water", "thema": "restaurant", "afleiders": ["el billete", "el precio"], "zin": "Quiero ____ sin gas, por favor." },
-  { "es": "la cuenta", "nl": "de rekening", "thema": "restaurant", "afleiders": ["la reserva", "la estación"], "zin": "¿Nos trae ____, por favor?" },
-  { "es": "el camarero", "nl": "de ober", "thema": "restaurant", "afleiders": ["el museo", "el autobús"], "zin": "____ recomienda la sopa." },
-  { "es": "el pan", "nl": "het brood", "thema": "restaurant", "afleiders": ["el mapa", "el bolso"], "zin": "¿Tiene ____ sin gluten?" },
-
-  { "es": "el mercado", "nl": "de markt", "thema": "markt", "afleiders": ["el hotel", "el tren"], "zin": "Compramos fruta en ____ ." },
-  { "es": "el precio", "nl": "de prijs", "thema": "markt", "afleiders": ["el agua", "el ascensor"], "zin": "¿Cuál es ____ de las naranjas?" },
-  { "es": "la fruta", "nl": "het fruit", "thema": "markt", "afleiders": ["la llave", "la salida"], "zin": "Me gusta ____ fresca." },
-  { "es": "el dinero", "nl": "het geld", "thema": "markt", "afleiders": ["el menú", "el tren"], "zin": "No tengo mucho ____ ." },
-  { "es": "la bolsa", "nl": "de zak / tas", "thema": "markt", "afleiders": ["la cuenta", "la reserva"], "zin": "Necesito ____ para las manzanas." },
-  { "es": "barato", "nl": "goedkoop", "thema": "markt", "afleiders": ["cerrado", "perdido"], "zin": "Este queso es muy ____ ." },
-
-  { "es": "ayuda", "nl": "hulp", "thema": "hulp", "afleiders": ["cuenta", "fruta"], "zin": "Necesito ____, por favor." },
-  { "es": "perdido", "nl": "verdwaald", "thema": "hulp", "afleiders": ["barato", "abierto"], "zin": "Estoy ____ en esta calle." },
-  { "es": "el hospital", "nl": "het ziekenhuis", "thema": "hulp", "afleiders": ["el mercado", "el menú"], "zin": "¿Dónde está ____ más cercano?" },
-  { "es": "la farmacia", "nl": "de apotheek", "thema": "hulp", "afleiders": ["la mesa", "la estación"], "zin": "Busco ____ porque me duele la cabeza." },
-  { "es": "la policía", "nl": "de politie", "thema": "hulp", "afleiders": ["la fruta", "la llave"], "zin": "Tengo que llamar a ____ ." },
-  { "es": "abierto", "nl": "open", "thema": "hulp", "afleiders": ["caro", "perdido"], "zin": "¿Está ____ el museo?" }
+  {
+    "es": "la habitación",
+    "nl": "de kamer",
+    "en": "the room",
+    "thema": "balie",
+    "afleiders": [
+      "la mesa",
+      "la estación"
+    ],
+    "zin": "Tengo una reserva para ____ ."
+  },
+  {
+    "es": "la llave",
+    "nl": "de sleutel",
+    "en": "the key",
+    "thema": "balie",
+    "afleiders": [
+      "la cuenta",
+      "el tren"
+    ],
+    "zin": "¿Puede darme ____ de mi habitación?"
+  },
+  {
+    "es": "el pasaporte",
+    "nl": "het paspoort",
+    "en": "the passport",
+    "thema": "balie",
+    "afleiders": [
+      "el menú",
+      "el mercado"
+    ],
+    "zin": "Aquí tiene ____ para registrarme."
+  },
+  {
+    "es": "la reserva",
+    "nl": "de reservatie",
+    "en": "the reservation",
+    "thema": "balie",
+    "afleiders": [
+      "la playa",
+      "la ayuda"
+    ],
+    "zin": "Tengo ____ a nombre de Lola."
+  },
+  {
+    "es": "el ascensor",
+    "nl": "de lift",
+    "en": "the elevator / lift",
+    "thema": "balie",
+    "afleiders": [
+      "el autobús",
+      "el queso"
+    ],
+    "zin": "¿Dónde está ____?"
+  },
+  {
+    "es": "la recepción",
+    "nl": "de receptie",
+    "en": "the reception desk",
+    "thema": "balie",
+    "afleiders": [
+      "la plaza",
+      "la salida"
+    ],
+    "zin": "Voy a preguntar en ____ ."
+  },
+  {
+    "es": "el tren",
+    "nl": "de trein",
+    "en": "the train",
+    "thema": "vervoer",
+    "afleiders": [
+      "el pan",
+      "el hotel"
+    ],
+    "zin": "Tomamos ____ a Madrid."
+  },
+  {
+    "es": "el billete",
+    "nl": "het ticket",
+    "en": "the ticket",
+    "thema": "vervoer",
+    "afleiders": [
+      "el vaso",
+      "el mapa"
+    ],
+    "zin": "Necesito ____ para Valencia."
+  },
+  {
+    "es": "la estación",
+    "nl": "het station",
+    "en": "the station",
+    "thema": "vervoer",
+    "afleiders": [
+      "la ensalada",
+      "la habitación"
+    ],
+    "zin": "¿Dónde está ____ de autobuses?"
+  },
+  {
+    "es": "la salida",
+    "nl": "het vertrek / de uitgang",
+    "en": "the departure / exit",
+    "thema": "vervoer",
+    "afleiders": [
+      "la comida",
+      "la llave"
+    ],
+    "zin": "La próxima ____ es a las ocho."
+  },
+  {
+    "es": "el mapa",
+    "nl": "de kaart",
+    "en": "the map",
+    "thema": "vervoer",
+    "afleiders": [
+      "el agua",
+      "el camarero"
+    ],
+    "zin": "No entiendo ____ de la ciudad."
+  },
+  {
+    "es": "el autobús",
+    "nl": "de bus",
+    "en": "the bus",
+    "thema": "vervoer",
+    "afleiders": [
+      "el pescado",
+      "el dinero"
+    ],
+    "zin": "¿Qué número tiene ____ al centro?"
+  },
+  {
+    "es": "la mesa",
+    "nl": "de tafel",
+    "en": "the table",
+    "thema": "restaurant",
+    "afleiders": [
+      "la maleta",
+      "la calle"
+    ],
+    "zin": "Queremos ____ para dos personas."
+  },
+  {
+    "es": "el menú",
+    "nl": "de menukaart",
+    "en": "the menu",
+    "thema": "restaurant",
+    "afleiders": [
+      "el tren",
+      "el pasaporte"
+    ],
+    "zin": "¿Puede traer ____?"
+  },
+  {
+    "es": "el agua",
+    "nl": "het water",
+    "en": "the water",
+    "thema": "restaurant",
+    "afleiders": [
+      "el billete",
+      "el precio"
+    ],
+    "zin": "Quiero ____ sin gas, por favor."
+  },
+  {
+    "es": "la cuenta",
+    "nl": "de rekening",
+    "en": "the bill",
+    "thema": "restaurant",
+    "afleiders": [
+      "la reserva",
+      "la estación"
+    ],
+    "zin": "¿Nos trae ____, por favor?"
+  },
+  {
+    "es": "el camarero",
+    "nl": "de ober",
+    "en": "the waiter",
+    "thema": "restaurant",
+    "afleiders": [
+      "el museo",
+      "el autobús"
+    ],
+    "zin": "____ recomienda la sopa."
+  },
+  {
+    "es": "el pan",
+    "nl": "het brood",
+    "en": "the bread",
+    "thema": "restaurant",
+    "afleiders": [
+      "el mapa",
+      "el bolso"
+    ],
+    "zin": "¿Tiene ____ sin gluten?"
+  },
+  {
+    "es": "el mercado",
+    "nl": "de markt",
+    "en": "the market",
+    "thema": "markt",
+    "afleiders": [
+      "el hotel",
+      "el tren"
+    ],
+    "zin": "Compramos fruta en ____ ."
+  },
+  {
+    "es": "el precio",
+    "nl": "de prijs",
+    "en": "the price",
+    "thema": "markt",
+    "afleiders": [
+      "el agua",
+      "el ascensor"
+    ],
+    "zin": "¿Cuál es ____ de las naranjas?"
+  },
+  {
+    "es": "la fruta",
+    "nl": "het fruit",
+    "en": "the fruit",
+    "thema": "markt",
+    "afleiders": [
+      "la llave",
+      "la salida"
+    ],
+    "zin": "Me gusta ____ fresca."
+  },
+  {
+    "es": "el dinero",
+    "nl": "het geld",
+    "en": "the money",
+    "thema": "markt",
+    "afleiders": [
+      "el menú",
+      "el tren"
+    ],
+    "zin": "No tengo mucho ____ ."
+  },
+  {
+    "es": "la bolsa",
+    "nl": "de zak / tas",
+    "en": "the bag",
+    "thema": "markt",
+    "afleiders": [
+      "la cuenta",
+      "la reserva"
+    ],
+    "zin": "Necesito ____ para las manzanas."
+  },
+  {
+    "es": "barato",
+    "nl": "goedkoop",
+    "en": "cheap",
+    "thema": "markt",
+    "afleiders": [
+      "cerrado",
+      "perdido"
+    ],
+    "zin": "Este queso es muy ____ ."
+  },
+  {
+    "es": "ayuda",
+    "nl": "hulp",
+    "en": "help",
+    "thema": "hulp",
+    "afleiders": [
+      "cuenta",
+      "fruta"
+    ],
+    "zin": "Necesito ____, por favor."
+  },
+  {
+    "es": "perdido",
+    "nl": "verdwaald",
+    "en": "lost",
+    "thema": "hulp",
+    "afleiders": [
+      "barato",
+      "abierto"
+    ],
+    "zin": "Estoy ____ en esta calle."
+  },
+  {
+    "es": "el hospital",
+    "nl": "het ziekenhuis",
+    "en": "the hospital",
+    "thema": "hulp",
+    "afleiders": [
+      "el mercado",
+      "el menú"
+    ],
+    "zin": "¿Dónde está ____ más cercano?"
+  },
+  {
+    "es": "la farmacia",
+    "nl": "de apotheek",
+    "en": "the pharmacy",
+    "thema": "hulp",
+    "afleiders": [
+      "la mesa",
+      "la estación"
+    ],
+    "zin": "Busco ____ porque me duele la cabeza."
+  },
+  {
+    "es": "la policía",
+    "nl": "de politie",
+    "en": "the police",
+    "thema": "hulp",
+    "afleiders": [
+      "la fruta",
+      "la llave"
+    ],
+    "zin": "Tengo que llamar a ____ ."
+  },
+  {
+    "es": "abierto",
+    "nl": "open",
+    "en": "open",
+    "thema": "hulp",
+    "afleiders": [
+      "caro",
+      "perdido"
+    ],
+    "zin": "¿Está ____ el museo?"
+  }
 ]
   </script>
   <!-- ======================= EINDE JSON WOORDENLIJST ======================= -->
@@ -354,520 +633,427 @@
      * De engine leest exact één externe data-bron: de JSON-array #word-data.
      **********************************************************************/
 
-    const TEMPLATES = Object.freeze({
-      balie: {
-        emoji: "🏨", title: "Aan de balie", speaker: "Receptionist",
-        setup: "Je staat aan een balie. Lola probeert beleefd te knikken, maar ze knikt met haar hele lijf.",
-        prompt: word => `Welk Spaans woord betekent <strong>${safe(word.nl)}</strong>?`,
-        lola: word => `Lola 🦜 legt uit: “Aan de balie heb je praktische woorden nodig. <strong>${safe(word.es)}</strong> betekent <strong>${safe(word.nl)}</strong>.”`
+    const setViewportHeight = () => {
+      document.documentElement.style.setProperty("--vh", `${window.innerHeight * 0.01}px`);
+    };
+    setViewportHeight();
+    window.addEventListener("resize", setViewportHeight, { passive:true });
+    window.addEventListener("orientationchange", setViewportHeight, { passive:true });
+
+    const QUESTIONS_PER_COUNTRY = 5;
+    const START_MONEY = 500;
+    const SPEED_SECONDS = 30;
+
+    const I18N = Object.freeze({
+      nl: {
+        htmlLang:"nl", tagline:"Spaanse reiswoordenschat als browsergame.",
+        mapTitle:"Kies je volgende land", mapIntro:"Je start met €500. Reizen kost geld. Taalopdrachten leveren geld op.",
+        howTitle:"🎯 Doel", howText:"Bezoek de drie landen, verzamel stempels en leer je fout beantwoorde woorden verplicht opnieuw.",
+        rulesTitle:"🔥 Combo-vlam", rulesText:"Elk juist antwoord verhoogt je multiplier. Eén fout antwoord dooft de vlam.",
+        leitnerTitleMap:"🧠 Leitner verplicht", leitnerTitle:"🧠 Leitner-wachtrij", emptyQueue:"Nog leeg.",
+        endNow:"Eindscherm bekijken", continueTrip:"Verder reizen", finishTrip:"Eindscherm bekijken", restart:"Opnieuw spelen",
+        chooseMc:"Meerkeuze · €10", chooseType:"Typen · €25", check:"Controleer", next:"Volgende vraag",
+        typePlaceholder:"Typ het Spaanse woord...", startSpeed:"Start snelronde", speedRound:"Snelronde", speedIntro:"30 seconden. Kies zo snel mogelijk. Elk juist antwoord levert €8 × multiplier op.",
+        ready:"Klaar?", pressStart:"Druk op start.", speedReady:"Klaar voor 30 seconden?", speedHelp:"Kies het juiste Spaanse woord. Fouten gaan ook naar je verplichte Leitner-wachtrij.",
+        countryLine:(country, done) => `${country.emoji} ${country.name} · vraag ${done + 1}/${QUESTIONS_PER_COUNTRY}`,
+        reviewBadge:(count) => `🧠 Verplichte herhaling: nog ${count} woord(en). Een fout woord moet 2× juist zijn.`,
+        progress:(done) => `Normale scenario's: ${Math.min(done, QUESTIONS_PER_COUNTRY)}/${QUESTIONS_PER_COUNTRY}. Daarna volgt een snelronde van 30 seconden.`,
+        prompt:(meaning) => `Welk Spaans woord betekent <strong>${safe(meaning)}</strong>?`,
+        mcInstruction:"Kies het juiste Spaanse woord.", typeInstruction:"Typ het Spaanse woord. Accenten en lidwoorden tellen soepel mee.",
+        correct:(w, reward, review, pending) => `Juist. <strong>${safe(w.es)}</strong> = ${safe(meaning(w))}. Je verdient <strong>${euro(reward)}</strong>. De combo-vlam groeit.${review ? " " + pending : ""}`,
+        allReviewDone:"Alle verplichte herhaling is klaar.", pendingReview:(n)=>`Nog ${n} verplichte herhaalwoord(en) te gaan.`,
+        wrong:(raw, w, consequence, lola) => `<strong>Niet juist.</strong> Jij koos: “${safe(raw || "niets")}”. Het juiste antwoord is <strong>${safe(w.es)}</strong>.<br><br>🎭 ${safe(consequence)}<br><br>${lola}`,
+        mapBlockedTrip:"Je bent nog midden in een land. Rond eerst deze reis af.", mapBlockedReview:(n)=>`Je hebt nog ${n} verplicht(e) Leitner-woord(en). Beantwoord ze eerst 2× juist.`,
+        travelCost:"Reiskost", cluster:"Thema-cluster", visited:"Bezocht", go:"Reis naar",
+        notEnough:(name,cost,money)=>`Je hebt niet genoeg geld voor ${name}. Nodig: ${euro(cost)}. Je hebt: ${euro(money)}. Verdien eerst geld in een ander land.`,
+        bagEmpty:"Nog geen souvenirs.", bagItems:(items)=>items.map(s=>`${s.emoji} ${s.es} = ${s.nl}`).join("<br>"),
+        speedDone:(score)=>`Snelronde klaar: ${score} juiste antwoorden.`,
+        speedToReview:(n)=>`Nog ${n} fout woord(en) moeten 2× juist herhaald worden voor je je stempel krijgt.`,
+        speedToStamp:"Je krijgt nu je paspoortstempel.", speedCorrect:(reward,w)=>`+${euro(reward)} · ${w.es} = ${meaning(w)}`, speedWrong:(w)=>`Oei. ${w.es} = ${meaning(w)}. Lola zet het in je wachtrij.`,
+        stampTitle:(c)=>`${c.emoji} Stempel voor ${c.name}`, stampText:"Je rondde de scenario’s en snelronde af. Lola 🦜 noemt je Spaans ‘voldoende verstaanbaar voor mens én vogel’.",
+        stampLabel:"Stempel", souvenirLabel:"Souvenir-woord", balanceLabel:"Saldo",
+        endTitle:"🏁 Einde van je reis", endIntro:"Route, saldo en persoonlijke herhaallijst.", endMoneyLabel:"Saldo", endStampLabel:"Stempels", endComboLabel:"Beste combo",
+        routeTitle:"🗺️ Route", souvenirsTitle:"🎁 Souvenirs", reviewTitle:"🧠 Herhaallijst",
+        routeEmpty:"Je bent nog niet vertrokken.", routeLine:(i,c,r)=>`${i}. ${c.emoji} ${c.name}<br>Reiskost: ${euro(r.paid)} · Verdiend: ${euro(r.earned)} · Snelronde: ${r.speedScore} juist`,
+        noWrong:"Geen foute woorden. Lola is verdacht stil.", theme:"Thema", example:"voorbeeld",
+        footerNote:"Eén HTML-bestand · vanilla JavaScript · emoji graphics · data en engine gescheiden.",
+        themes:{balie:"balie",vervoer:"vervoer",restaurant:"restaurant",markt:"markt",hulp:"hulp"},
+        countries:{mexico:"Mexico",spain:"Spanje",argentina:"Argentinië"},
+        souvenirs:{gracias:"dank je",tapas:"kleine hapjes",mate:"Argentijnse infusie"},
+        templates:{
+          balie:{title:"Aan de balie",speaker:"Receptionist",setup:"Je staat aan een balie. Lola probeert beleefd te knikken, maar ze knikt met haar hele lijf.",lola:(w)=>`Lola 🦜 legt uit: “Aan de balie heb je praktische woorden nodig. <strong>${safe(w.es)}</strong> betekent <strong>${safe(meaning(w))}</strong>.”`},
+          vervoer:{title:"Vervoer",speaker:"Chauffeur",setup:"Je zoekt bus, trein of uitgang. Lola leest de kaart ondersteboven en doet alsof dat Spaans is.",lola:(w)=>`Lola 🦜 tikt tegen het raam: “Voor onderweg is <strong>${safe(w.es)}</strong> handig. Dat is <strong>${safe(meaning(w))}</strong>.”`},
+          restaurant:{title:"Restaurant",speaker:"Camarero",setup:"Je zit aan tafel. Lola heeft al brood besteld, maar alleen met vogelaccent.",lola:(w)=>`Lola 🦜 fluistert: “In een restaurant red je je beter met <strong>${safe(w.es)}</strong>. Dat betekent <strong>${safe(meaning(w))}</strong>.”`},
+          markt:{title:"Op de markt",speaker:"Verkoper",setup:"De markt ruikt naar fruit. Lola onderhandelt luid, maar kent alleen het woord ‘olé’.",lola:(w)=>`Lola 🦜 kraait: “Op de markt is <strong>${safe(w.es)}</strong> nuttig. In jouw taal: <strong>${safe(meaning(w))}</strong>.”`},
+          hulp:{title:"Hulp vragen",speaker:"Voorbijganger",setup:"Je weet het even niet meer. Lola wijst drie richtingen tegelijk aan.",lola:(w)=>`Lola 🦜 zegt ernstig: “Als je hulp nodig hebt, onthoud <strong>${safe(w.es)}</strong>. Dat betekent <strong>${safe(meaning(w))}</strong>.”`}
+        },
+        consequences:["Lola bestelt per ongeluk drie liften en één croissant.","De receptionist geeft je een kaart van de maan.","Een ober brengt een buskaartje met extra saus.","Je vraagt de weg en krijgt applaus van een straatmuzikant.","Lola roept ‘perfecto!’ en verstopt zich achter je rugzak."]
       },
-      vervoer: {
-        emoji: "🚌", title: "Vervoer", speaker: "Chauffeur",
-        setup: "Je zoekt bus, trein of uitgang. Lola leest de kaart ondersteboven en doet alsof dat Spaans is.",
-        prompt: word => `Welk Spaans vervoerwoord betekent <strong>${safe(word.nl)}</strong>?`,
-        lola: word => `Lola 🦜 tikt tegen het raam: “Voor onderweg is <strong>${safe(word.es)}</strong> handig. Dat is <strong>${safe(word.nl)}</strong>.”`
-      },
-      restaurant: {
-        emoji: "🍽️", title: "Restaurant", speaker: "Camarero",
-        setup: "Je zit aan tafel. Lola is zogezegd niet hongerig, maar kijkt al drie minuten naar het brood.",
-        prompt: word => `Welk Spaans restaurantwoord betekent <strong>${safe(word.nl)}</strong>?`,
-        lola: word => `Lola 🦜 wijst naar het bord: “In een restaurant zeg je <strong>${safe(word.es)}</strong> voor <strong>${safe(word.nl)}</strong>.”`
-      },
-      markt: {
-        emoji: "🍊", title: "Markt", speaker: "Vendedor",
-        setup: "Je loopt over een drukke markt. Lola wil onderhandelen, maar biedt veren aan als betaalmiddel.",
-        prompt: word => `Welk Spaans marktwoord betekent <strong>${safe(word.nl)}</strong>?`,
-        lola: word => `Lola 🦜 kraakt een nootje: “Op de markt helpt <strong>${safe(word.es)}</strong>: dat betekent <strong>${safe(word.nl)}</strong>.”`
-      },
-      hulp: {
-        emoji: "🆘", title: "Hulp vragen", speaker: "Vecina",
-        setup: "Er loopt iets mis op reis. Niet panikeren: Lola panikeert al genoeg voor twee.",
-        prompt: word => `Welk Spaans hulpwoord betekent <strong>${safe(word.nl)}</strong>?`,
-        lola: word => `Lola 🦜 blijft kalm: “Bij hulp vragen is <strong>${safe(word.es)}</strong> belangrijk. Het betekent <strong>${safe(word.nl)}</strong>.”`
+      en: {
+        htmlLang:"en", tagline:"Spanish travel vocabulary as a browser game.",
+        mapTitle:"Choose your next country", mapIntro:"You start with €500. Travelling costs money. Language tasks earn money.",
+        howTitle:"🎯 Goal", howText:"Visit all three countries, collect passport stamps and relearn every wrong word until it is correct twice.",
+        rulesTitle:"🔥 Combo flame", rulesText:"Every correct answer raises your multiplier. One wrong answer puts out the flame.",
+        leitnerTitleMap:"🧠 Mandatory Leitner", leitnerTitle:"🧠 Leitner queue", emptyQueue:"Empty for now.",
+        endNow:"View end screen", continueTrip:"Keep travelling", finishTrip:"View end screen", restart:"Play again",
+        chooseMc:"Multiple choice · €10", chooseType:"Typing · €25", check:"Check", next:"Next question",
+        typePlaceholder:"Type the Spanish word...", startSpeed:"Start speed round", speedRound:"Speed round", speedIntro:"30 seconds. Choose as quickly as possible. Each correct answer earns €8 × multiplier.",
+        ready:"Ready?", pressStart:"Press start.", speedReady:"Ready for 30 seconds?", speedHelp:"Choose the correct Spanish word. Wrong answers also go into your mandatory Leitner queue.",
+        countryLine:(country, done) => `${country.emoji} ${country.name} · question ${done + 1}/${QUESTIONS_PER_COUNTRY}`,
+        reviewBadge:(count) => `🧠 Mandatory review: ${count} word(s) left. A wrong word must be answered correctly twice.`,
+        progress:(done) => `Normal scenarios: ${Math.min(done, QUESTIONS_PER_COUNTRY)}/${QUESTIONS_PER_COUNTRY}. Then you get a 30-second speed round.`,
+        prompt:(meaning) => `Which Spanish word means <strong>${safe(meaning)}</strong>?`,
+        mcInstruction:"Choose the correct Spanish word.", typeInstruction:"Type the Spanish word. Accents and articles are checked flexibly.",
+        correct:(w, reward, review, pending) => `Correct. <strong>${safe(w.es)}</strong> = ${safe(meaning(w))}. You earn <strong>${euro(reward)}</strong>. The combo flame grows.${review ? " " + pending : ""}`,
+        allReviewDone:"All mandatory review is done.", pendingReview:(n)=>`${n} mandatory review word(s) still to go.`,
+        wrong:(raw, w, consequence, lola) => `<strong>Not correct.</strong> You chose: “${safe(raw || "nothing")}”. The correct answer is <strong>${safe(w.es)}</strong>.<br><br>🎭 ${safe(consequence)}<br><br>${lola}`,
+        mapBlockedTrip:"You are still in the middle of a trip. Finish this country first.", mapBlockedReview:(n)=>`You still have ${n} mandatory Leitner word(s). Answer them correctly twice first.`,
+        travelCost:"Travel cost", cluster:"Theme cluster", visited:"Visited", go:"Travel to",
+        notEnough:(name,cost,money)=>`You do not have enough money for ${name}. Needed: ${euro(cost)}. You have: ${euro(money)}. Earn money in another country first.`,
+        bagEmpty:"No souvenirs yet.", bagItems:(items)=>items.map(s=>`${s.emoji} ${s.es} = ${s.en || s.nl}`).join("<br>"),
+        speedDone:(score)=>`Speed round finished: ${score} correct answer(s).`,
+        speedToReview:(n)=>`${n} wrong word(s) still need to be answered correctly twice before you get your stamp.`,
+        speedToStamp:"You now get your passport stamp.", speedCorrect:(reward,w)=>`+${euro(reward)} · ${w.es} = ${meaning(w)}`, speedWrong:(w)=>`Oops. ${w.es} = ${meaning(w)}. Lola puts it in your queue.`,
+        stampTitle:(c)=>`${c.emoji} Stamp for ${c.name}`, stampText:"You completed the scenarios and the speed round. Lola 🦜 says your Spanish is ‘understandable to humans and birds alike’.",
+        stampLabel:"Stamp", souvenirLabel:"Souvenir word", balanceLabel:"Balance",
+        endTitle:"🏁 End of your trip", endIntro:"Route, balance and personal review list.", endMoneyLabel:"Balance", endStampLabel:"Stamps", endComboLabel:"Best combo",
+        routeTitle:"🗺️ Route", souvenirsTitle:"🎁 Souvenirs", reviewTitle:"🧠 Review list",
+        routeEmpty:"You have not left yet.", routeLine:(i,c,r)=>`${i}. ${c.emoji} ${c.name}<br>Travel cost: ${euro(r.paid)} · Earned: ${euro(r.earned)} · Speed round: ${r.speedScore} correct`,
+        noWrong:"No wrong words. Lola is suspiciously quiet.", theme:"Theme", example:"example",
+        footerNote:"One HTML file · vanilla JavaScript · emoji graphics · separated data and engine.",
+        themes:{balie:"reception desk",vervoer:"transport",restaurant:"restaurant",markt:"market",hulp:"asking for help"},
+        countries:{mexico:"Mexico",spain:"Spain",argentina:"Argentina"},
+        souvenirs:{gracias:"thank you",tapas:"small dishes",mate:"Argentinian infusion"},
+        templates:{
+          balie:{title:"At reception",speaker:"Receptionist",setup:"You are standing at a reception desk. Lola tries to nod politely, but somehow nods with her whole body.",lola:(w)=>`Lola 🦜 explains: “At reception you need practical words. <strong>${safe(w.es)}</strong> means <strong>${safe(meaning(w))}</strong>.”`},
+          vervoer:{title:"Transport",speaker:"Driver",setup:"You are looking for a bus, train or exit. Lola reads the map upside down and pretends that is Spanish.",lola:(w)=>`Lola 🦜 taps the window: “On the road, <strong>${safe(w.es)}</strong> is useful. It means <strong>${safe(meaning(w))}</strong>.”`},
+          restaurant:{title:"Restaurant",speaker:"Waiter",setup:"You are sitting at a table. Lola has already ordered bread, but only in parrot accent.",lola:(w)=>`Lola 🦜 whispers: “In a restaurant, <strong>${safe(w.es)}</strong> helps. It means <strong>${safe(meaning(w))}</strong>.”`},
+          markt:{title:"At the market",speaker:"Seller",setup:"The market smells like fruit. Lola negotiates loudly, but only knows the word ‘olé’.",lola:(w)=>`Lola 🦜 squawks: “At the market, <strong>${safe(w.es)}</strong> is useful. In your language: <strong>${safe(meaning(w))}</strong>.”`},
+          hulp:{title:"Asking for help",speaker:"Passer-by",setup:"You are not sure what to do. Lola points in three directions at once.",lola:(w)=>`Lola 🦜 says seriously: “When you need help, remember <strong>${safe(w.es)}</strong>. It means <strong>${safe(meaning(w))}</strong>.”`}
+        },
+        consequences:["Lola accidentally orders three elevators and one croissant.","The receptionist gives you a map of the moon.","A waiter brings a bus ticket with extra sauce.","You ask for directions and get applause from a street musician.","Lola shouts ‘perfecto!’ and hides behind your backpack."]
       }
     });
 
-    const COUNTRIES = Object.freeze({
-      mexico: {
-        id: "mexico", name: "Mexico", emoji: "🇲🇽", cost: 95, color: "#d64545", soft: "#ffeceb",
-        themes: ["markt", "restaurant"],
-        scenario: "Markt, taco’s en Lola die denkt dat afdingen hetzelfde is als luid Spaans roepen.",
-        souvenir: { es: "el zócalo", nl: "het centrale plein" }
-      },
-      spanje: {
-        id: "spanje", name: "Spanje", emoji: "🇪🇸", cost: 70, color: "#f1a208", soft: "#fff4d6",
-        themes: ["balie", "vervoer"],
-        scenario: "Hotelbalie, treinperron en Lola die bijna incheckt als Señora Plumas.",
-        souvenir: { es: "la tapa", nl: "klein hapje bij een drankje" }
-      },
-      argentinie: {
-        id: "argentinie", name: "Argentinië", emoji: "🇦🇷", cost: 120, color: "#2d9cdb", soft: "#e4f6ff",
-        themes: ["hulp", "restaurant"],
-        scenario: "Buenos Aires, brede lanen en Lola die dramatisch om hulp roept voor één ontbrekende broodkorst.",
-        souvenir: { es: "el mate", nl: "Argentijnse kruidenthee" }
-      }
+    const COUNTRY_DATA = Object.freeze({
+      mexico: { id:"mexico", emoji:"🇲🇽", cost:90, color:"#0f766e", themes:["balie","markt"], souvenir:{ es:"gracias", nl:"dank je", en:"thank you" } },
+      spain: { id:"spain", emoji:"🇪🇸", cost:120, color:"#c2410c", themes:["restaurant","balie"] , souvenir:{ es:"tapas", nl:"kleine hapjes", en:"small dishes" } },
+      argentina: { id:"argentina", emoji:"🇦🇷", cost:140, color:"#2563eb", themes:["vervoer","hulp"], souvenir:{ es:"mate", nl:"Argentijnse infusie", en:"Argentinian infusion" } }
     });
-
-    const CONSEQUENCES = Object.freeze([
-      "Je bestelt per ongeluk een lift met extra kaas. De ober schrijft het ernstig op.",
-      "Lola herhaalt je antwoord zo luid dat drie toeristen spontaan beginnen mee te oefenen.",
-      "De receptionist geeft je een stadsplan uit 1998 en zegt: ‘Veel avontuur!’",
-      "Je vraagt naar de bus, maar wijst naar een sinaasappel. De marktverkoper applaudisseert.",
-      "Lola roept ‘¡Drama!’ en valt theatraal achterover in je rugzak."
-    ]);
-
-    const WORDS = readWords();
-    validateWords(WORDS);
-
-    const $ = selector => document.querySelector(selector);
-    const $$ = selector => Array.from(document.querySelectorAll(selector));
+    const countryIds = Object.keys(COUNTRY_DATA);
 
     const ui = {
-      money: $("#money"), combo: $("#combo"), stamps: $("#stamps"), passportStamps: $("#passportStamps"),
-      countryGrid: $("#countryGrid"), mapHelp: $("#mapHelp"), endNow: $("#endNow"),
-      sceneEmoji: $("#sceneEmoji"), sceneTitle: $("#sceneTitle"), dialogue: $("#dialogue"), progressBar: $("#progressBar"),
-      taskTitle: $("#taskTitle"), taskHelp: $("#taskHelp"), modeBox: $("#modeBox"), chooseMc: $("#chooseMc"), chooseType: $("#chooseType"),
-      answers: $("#answers"), typeBox: $("#typeBox"), typedAnswer: $("#typedAnswer"), checkTyped: $("#checkTyped"), feedback: $("#feedback"), nextBox: $("#nextBox"), nextQuestion: $("#nextQuestion"), mapBtn: $("#mapBtn"),
-      bag: $("#bag"), queue: $("#queue"),
-      speedTitle: $("#speedTitle"), timer: $("#timer"), speedQuestion: $("#speedQuestion"), speedHelp: $("#speedHelp"), speedAnswers: $("#speedAnswers"), speedFeedback: $("#speedFeedback"), startSpeed: $("#startSpeed"),
-      stampTitle: $("#stampTitle"), stampText: $("#stampText"), stampEmoji: $("#stampEmoji"), souvenirWord: $("#souvenirWord"), souvenirNl: $("#souvenirNl"), stampMoney: $("#stampMoney"), continueTrip: $("#continueTrip"), finishTrip: $("#finishTrip"),
-      endMoney: $("#endMoney"), endStampCount: $("#endStampCount"), endCombo: $("#endCombo"), endRoute: $("#endRoute"), endSouvenirs: $("#endSouvenirs"), endReview: $("#endReview"), restart: $("#restart")
+      tagline: byId("tagline"), langNl: byId("langNl"), langEn: byId("langEn"), money: byId("money"), combo: byId("combo"), stamps: byId("stamps"), leitnerCount: byId("leitnerCount"),
+      mapTitle: byId("mapTitle"), mapIntro: byId("mapIntro"), mapNotice: byId("mapNotice"), countries: byId("countries"), endNow: byId("endNow"),
+      howTitle: byId("howTitle"), howText: byId("howText"), rulesTitle: byId("rulesTitle"), rulesText: byId("rulesText"), leitnerTitleMap: byId("leitnerTitleMap"), queueMap: byId("queueMap"),
+      countryLine: byId("countryLine"), scenarioEmoji: byId("scenarioEmoji"), scenarioTitle: byId("scenarioTitle"), scenarioSetup: byId("scenarioSetup"), taskBox: byId("taskBox"),
+      reviewBadge: byId("reviewBadge"), sentence: byId("sentence"), prompt: byId("prompt"), modeChooser: byId("modeChooser"), chooseMc: byId("chooseMc"), chooseType: byId("chooseType"),
+      answerArea: byId("answerArea"), feedback: byId("feedback"), nextBox: byId("nextBox"), nextQuestion: byId("nextQuestion"),
+      progressTitle: byId("progressTitle"), progressText: byId("progressText"), bagTitle: byId("bagTitle"), bag: byId("bag"), leitnerTitle: byId("leitnerTitle"), queue: byId("queue"),
+      speedTitle: byId("speedTitle"), speedIntro: byId("speedIntro"), timer: byId("timer"), speedQuestion: byId("speedQuestion"), speedHelp: byId("speedHelp"), speedAnswers: byId("speedAnswers"), speedFeedback: byId("speedFeedback"), startSpeed: byId("startSpeed"),
+      stampTitle: byId("stampTitle"), stampText: byId("stampText"), stampLabel: byId("stampLabel"), stampEmoji: byId("stampEmoji"), souvenirLabel: byId("souvenirLabel"), souvenirWord: byId("souvenirWord"), souvenirMeaning: byId("souvenirMeaning"), balanceLabel: byId("balanceLabel"), stampMoney: byId("stampMoney"), continueTrip: byId("continueTrip"), finishTrip: byId("finishTrip"),
+      endTitle: byId("endTitle"), endIntro: byId("endIntro"), endMoneyLabel: byId("endMoneyLabel"), endMoney: byId("endMoney"), endStampLabel: byId("endStampLabel"), endStampCount: byId("endStampCount"), endComboLabel: byId("endComboLabel"), endCombo: byId("endCombo"), routeTitle: byId("routeTitle"), endRoute: byId("endRoute"), souvenirsTitle: byId("souvenirsTitle"), endSouvenirs: byId("endSouvenirs"), reviewTitle: byId("reviewTitle"), endReview: byId("endReview"), restart: byId("restart"), footerNote: byId("footerNote")
     };
 
+    const WORDS = validateWords(readWords());
     const state = freshState();
-    const countryIds = Object.keys(COUNTRIES);
+
+    function byId(id){ return document.getElementById(id); }
+    function t(){ return I18N[state.lang]; }
+    function country(id){ const base = COUNTRY_DATA[id]; return { ...base, name:t().countries[id], themeNames:base.themes.map(th => t().themes[th]), souvenir:{...base.souvenir, nl:base.souvenir.nl, en:base.souvenir.en} }; }
+    function meaning(word){ return state.lang === "en" ? (word.en || word.nl) : word.nl; }
 
     function freshState(){
+      const browserLang = (navigator.language || "nl").toLowerCase().startsWith("en") ? "en" : "nl";
       return {
-        money: 500,
-        combo: 0,
-        multiplier: 1,
-        bestMultiplier: 1,
-        visited: [],
-        route: [],
-        souvenirs: [],
-        wrongWords: new Map(),
-        leitner: new Map(),
-        currentCountryId: null,
-        currentWord: null,
-        currentMode: null,
-        answeredInCountry: 0,
-        targetPerCountry: 6,
-        questionsSinceReview: 0,
-        speed: { active:false, timerId:null, left:30, score:0, currentWord:null }
+        lang: browserLang, screen:"map", money:START_MONEY, combo:0, multiplier:1, bestMultiplier:1,
+        visited:[], route:[], souvenirs:[], wrongWords:new Map(), leitner:new Map(),
+        currentCountryId:null, answeredInCountry:0, normalAsked:new Set(), currentWord:null, currentIsReview:false, currentMode:null,
+        speed:{active:false,left:SPEED_SECONDS,score:0,currentWord:null,timerId:null}, lastStampCountryId:null
       };
     }
 
     function readWords(){
-      const el = document.getElementById("word-data");
-      try { return JSON.parse(el.textContent.trim()); }
-      catch(error){ throw new Error("De JSON-woordenlijst is ongeldig: " + error.message); }
+      const raw = byId("word-data").textContent.trim();
+      try{ return JSON.parse(raw); }
+      catch(error){ document.body.innerHTML = `<main style="padding:1rem;font-family:system-ui"><h1>JSON-fout</h1><p>${safe(error.message)}</p></main>`; throw error; }
     }
 
     function validateWords(list){
-      if(!Array.isArray(list)) throw new Error("De woordenlijst moet één JSON-array zijn.");
-      const allowed = Object.keys(TEMPLATES);
-      list.forEach((w,i)=>{
-        const ok = w && typeof w.es === "string" && w.es.trim() &&
-          typeof w.nl === "string" && w.nl.trim() &&
-          typeof w.thema === "string" && allowed.includes(w.thema) &&
-          Array.isArray(w.afleiders) && w.afleiders.length === 2 && w.afleiders.every(x => typeof x === "string" && x.trim()) &&
-          typeof w.zin === "string" && w.zin.includes("____");
-        if(!ok) throw new Error(`Ongeldig woorditem op index ${i}. Controleer es, nl, thema, afleiders[2] en zin met ____.`);
+      if(!Array.isArray(list)) throw new Error("word-data moet één JSON-array zijn.");
+      const required = ["es","nl","thema","afleiders","zin"];
+      const seen = new Set();
+      list.forEach((w,i) => {
+        required.forEach(key => { if(!(key in w)) throw new Error(`Woord ${i+1} mist veld: ${key}`); });
+        if(typeof w.es !== "string" || typeof w.nl !== "string" || typeof w.thema !== "string" || typeof w.zin !== "string") throw new Error(`Woord ${i+1} bevat een ongeldig tekstveld.`);
+        if(w.en !== undefined && typeof w.en !== "string") throw new Error(`Woord ${i+1} heeft een ongeldig en-veld.`);
+        if(!Array.isArray(w.afleiders) || w.afleiders.length !== 2) throw new Error(`Woord ${i+1} moet exact 2 afleiders hebben.`);
+        if(!w.zin.includes("____")) throw new Error(`Woord ${i+1} moet een zin met ____ bevatten.`);
+        if(!I18N.nl.themes[w.thema]) throw new Error(`Woord ${i+1} heeft onbekend thema: ${w.thema}`);
+        if(seen.has(normalize(w.es))) throw new Error(`Dubbel Spaans woord: ${w.es}`);
+        seen.add(normalize(w.es));
       });
+      return Object.freeze(list.map(w => Object.freeze({...w, afleiders:Object.freeze(w.afleiders.slice())})));
     }
 
     function show(screenId){
-      $$(".screen").forEach(s => s.classList.toggle("active", s.id === screenId));
-      window.scrollTo({ top:0, behavior:"smooth" });
+      document.querySelectorAll(".screen").forEach(s => s.classList.toggle("active", s.id === screenId));
+      state.screen = screenId;
+      requestAnimationFrame(() => window.scrollTo({top:0,behavior:"smooth"}));
     }
 
-    function setCountryAccent(country){
-      const root = document.documentElement;
-      root.style.setProperty("--accent", country ? country.color : "#2563eb");
-      root.style.setProperty("--accent-soft", country ? country.soft : "#dbeafe");
-      root.style.setProperty("--accent-dark", country ? darken(country.color, .32) : "#1e3a8a");
+    function setLang(lang){
+      if(!I18N[lang]) return;
+      state.lang = lang;
+      document.documentElement.lang = t().htmlLang;
+      renderStatic();
+      if(state.screen === "map") renderMap();
+      else if(state.screen === "question" && state.currentWord) renderScenario(state.currentWord, state.currentIsReview, true);
+      else if(state.screen === "speed") renderSpeedLabels();
+      else if(state.screen === "stamp") renderStamp();
+      else if(state.screen === "end") renderEnd();
     }
 
-    function darken(hex, amount){
-      const n = parseInt(hex.replace("#", ""), 16);
-      const r = Math.round(((n >> 16) & 255) * (1 - amount));
-      const g = Math.round(((n >> 8) & 255) * (1 - amount));
-      const b = Math.round((n & 255) * (1 - amount));
-      return `rgb(${r}, ${g}, ${b})`;
+    function renderStatic(){
+      const l=t();
+      ui.tagline.textContent=l.tagline; ui.langNl.classList.toggle("active", state.lang==="nl"); ui.langEn.classList.toggle("active", state.lang==="en");
+      ui.langNl.setAttribute("aria-pressed", String(state.lang==="nl")); ui.langEn.setAttribute("aria-pressed", String(state.lang==="en"));
+      ui.mapTitle.textContent=l.mapTitle; ui.mapIntro.textContent=l.mapIntro; ui.endNow.textContent=l.endNow;
+      ui.howTitle.textContent=l.howTitle; ui.howText.textContent=l.howText; ui.rulesTitle.textContent=l.rulesTitle; ui.rulesText.textContent=l.rulesText; ui.leitnerTitleMap.textContent=l.leitnerTitleMap;
+      ui.chooseMc.textContent=l.chooseMc; ui.chooseType.textContent=l.chooseType; ui.nextQuestion.textContent=l.next; ui.progressTitle.textContent= state.lang === "en" ? "📍 Progress" : "📍 Voortgang";
+      ui.bagTitle.textContent= state.lang === "en" ? "🎒 Backpack" : "🎒 Rugzak"; ui.leitnerTitle.textContent=l.leitnerTitle;
+      ui.speedIntro.textContent=l.speedIntro; ui.startSpeed.textContent=l.startSpeed; ui.stampLabel.textContent=l.stampLabel; ui.souvenirLabel.textContent=l.souvenirLabel; ui.balanceLabel.textContent=l.balanceLabel;
+      ui.continueTrip.textContent=l.continueTrip; ui.finishTrip.textContent=l.finishTrip; ui.endTitle.textContent=l.endTitle; ui.endIntro.textContent=l.endIntro; ui.endMoneyLabel.textContent=l.endMoneyLabel; ui.endStampLabel.textContent=l.endStampLabel; ui.endComboLabel.textContent=l.endComboLabel;
+      ui.routeTitle.textContent=l.routeTitle; ui.souvenirsTitle.textContent=l.souvenirsTitle; ui.reviewTitle.textContent=l.reviewTitle; ui.restart.textContent=l.restart; ui.footerNote.textContent=l.footerNote;
+      updateHud(); renderLeitner(); renderBag();
     }
-
-    function euro(n){ return `€${Math.round(n)}`; }
 
     function updateHud(){
-      ui.money.textContent = euro(state.money);
-      ui.money.classList.remove("pop"); void ui.money.offsetWidth; ui.money.classList.add("pop");
-      ui.combo.textContent = `${state.combo ? "🔥" : "🕯️"} x${state.multiplier.toFixed(2)}`;
-      ui.stamps.textContent = `${state.visited.length}/${countryIds.length}`;
-      ui.passportStamps.innerHTML = state.visited.length
-        ? state.visited.map(id => `<span class="stamp">${COUNTRIES[id].emoji} ${safe(COUNTRIES[id].name)}</span>`).join("")
-        : `<span class="stamp">Nog leeg</span>`;
-      ui.bag.textContent = state.souvenirs.length
-        ? state.souvenirs.map(s => `${s.emoji} ${s.es} = ${s.nl}`).join(" · ")
-        : "Nog geen souvenirs.";
-      renderLeitner();
+      ui.money.textContent=euro(state.money); ui.combo.textContent=`x${state.multiplier.toFixed(2)}`; ui.stamps.textContent=`${state.visited.length}/${countryIds.length}`; ui.leitnerCount.textContent=String(pendingLeitnerItems().length);
     }
 
     function renderLeitner(){
-      const items = Array.from(state.leitner.values());
-      ui.queue.innerHTML = items.length
-        ? items.map(item => `<div class="item"><strong>${safe(item.word.es)}</strong> = ${safe(item.word.nl)}<br><span class="small">Nog ${2 - item.correct}/2 juiste herhalingen nodig</span></div>`).join("")
-        : `<div class="item small">Nog leeg.</div>`;
+      const items = pendingLeitnerItems();
+      const html = items.length ? items.map(item => `<div class="item"><strong>${safe(item.word.es)}</strong> = ${safe(meaning(item.word))}<br><span class="small">${item.correct}/2</span></div>`).join("") : `<div class="item small">${safe(t().emptyQueue)}</div>`;
+      ui.queue.innerHTML = html; ui.queueMap.innerHTML = html;
     }
 
+    function renderBag(){
+      ui.bag.innerHTML = state.souvenirs.length ? t().bagItems(state.souvenirs) : t().bagEmpty;
+    }
+
+    function pendingLeitnerItems(){ return Array.from(state.leitner.values()).filter(item => item.correct < 2); }
+    function hasPendingLeitner(){ return pendingLeitnerItems().length > 0; }
+    function isTripActive(){ return !!state.currentCountryId && !state.visited.includes(state.currentCountryId); }
+
     function renderMap(){
+      if(isTripActive()){
+        ui.mapNotice.textContent = t().mapBlockedTrip;
+        resumeCountry();
+        return;
+      }
       setCountryAccent(null);
-      const affordableUnvisited = countryIds.some(id => !state.visited.includes(id) && state.money >= COUNTRIES[id].cost);
-      ui.mapHelp.textContent = affordableUnvisited
-        ? "Kies vrij je volgende bestemming. Een gestempeld land kan je niet opnieuw spelen."
-        : state.visited.length === countryIds.length
-          ? "Je hebt alle landen bezocht. Bekijk je eindscherm."
-          : "Je saldo is te laag voor een nieuwe reis. Bekijk je eindscherm of speel opnieuw.";
-
-      ui.countryGrid.innerHTML = countryIds.map(id => {
-        const c = COUNTRIES[id];
-        const done = state.visited.includes(id);
-        const canGo = !done && state.money >= c.cost;
-        const themes = c.themes.map(t => `<span class="chip">${TEMPLATES[t].emoji} ${safe(TEMPLATES[t].title)}</span>`).join("");
-        const label = done ? "Stempel behaald" : canGo ? `Reis voor ${euro(c.cost)}` : `Te duur: ${euro(c.cost)}`;
-        return `<article class="country ${done ? "done" : ""}" style="border-color:${c.color}55">
-          <div class="country-head"><div class="emoji" aria-hidden="true">${c.emoji}</div><div><h3>${safe(c.name)}</h3><p class="small">${safe(c.scenario)}</p></div></div>
-          <div class="chips">${themes}</div>
-          <button type="button" data-country="${id}" ${canGo ? "" : "disabled"}>${label}</button>
-        </article>`;
+      renderStatic();
+      const pending = pendingLeitnerItems().length;
+      if(pending){ ui.mapNotice.classList.remove("hidden"); ui.mapNotice.textContent = t().mapBlockedReview(pending); }
+      else { ui.mapNotice.classList.add("hidden"); ui.mapNotice.textContent = ""; }
+      ui.countries.innerHTML = countryIds.map(id => {
+        const c = country(id); const isVisited = state.visited.includes(id); const disabled = pending || isVisited || state.money < c.cost;
+        return `<button class="country-card" type="button" data-country="${attr(id)}" style="background:${attr(c.color)}" ${disabled ? "disabled" : ""}>
+          <span class="emoji" aria-hidden="true">${safe(c.emoji)}</span>
+          <span><strong>${safe(c.name)}</strong><br><span class="meta">${safe(t().travelCost)}: ${euro(c.cost)}<br>${safe(t().cluster)}: ${c.themeNames.map(safe).join(", ")}${isVisited ? `<br>✅ ${safe(t().visited)}` : ""}</span></span>
+          <span class="meta">${safe(t().go)} ${safe(c.name)}</span>
+        </button>`;
       }).join("");
-
-      ui.countryGrid.querySelectorAll("button[data-country]").forEach(btn => btn.addEventListener("click", () => startCountry(btn.dataset.country)));
-      updateHud();
-      show("start");
+      ui.countries.querySelectorAll("button[data-country]").forEach(btn => btn.addEventListener("click", () => startCountry(btn.dataset.country)));
+      show("map");
     }
 
     function startCountry(id){
-      const c = COUNTRIES[id];
-      if(!c || state.visited.includes(id) || state.money < c.cost) return;
-      state.money -= c.cost;
-      state.currentCountryId = id;
-      state.answeredInCountry = 0;
-      state.questionsSinceReview = 0;
-      state.route.push({ id, paid:c.cost, earned:0, speedScore:0 });
-      setCountryAccent(c);
-      updateHud();
-      nextNormalQuestion();
-      show("mission");
+      if(hasPendingLeitner()){ renderMap(); return; }
+      const c = country(id);
+      if(state.money < c.cost){ ui.mapNotice.classList.remove("hidden"); ui.mapNotice.textContent = t().notEnough(c.name,c.cost,state.money); return; }
+      state.currentCountryId = id; state.answeredInCountry = 0; state.normalAsked = new Set(); state.currentWord = null; state.currentIsReview = false; state.currentMode = null;
+      state.money -= c.cost; state.route.push({id, paid:c.cost, earned:0, speedScore:0});
+      setCountryAccent(c.color); updateHud(); nextNormalQuestion();
+    }
+
+    function resumeCountry(){
+      if(!state.currentWord) nextNormalQuestion(); else renderScenario(state.currentWord, state.currentIsReview, true);
     }
 
     function nextNormalQuestion(){
-      if(state.answeredInCountry >= state.targetPerCountry){
-        prepareSpeedRound();
-        return;
-      }
-      state.currentWord = chooseWord();
-      state.currentMode = null;
-      resetTask();
-      renderScenario(state.currentWord);
-      updateHud();
+      if(!state.currentCountryId){ renderMap(); return; }
+      if(hasPendingLeitner()){ renderScenario(chooseLeitnerWord(), true); return; }
+      if(state.answeredInCountry >= QUESTIONS_PER_COUNTRY){ prepareSpeedRound(); return; }
+      renderScenario(chooseNormalWord(), false);
     }
 
-    function chooseWord(){
-      const due = Array.from(state.leitner.values());
-      if(due.length && (state.questionsSinceReview >= 2 || Math.random() < .45)){
-        state.questionsSinceReview = 0;
-        return sample(due).word;
-      }
-      state.questionsSinceReview += 1;
-      const c = COUNTRIES[state.currentCountryId];
+    function chooseNormalWord(){
+      const c = country(state.currentCountryId);
       const pool = WORDS.filter(w => c.themes.includes(w.thema));
-      return sample(pool);
+      const notAsked = pool.filter(w => !state.normalAsked.has(w.es));
+      const choice = sample(notAsked.length ? notAsked : pool);
+      state.normalAsked.add(choice.es);
+      return choice;
     }
 
-    function renderScenario(word){
-      const c = COUNTRIES[state.currentCountryId];
-      const t = TEMPLATES[word.thema];
-      ui.sceneEmoji.textContent = `${c.emoji} ${t.emoji}`;
-      ui.sceneTitle.textContent = `${c.name} · ${t.title}`;
-      const sentence = safe(word.zin).replace("____", `<span class="gap">____</span>`);
-      ui.dialogue.innerHTML = `<div class="bubble lola"><strong>Lola 🦜:</strong> ${safe(t.setup)}</div>
-        <div class="bubble"><strong>${safe(t.speaker)}:</strong> ${sentence}</div>
-        <div class="bubble user"><strong>Jouw opdracht:</strong> ${t.prompt(word)}</div>`;
-      ui.progressBar.style.width = `${Math.round((state.answeredInCountry / state.targetPerCountry) * 100)}%`;
-    }
+    function chooseLeitnerWord(){ return sample(pendingLeitnerItems()).word; }
 
-    function resetTask(){
-      ui.taskTitle.textContent = "Kies je opdracht";
-      ui.taskHelp.textContent = "Meerkeuze is veilig. Typen is moeilijker, maar levert meer op.";
-      ui.modeBox.classList.remove("hidden");
-      ui.answers.classList.add("hidden");
-      ui.typeBox.classList.add("hidden");
-      ui.nextBox.classList.add("hidden");
-      ui.answers.innerHTML = "";
-      ui.typedAnswer.value = "";
-      ui.typedAnswer.disabled = false;
-      ui.checkTyped.disabled = false;
-      ui.feedback.className = "feedback";
-      ui.feedback.innerHTML = "";
+    function renderScenario(word, isReview=false, preserveAnswer=false){
+      const l=t(), tmpl=l.templates[word.thema], c=country(state.currentCountryId);
+      state.currentWord=word; state.currentIsReview=isReview; state.currentMode = preserveAnswer ? state.currentMode : null;
+      setCountryAccent(c.color); updateHud(); renderLeitner(); renderBag();
+      ui.countryLine.textContent = l.countryLine(c, state.answeredInCountry);
+      ui.scenarioEmoji.textContent = themeEmoji(word.thema); ui.scenarioTitle.textContent = tmpl.title; ui.scenarioSetup.textContent = tmpl.setup;
+      ui.reviewBadge.classList.toggle("hidden", !isReview); ui.reviewBadge.textContent = isReview ? l.reviewBadge(pendingLeitnerItems().length) : "";
+      ui.sentence.innerHTML = safe(word.zin).replace("____", `<span class="gap">____</span>`);
+      ui.prompt.innerHTML = l.prompt(meaning(word)); ui.progressText.textContent = l.progress(state.answeredInCountry);
+      ui.feedback.className = "feedback"; ui.feedback.textContent = ""; ui.nextBox.classList.add("hidden");
+      ui.modeChooser.classList.toggle("hidden", !!state.currentMode);
+      if(!preserveAnswer || !state.currentMode) ui.answerArea.innerHTML = "";
+      if(state.currentMode === "mc") renderMultipleChoice();
+      if(state.currentMode === "type") renderTypeQuestion();
+      show("question");
     }
 
     function chooseMode(mode){
-      state.currentMode = mode;
-      ui.modeBox.classList.add("hidden");
-      ui.taskTitle.textContent = mode === "mc" ? "Meerkeuze" : "Typen";
-      ui.taskHelp.textContent = mode === "mc"
-        ? "Kies het Spaanse woord dat in de zin past."
-        : "Typ het Spaanse woord. Accenten en lidwoorden worden soepel beoordeeld.";
-      if(mode === "mc") renderMultipleChoice();
-      else renderTypeQuestion();
+      state.currentMode = mode; ui.modeChooser.classList.add("hidden"); ui.feedback.className = "feedback";
+      if(mode === "mc") renderMultipleChoice(); else renderTypeQuestion();
     }
 
     function renderMultipleChoice(){
       const w = state.currentWord;
-      const options = shuffle([w.es, ...w.afleiders]);
-      ui.answers.classList.remove("hidden");
-      ui.answers.innerHTML = options.map(option => `<button class="choice" type="button" data-answer="${attr(option)}">${safe(option)}</button>`).join("");
-      ui.answers.querySelectorAll("button").forEach(btn => btn.addEventListener("click", () => evaluate(btn.dataset.answer)));
+      ui.answerArea.innerHTML = `<p class="small">${safe(t().mcInstruction)}</p><div class="answers">${shuffle([w.es, ...w.afleiders]).map(option => `<button class="choice" type="button" data-answer="${attr(option)}">${safe(option)}</button>`).join("")}</div>`;
+      ui.answerArea.querySelectorAll("button[data-answer]").forEach(btn => btn.addEventListener("click", () => evaluate(btn.dataset.answer)));
     }
 
     function renderTypeQuestion(){
-      ui.typeBox.classList.remove("hidden");
-      setTimeout(() => ui.typedAnswer.focus(), 50);
+      ui.answerArea.innerHTML = `<p class="small">${safe(t().typeInstruction)}</p><div class="type-row"><input id="typedAnswer" type="text" inputmode="text" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="${attr(t().typePlaceholder)}"><button id="checkTyped" type="button">${safe(t().check)}</button></div>`;
+      const input = byId("typedAnswer"), button = byId("checkTyped");
+      button.addEventListener("click", () => evaluate(input.value));
+      input.addEventListener("keydown", e => { if(e.key === "Enter") evaluate(input.value); });
+      input.focus({preventScroll:true});
     }
 
     function evaluate(rawAnswer){
-      const w = state.currentWord;
-      const correct = isCorrect(rawAnswer, w.es);
-      ui.answers.querySelectorAll("button").forEach(btn => { btn.disabled = true; });
-      ui.typedAnswer.disabled = true;
-      ui.checkTyped.disabled = true;
-      applyResult(correct, rawAnswer);
+      const w = state.currentWord; if(!w || ui.nextBox.classList.contains("hidden") === false) return;
+      const correct = isCorrect(rawAnswer, w.es); applyResult(correct, rawAnswer);
     }
 
     function applyResult(correct, rawAnswer){
-      const w = state.currentWord;
-      const base = state.currentMode === "type" ? 25 : 10;
+      const w=state.currentWord, wasReview=state.currentIsReview;
       if(correct){
-        const reward = Math.round(base * state.multiplier);
-        state.money += reward;
-        state.combo += 1;
-        state.multiplier = round2(state.multiplier + .2);
-        state.bestMultiplier = Math.max(state.bestMultiplier, state.multiplier);
-        state.answeredInCountry += 1;
-        addEarned(reward);
-        markLeitnerCorrect(w);
-        feedback(true, `Juist. <strong>${safe(w.es)}</strong> = ${safe(w.nl)}. Je verdient <strong>${euro(reward)}</strong>. De combo-vlam groeit.`);
+        const reward = state.currentMode === "type" ? Math.round(25 * state.multiplier) : Math.round(10 * state.multiplier);
+        state.money += reward; state.combo += 1; state.multiplier = round2(state.multiplier + .15); state.bestMultiplier = Math.max(state.bestMultiplier, state.multiplier);
+        if(!wasReview) state.answeredInCountry += 1; addEarned(reward); markLeitnerCorrect(w);
+        const pending = hasPendingLeitner() ? t().pendingReview(pendingLeitnerItems().length) : t().allReviewDone;
+        feedback(true, t().correct(w,reward,wasReview,pending));
       } else {
-        state.combo = 0;
-        state.multiplier = 1;
-        addWrong(w);
-        document.querySelector(".task").classList.remove("shake"); void document.querySelector(".task").offsetWidth; document.querySelector(".task").classList.add("shake");
-        const consequence = sample(CONSEQUENCES);
-        feedback(false, `<strong>Niet juist.</strong> Jij koos: “${safe(rawAnswer || "niets")}”. Het juiste antwoord is <strong>${safe(w.es)}</strong>.<br><br>🎭 ${safe(consequence)}<br><br>${TEMPLATES[w.thema].lola(w)}`);
+        state.combo = 0; state.multiplier = 1; addWrong(w);
+        ui.taskBox.classList.remove("shake"); void ui.taskBox.offsetWidth; ui.taskBox.classList.add("shake");
+        feedback(false, t().wrong(rawAnswer,w,sample(t().consequences),t().templates[w.thema].lola(w)));
       }
-      ui.nextBox.classList.remove("hidden");
-      updateHud();
+      ui.nextBox.classList.remove("hidden"); updateHud(); renderLeitner(); renderBag();
     }
 
-    function feedback(ok, html){
-      ui.feedback.className = `feedback show ${ok ? "good" : "bad"}`;
-      ui.feedback.innerHTML = html;
-    }
-
-    function addEarned(amount){
-      const r = state.route[state.route.length - 1];
-      if(r) r.earned += amount;
-    }
-
-    function addWrong(word){
-      state.wrongWords.set(word.es, word);
-      if(!state.leitner.has(word.es)) state.leitner.set(word.es, { word, correct:0 });
-    }
-
-    function markLeitnerCorrect(word){
-      const item = state.leitner.get(word.es);
-      if(!item) return;
-      item.correct += 1;
-      if(item.correct >= 2) state.leitner.delete(word.es);
-    }
+    function feedback(ok, html){ ui.feedback.className = `feedback show ${ok ? "good" : "bad"}`; ui.feedback.innerHTML = html; }
+    function addEarned(amount){ const r=state.route[state.route.length-1]; if(r) r.earned += amount; }
+    function addWrong(word){ state.wrongWords.set(word.es, word); if(!state.leitner.has(word.es)) state.leitner.set(word.es, {word, correct:0}); }
+    function markLeitnerCorrect(word){ const item=state.leitner.get(word.es); if(!item) return; item.correct += 1; if(item.correct >= 2) state.leitner.delete(word.es); }
 
     function prepareSpeedRound(){
-      state.speed.active = false;
-      state.speed.left = 30;
-      state.speed.score = 0;
-      state.speed.currentWord = null;
-      ui.timer.textContent = "30";
-      ui.speedTitle.textContent = `${COUNTRIES[state.currentCountryId].emoji} ${COUNTRIES[state.currentCountryId].name} · snelronde`;
-      ui.speedQuestion.textContent = "Klaar voor 30 seconden?";
-      ui.speedHelp.textContent = "Kies het juiste Spaanse woord. Fouten gaan ook naar je Leitner-wachtrij.";
-      ui.speedAnswers.innerHTML = "";
-      ui.speedFeedback.className = "feedback";
-      ui.startSpeed.classList.remove("hidden");
-      show("speed");
+      state.speed.active=false; state.speed.left=SPEED_SECONDS; state.speed.score=0; state.speed.currentWord=null; ui.timer.textContent=String(SPEED_SECONDS); renderSpeedLabels(); ui.speedAnswers.innerHTML=""; ui.speedFeedback.className="feedback"; ui.startSpeed.classList.remove("hidden"); show("speed");
+    }
+
+    function renderSpeedLabels(){
+      const c = state.currentCountryId ? country(state.currentCountryId) : null;
+      ui.speedTitle.textContent = c ? `${c.emoji} ${c.name} · ${t().speedRound.toLowerCase()}` : t().speedRound;
+      ui.speedIntro.textContent = t().speedIntro;
+      if(!state.speed.active){ ui.speedQuestion.textContent=t().speedReady; ui.speedHelp.textContent=t().speedHelp; }
+      else if(state.speed.currentWord){ renderSpeedQuestion(true); }
     }
 
     function startSpeed(){
-      clearInterval(state.speed.timerId);
-      state.speed.active = true;
-      state.speed.left = 30;
-      state.speed.score = 0;
-      ui.startSpeed.classList.add("hidden");
-      ui.speedFeedback.className = "feedback";
-      ui.timer.textContent = String(state.speed.left);
-      renderSpeedQuestion();
-      state.speed.timerId = setInterval(() => {
-        state.speed.left -= 1;
-        ui.timer.textContent = String(state.speed.left);
-        if(state.speed.left <= 0) finishSpeed();
-      }, 1000);
+      clearInterval(state.speed.timerId); state.speed.active=true; state.speed.left=SPEED_SECONDS; state.speed.score=0; ui.startSpeed.classList.add("hidden"); ui.speedFeedback.className="feedback"; ui.timer.textContent=String(state.speed.left); renderSpeedQuestion();
+      state.speed.timerId = setInterval(() => { state.speed.left -= 1; ui.timer.textContent=String(state.speed.left); if(state.speed.left <= 0) finishSpeed(); }, 1000);
     }
 
-    function renderSpeedQuestion(){
+    function renderSpeedQuestion(keepWord=false){
       if(!state.speed.active) return;
-      const c = COUNTRIES[state.currentCountryId];
-      const pool = WORDS.filter(w => c.themes.includes(w.thema));
-      const w = sample(pool);
-      state.speed.currentWord = w;
-      ui.speedQuestion.innerHTML = `Welk Spaans woord betekent <strong>${safe(w.nl)}</strong>?`;
-      ui.speedHelp.innerHTML = safe(w.zin).replace("____", `<span class="gap">____</span>`);
+      const c=country(state.currentCountryId); const pool=WORDS.filter(w=>c.themes.includes(w.thema)); const w=keepWord && state.speed.currentWord ? state.speed.currentWord : sample(pool);
+      state.speed.currentWord=w; ui.speedQuestion.innerHTML=t().prompt(meaning(w)); ui.speedHelp.innerHTML=safe(w.zin).replace("____", `<span class="gap">____</span>`);
       ui.speedAnswers.innerHTML = shuffle([w.es, ...w.afleiders]).map(option => `<button class="choice" type="button" data-answer="${attr(option)}">${safe(option)}</button>`).join("");
       ui.speedAnswers.querySelectorAll("button").forEach(btn => btn.addEventListener("click", () => evaluateSpeed(btn.dataset.answer)));
     }
 
     function evaluateSpeed(answer){
-      if(!state.speed.active) return;
-      const w = state.speed.currentWord;
-      if(isCorrect(answer, w.es)){
-        const reward = Math.round(8 * state.multiplier);
-        state.money += reward;
-        addEarned(reward);
-        state.speed.score += 1;
-        state.combo += 1;
-        state.multiplier = round2(state.multiplier + .1);
-        state.bestMultiplier = Math.max(state.bestMultiplier, state.multiplier);
-        markLeitnerCorrect(w);
-        speedFeedback(true, `+${euro(reward)} · ${safe(w.es)} = ${safe(w.nl)}`);
-      } else {
-        state.combo = 0;
-        state.multiplier = 1;
-        addWrong(w);
-        speedFeedback(false, `Oei. ${safe(w.es)} = ${safe(w.nl)}. Lola zet het in je wachtrij.`);
-      }
-      updateHud();
-      renderSpeedQuestion();
+      if(!state.speed.active) return; const w=state.speed.currentWord;
+      if(isCorrect(answer,w.es)){ const reward=Math.round(8*state.multiplier); state.money += reward; addEarned(reward); state.speed.score += 1; state.combo += 1; state.multiplier=round2(state.multiplier+.1); state.bestMultiplier=Math.max(state.bestMultiplier,state.multiplier); markLeitnerCorrect(w); speedFeedback(true,t().speedCorrect(reward,w)); }
+      else { state.combo=0; state.multiplier=1; addWrong(w); speedFeedback(false,t().speedWrong(w)); }
+      updateHud(); renderLeitner(); renderSpeedQuestion();
     }
-
-    function speedFeedback(ok, text){
-      ui.speedFeedback.className = `feedback show ${ok ? "good" : "bad"}`;
-      ui.speedFeedback.textContent = text;
-    }
+    function speedFeedback(ok,text){ ui.speedFeedback.className=`feedback show ${ok ? "good" : "bad"}`; ui.speedFeedback.textContent=text; }
 
     function finishSpeed(){
-      clearInterval(state.speed.timerId);
-      state.speed.active = false;
-      const r = state.route[state.route.length - 1];
-      if(r) r.speedScore = state.speed.score;
-      ui.speedAnswers.innerHTML = "";
-      ui.speedQuestion.textContent = `Snelronde klaar: ${state.speed.score} juiste antwoorden.`;
-      ui.speedHelp.textContent = "Je krijgt nu je paspoortstempel.";
-      setTimeout(awardStamp, 650);
+      clearInterval(state.speed.timerId); state.speed.active=false; const r=state.route[state.route.length-1]; if(r) r.speedScore=state.speed.score;
+      ui.speedAnswers.innerHTML=""; ui.speedQuestion.textContent=t().speedDone(state.speed.score);
+      if(hasPendingLeitner()){ ui.speedHelp.textContent=t().speedToReview(pendingLeitnerItems().length); setTimeout(nextNormalQuestion,650); }
+      else { ui.speedHelp.textContent=t().speedToStamp; setTimeout(awardStamp,520); }
     }
 
-    function awardStamp(){
-      const c = COUNTRIES[state.currentCountryId];
-      if(!state.visited.includes(c.id)){
-        state.visited.push(c.id);
-        state.souvenirs.push({ emoji:c.emoji, ...c.souvenir });
-      }
-      updateHud();
-      ui.stampTitle.textContent = `${c.emoji} Stempel voor ${c.name}`;
-      ui.stampText.innerHTML = `Je rondde de scenario’s en snelronde af. Lola 🦜 noemt je Spaans “voldoende verstaanbaar voor mens én vogel”.`;
-      ui.stampEmoji.textContent = `${c.emoji}🛂`;
-      ui.souvenirWord.textContent = c.souvenir.es;
-      ui.souvenirNl.textContent = `= ${c.souvenir.nl}`;
-      ui.stampMoney.textContent = euro(state.money);
-      show("stamp");
+    function awardStamp(){ if(hasPendingLeitner()){ nextNormalQuestion(); return; } state.lastStampCountryId=state.currentCountryId; renderStamp(); }
+
+    function renderStamp(){
+      const c=country(state.lastStampCountryId || state.currentCountryId); if(!c){ renderMap(); return; }
+      if(!state.visited.includes(c.id)){ state.visited.push(c.id); state.souvenirs.push({ emoji:c.emoji, ...COUNTRY_DATA[c.id].souvenir }); }
+      updateHud(); renderBag(); ui.stampTitle.textContent=t().stampTitle(c); ui.stampText.textContent=t().stampText; ui.stampEmoji.textContent=`${c.emoji}🛂`; ui.souvenirWord.textContent=c.souvenir.es; ui.souvenirMeaning.textContent=`= ${state.lang === "en" ? c.souvenir.en : c.souvenir.nl}`; ui.stampMoney.textContent=euro(state.money); show("stamp");
     }
 
     function finishGame(){
       clearInterval(state.speed.timerId);
-      ui.endMoney.textContent = euro(state.money);
-      ui.endStampCount.textContent = `${state.visited.length}/${countryIds.length}`;
-      ui.endCombo.textContent = `x${state.bestMultiplier.toFixed(2)}`;
-      ui.endRoute.innerHTML = state.route.length
-        ? state.route.map((r,i)=>{
-            const c = COUNTRIES[r.id];
-            return `<div class="item"><strong>${i+1}. ${c.emoji} ${safe(c.name)}</strong><br>Reiskost: ${euro(r.paid)} · Verdiend: ${euro(r.earned)} · Snelronde: ${r.speedScore} juist</div>`;
-          }).join("")
-        : `<div class="item small">Je bent nog niet vertrokken.</div>`;
-      ui.endSouvenirs.innerHTML = state.souvenirs.length
-        ? state.souvenirs.map(s => `<div class="item"><strong>${s.emoji} ${safe(s.es)}</strong><br>${safe(s.nl)}</div>`).join("")
-        : `<div class="item small">Nog geen souvenirs.</div>`;
-      const wrong = Array.from(state.wrongWords.values());
-      ui.endReview.innerHTML = wrong.length
-        ? wrong.map(w => `<div class="item"><strong>${safe(w.es)}</strong> = ${safe(w.nl)}<br><span class="small">Thema: ${safe(TEMPLATES[w.thema].title)} · voorbeeld: ${safe(w.zin).replace("____", safe(w.es))}</span></div>`).join("")
-        : `<div class="item small">Geen foute woorden. Lola is verdacht stil.</div>`;
+      if(isTripActive() || hasPendingLeitner()){ if(isTripActive()) resumeCountry(); else renderMap(); return; }
+      renderEnd();
+    }
+
+    function renderEnd(){
+      ui.endMoney.textContent=euro(state.money); ui.endStampCount.textContent=`${state.visited.length}/${countryIds.length}`; ui.endCombo.textContent=`x${state.bestMultiplier.toFixed(2)}`;
+      ui.endRoute.innerHTML = state.route.length ? state.route.map((r,i)=>`<div class="item"><strong>${t().routeLine(i+1,country(r.id),r)}</strong></div>`).join("") : `<div class="item small">${safe(t().routeEmpty)}</div>`;
+      ui.endSouvenirs.innerHTML = state.souvenirs.length ? state.souvenirs.map(s=>`<div class="item"><strong>${safe(s.emoji)} ${safe(s.es)}</strong><br>${safe(state.lang === "en" ? s.en : s.nl)}</div>`).join("") : `<div class="item small">${safe(t().bagEmpty)}</div>`;
+      const wrong=Array.from(state.wrongWords.values());
+      ui.endReview.innerHTML = wrong.length ? wrong.map(w=>`<div class="item"><strong>${safe(w.es)}</strong> = ${safe(meaning(w))}<br><span class="small">${safe(t().theme)}: ${safe(t().templates[w.thema].title)} · ${safe(t().example)}: ${safe(w.zin).replace("____", safe(w.es))}</span></div>`).join("") : `<div class="item small">${safe(t().noWrong)}</div>`;
       show("end");
     }
 
     function restartGame(){
-      clearInterval(state.speed.timerId);
-      const fresh = freshState();
-      for(const key of Object.keys(state)) state[key] = fresh[key];
-      renderMap();
+      clearInterval(state.speed.timerId); const keepLang=state.lang; const fresh=freshState(); for(const key of Object.keys(state)) state[key]=fresh[key]; state.lang=keepLang; renderStatic(); renderMap();
     }
 
-    function isCorrect(answer, correct){
-      const a = normalize(answer);
-      const c = normalize(correct);
-      return a === c || stripArticle(a) === stripArticle(c);
+    function setCountryAccent(color){
+      const root=document.documentElement; const accent=color || "#2563eb";
+      root.style.setProperty("--accent", accent); root.style.setProperty("--accent-dark", darken(accent,.32)); root.style.setProperty("--accent-soft", hexToRgba(accent,.15));
     }
-
-    function stripArticle(value){
-      return value.replace(/^(el|la|los|las|un|una|unos|unas)\s+/, "").trim();
-    }
-
-    function normalize(value){
-      return String(value || "")
-        .toLowerCase()
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .replace(/[¡!¿?.,;:]/g, "")
-        .replace(/\s+/g, " ")
-        .trim();
-    }
-
-    function shuffle(list){
-      const copy = list.slice();
-      for(let i = copy.length - 1; i > 0; i--){
-        const j = Math.floor(Math.random() * (i + 1));
-        [copy[i], copy[j]] = [copy[j], copy[i]];
-      }
-      return copy;
-    }
-
-    function sample(list){ return list[Math.floor(Math.random() * list.length)]; }
-    function round2(n){ return Math.round(n * 100) / 100; }
-
-    function safe(value){
-      return String(value).replace(/[&<>"']/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[ch]));
-    }
+    function darken(hex, amount){ const rgb=hexToRgb(hex); return `rgb(${Math.round(rgb.r*(1-amount))},${Math.round(rgb.g*(1-amount))},${Math.round(rgb.b*(1-amount))})`; }
+    function hexToRgba(hex,a){ const rgb=hexToRgb(hex); return `rgba(${rgb.r},${rgb.g},${rgb.b},${a})`; }
+    function hexToRgb(hex){ const v=hex.replace("#",""); const n=parseInt(v.length===3 ? v.split("").map(ch=>ch+ch).join("") : v,16); return {r:(n>>16)&255,g:(n>>8)&255,b:n&255}; }
+    function themeEmoji(theme){ return {balie:"🏨",vervoer:"🚌",restaurant:"🍽️",markt:"🍊",hulp:"🆘"}[theme] || "💬"; }
+    function isCorrect(answer, correct){ const a=normalize(answer), c=normalize(correct); return a===c || stripArticle(a)===stripArticle(c); }
+    function stripArticle(value){ return value.replace(/^(el|la|los|las|un|una|unos|unas)\s+/,"").trim(); }
+    function normalize(value){ return String(value || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[¡!¿?.,;:]/g,"").replace(/\s+/g," ").trim(); }
+    function shuffle(list){ const copy=list.slice(); for(let i=copy.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [copy[i],copy[j]]=[copy[j],copy[i]]; } return copy; }
+    function sample(list){ return list[Math.floor(Math.random()*list.length)]; }
+    function round2(n){ return Math.round(n*100)/100; }
+    function euro(n){ return `€${Math.round(n)}`; }
+    function safe(value){ return String(value).replace(/[&<>"']/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;",""":"&quot;","'":"&#39;"}[ch])); }
     function attr(value){ return safe(value); }
 
-    ui.chooseMc.addEventListener("click", () => chooseMode("mc"));
-    ui.chooseType.addEventListener("click", () => chooseMode("type"));
-    ui.checkTyped.addEventListener("click", () => evaluate(ui.typedAnswer.value));
-    ui.typedAnswer.addEventListener("keydown", event => { if(event.key === "Enter" && !ui.checkTyped.disabled) evaluate(ui.typedAnswer.value); });
-    ui.nextQuestion.addEventListener("click", nextNormalQuestion);
-    ui.mapBtn.addEventListener("click", renderMap);
-    ui.startSpeed.addEventListener("click", startSpeed);
+    document.querySelectorAll("[data-lang]").forEach(btn => btn.addEventListener("click", () => setLang(btn.dataset.lang)));
+    ui.chooseMc.addEventListener("click", () => chooseMode("mc")); ui.chooseType.addEventListener("click", () => chooseMode("type"));
+    ui.nextQuestion.addEventListener("click", nextNormalQuestion); ui.startSpeed.addEventListener("click", startSpeed);
     ui.continueTrip.addEventListener("click", () => state.visited.length >= countryIds.length ? finishGame() : renderMap());
-    ui.finishTrip.addEventListener("click", finishGame);
-    ui.endNow.addEventListener("click", finishGame);
-    ui.restart.addEventListener("click", restartGame);
+    ui.finishTrip.addEventListener("click", finishGame); ui.endNow.addEventListener("click", finishGame); ui.restart.addEventListener("click", restartGame);
 
-    renderMap();
+    setLang(state.lang);
   })();
   </script>
 </body>
