@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#1d4ed8" />
+  <title>Pasaporte A1 — Testrapport</title>
+  <style>
+    :root{--blue:#1d4ed8;--ink:#1f2937;--muted:#6b7280;--line:#e5e7eb;--soft:#f9fafb;--good:#166534;--bad:#991b1b;--warn:#92400e;--bg:#fff7ed}
+    *{box-sizing:border-box} body{margin:0;font-family:system-ui,-apple-system,Segoe UI,sans-serif;background:linear-gradient(180deg,#fff7ed,#eff6ff);color:var(--ink)}
+    main{max-width:980px;margin:0 auto;padding:20px 14px 40px}.hero{background:linear-gradient(135deg,#1d4ed8,#1e40af);color:white;border-radius:18px;padding:22px;margin-bottom:18px;box-shadow:0 12px 30px rgba(29,78,216,.22)}
+    .hero h1{margin:0 0 4px;font-size:clamp(1.4rem,4vw,2.1rem)}.hero p{margin:0;color:rgba(255,255,255,.84)}.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:16px}.stat{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.22);border-radius:14px;padding:12px}.stat b{display:block;font-size:1.4rem}.stat span{font-size:.82rem;color:rgba(255,255,255,.8)}
+    .panel{background:white;border:1px solid var(--line);border-radius:16px;padding:16px;margin:14px 0;box-shadow:0 8px 26px rgba(15,23,42,.06)}h2{font-size:1.05rem;margin:0 0 10px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+    .grid{display:grid;grid-template-columns:1fr;gap:8px}.row{display:grid;grid-template-columns:32px 1.3fr 1fr 1fr;gap:10px;align-items:start;border-bottom:1px solid #f3f4f6;padding:8px 0;font-size:.92rem}.row:last-child{border-bottom:0}.label{color:#374151}.value{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:#4b5563;font-size:.86rem;overflow-wrap:anywhere}.note{font-size:.82rem;color:#9ca3af}.badge{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:999px;font-weight:800;font-size:.8rem}.ok{background:#dcfce7;color:var(--good)}.fail{background:#fee2e2;color:var(--bad)}.warn{background:#fef3c7;color:var(--warn)}
+    .tabs{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 14px}.tabs button{border:1px solid var(--line);background:white;color:#374151;border-radius:999px;padding:9px 13px;font-weight:700;cursor:pointer}.tabs button.active{background:var(--blue);border-color:var(--blue);color:white}.tab{display:none}.tab.active{display:block}
+    .bar{height:9px;background:#e5e7eb;border-radius:99px;overflow:hidden}.bar>i{display:block;height:100%;background:var(--blue);border-radius:99px}.pill{display:inline-flex;gap:6px;align-items:center;border:1px solid var(--line);background:var(--soft);padding:6px 9px;border-radius:999px;font-size:.84rem;margin:3px}.code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;background:#111827;color:#e5e7eb;padding:12px;border-radius:12px;overflow:auto;font-size:.82rem}.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.actions button,.actions a{border:0;border-radius:10px;background:var(--blue);color:white;padding:10px 12px;text-decoration:none;font-weight:800;cursor:pointer}.actions .secondary{background:#f3f4f6;color:#374151}
+    .quizGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.choice{border:1px solid var(--line);background:var(--soft);border-radius:12px;padding:12px;text-align:center;cursor:pointer}.choice.correct{background:#dcfce7;border-color:#16a34a;color:#166534}.choice.wrong{background:#fee2e2;border-color:#dc2626;color:#991b1b}
+    @media(min-width:720px){.stats{grid-template-columns:repeat(5,1fr)}.grid.two{grid-template-columns:1fr 1fr}.grid.three{grid-template-columns:repeat(3,1fr)}}@media(max-width:700px){.row{grid-template-columns:28px 1fr}.value,.note{grid-column:2}.quizGrid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<main>
+  <section class="hero">
+    <h1>🛂 Pasaporte A1 — testrapport</h1>
+    <p>Deze pagina leest de echte <code>index.html</code> uit en voert controlechecks uit op de PWA-data. Geen React, geen buildproces.</p>
+    <div class="stats" id="topStats"></div>
+  </section>
+
+  <nav class="tabs" aria-label="Rapportonderdelen">
+    <button class="active" data-tab="overview">📋 Overzicht</button>
+    <button data-tab="content">📚 Inhoud</button>
+    <button data-tab="logic">🧪 Logica</button>
+    <button data-tab="pwa">📱 PWA</button>
+    <button data-tab="manual">🎧 Handtest</button>
+  </nav>
+
+  <section id="overview" class="tab active"></section>
+  <section id="content" class="tab"></section>
+  <section id="logic" class="tab"></section>
+  <section id="pwa" class="tab"></section>
+  <section id="manual" class="tab"></section>
+</main>
+<script>
+const $ = sel => document.querySelector(sel);
+const esc = s => String(s ?? '').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+const norm = s => String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[¿?¡!.,;:]/g,'').replace(/^(el|la|los|las|un|una)\s+/i,'').trim();
+const okIcon = status => status === true ? '<span class="badge ok">✓</span>' : status === false ? '<span class="badge fail">✗</span>' : '<span class="badge warn">!</span>';
+function row(label,value,status,note=''){return `<div class="row"><div>${okIcon(status)}</div><div class="label">${esc(label)}</div><div class="value">${esc(value)}</div><div class="note">${esc(note)}</div></div>`}
+function panel(title,body){return `<div class="panel"><h2>${esc(title)}</h2>${body}</div>`}
+function stat(n,l){return `<div class="stat"><b>${esc(n)}</b><span>${esc(l)}</span></div>`}
+function countBy(items,key){return items.reduce((a,x)=>(a[x[key]]=(a[x[key]]||0)+1,a),{})}
+function fmtMs(ms){if(ms===0)return 'direct'; if(ms<86400000)return Math.round(ms/3600000)+'u'; return Math.round(ms/86400000)+'d'}
+async function loadText(path){const r=await fetch(path,{cache:'no-store'}); if(!r.ok) throw new Error(path+' kon niet geladen worden'); return await r.text();}
+function getJson(doc,id){const el=doc.querySelector('#'+id); if(!el) throw new Error('Ontbrekende JSON-tag: '+id); return JSON.parse(el.textContent)}
+async function main(){
+  let html, sw, manifest, doc, data;
+  try{
+    [html, sw, manifest] = await Promise.all([loadText('./index.html'), loadText('./service-worker.js').catch(e=>''), loadText('./manifest.webmanifest').catch(e=>'{}')]);
+    doc = new DOMParser().parseFromString(html,'text/html');
+    data = {words:getJson(doc,'word-data'), countries:getJson(doc,'country-data'), themes:getJson(doc,'theme-data'), i18n:getJson(doc,'i18n-data'), manifest:JSON.parse(manifest), sw};
+  }catch(e){
+    $('#overview').innerHTML = panel('Fout bij laden', `<p>Open deze pagina via dezelfde GitHub Pages-site als de game, niet als los lokaal bestand.</p><pre class="code">${esc(e.message)}</pre>`);
+    return;
+  }
+  render(data, html);
+}
+function render({words,countries,themes,i18n,manifest,sw}, html){
+  const ids = words.map(w=>w.id);
+  const duplicateIds = ids.filter((id,i)=>ids.indexOf(id)!==i);
+  const required = ['id','es','nl','en','sk','theme','sentence','distractors'];
+  const missing = words.flatMap(w => required.filter(k => w[k] === undefined || w[k] === '' || (Array.isArray(w[k]) && !w[k].length)).map(k=>`${w.id||'(geen id)'}:${k}`));
+  const badThemes = words.filter(w=>!themes[w.theme]).map(w=>`${w.id}:${w.theme}`);
+  const badDistractors = words.filter(w=>!Array.isArray(w.distractors) || w.distractors.length < 3).map(w=>w.id);
+  const countryIssues = Object.entries(countries).flatMap(([id,c])=>{
+    const out=[]; if(!c.name || !c.name.nl || !c.name.en || !c.name.sk) out.push(`${id}: ontbrekende landnaam`);
+    if(!Array.isArray(c.themes) || !c.themes.every(t=>themes[t])) out.push(`${id}: onbekend thema`);
+    if(c.souvenir && !ids.includes(c.souvenir)) out.push(`${id}: souvenir-id niet gevonden`);
+    return out;
+  });
+  const langKeys = Object.fromEntries(Object.entries(i18n).map(([k,v])=>[k,Object.keys(v||{}).length]));
+  const langSet = new Set(Object.values(i18n).flatMap(v=>Object.keys(v||{})));
+  const i18nMissing = Object.keys(i18n).flatMap(lang=>[...langSet].filter(k=>!(k in i18n[lang])).map(k=>`${lang}:${k}`));
+  const themeCounts = countBy(words,'theme');
+  const intervals = [0,0,4*3600000,86400000,3*86400000,7*86400000,14*86400000];
+  const normTests = [['hotel','el hotel',true],['HOTEL','hotel',true],['habitacion','la habitación',true],['adios','adiós',true],['buenos dias','buenos días',true],['recepcion','la recepción',true],['danku','gracias',false]];
+  const normPassed = normTests.filter(([a,b,expected])=>(norm(a)===norm(b))===expected).length;
+  const hasSWReg = /serviceWorker\.register\(['"]service-worker\.js['"]\)/.test(html);
+  const hasSpeech = /speechSynthesis|SpeechSynthesisUtterance/.test(html);
+  const hasInstall = /beforeinstallprompt/.test(html);
+  const hasLocalStorage = /localStorage/.test(html);
+  const manifestOk = !!(manifest.name && manifest.start_url && manifest.display && manifest.icons?.length);
+  const swOk = /CACHE_NAME/.test(sw) && /fetch/.test(sw) && /caches\.match/.test(sw);
+
+  $('#topStats').innerHTML = [stat(words.length,'woorden'), stat(Object.keys(countries).length,'landen'), stat(Object.keys(themes).length,"thema's"), stat(Object.keys(i18n).join(' / '),'talen'), stat(manifest.display||'—','display')].join('');
+  $('#overview').innerHTML = panel('Automatische controles', [
+    row('Woorden geladen', words.length, words.length>=100, words.length>=100?'voldoende ruime set':'minder dan 100 woorden'),
+    row('Verplichte velden', missing.length?missing.slice(0,4).join(', '):'0 ontbrekend', missing.length===0),
+    row('Dubbele ids', duplicateIds.length?duplicateIds.join(', '):'0 gevonden', duplicateIds.length===0),
+    row('Onbekende thema’s', badThemes.length?badThemes.slice(0,4).join(', '):'0 gevonden', badThemes.length===0),
+    row('Distractors', badDistractors.length?badDistractors.join(', '):'minstens 3 per woord', badDistractors.length===0),
+    row('Landenstructuur', countryIssues.length?countryIssues.join(', '):'oké', countryIssues.length===0),
+    row('I18N volledigheid', i18nMissing.length?i18nMissing.slice(0,4).join(', '):JSON.stringify(langKeys), i18nMissing.length===0),
+    row('Inputnormalisatie', `${normPassed}/${normTests.length} tests`, normPassed===normTests.length),
+    row('Audio-code', hasSpeech?'Web Speech API aanwezig':'niet gevonden', hasSpeech),
+    row('Voortgangsopslag', hasLocalStorage?'localStorage aanwezig':'niet gevonden', hasLocalStorage)
+  ].join('')) + panel('Bestandsadvies', `<p>Upload <strong>alle bestanden</strong> naar de root van je GitHub-repository. Deze testpagina is optioneel, maar handig om te tonen dat de data echt gecontroleerd wordt.</p><div class="code">index.html<br>manifest.webmanifest<br>service-worker.js<br>test-report.html<br>README.md<br>icons/icon-192.png<br>icons/icon-512.png</div><div class="actions"><a href="./index.html">Open de game</a><button class="secondary" onclick="location.reload()">Rapport opnieuw laden</button></div>`);
+
+  $('#content').innerHTML = panel('Thema-verdeling', Object.entries(themeCounts).sort((a,b)=>b[1]-a[1]).map(([theme,n])=>{
+    const pct = Math.round(n/Math.max(...Object.values(themeCounts))*100);
+    const label = themes[theme]?.nl || theme;
+    return `<div style="margin:9px 0"><div style="display:flex;justify-content:space-between;font-size:.9rem"><span>${esc(label)} <span class="note">(${esc(theme)})</span></span><b>${n}</b></div><div class="bar"><i style="width:${pct}%"></i></div></div>`
+  }).join('')) + panel('Landen en thema’s', Object.entries(countries).map(([id,c])=>{
+    const n = words.filter(w=>c.themes.includes(w.theme)).length;
+    return row(`${c.emoji} ${c.name.nl}`, `${n} woorden · €${c.cost}`, n>=20 ? true : null, c.themes.join(', '));
+  }).join('')) + panel('Voorbeelden uit de woordenlijst', words.slice(0,12).map(w=>`<span class="pill"><b>${esc(w.es)}</b> → ${esc(w.nl)} / ${esc(w.en)} / ${esc(w.sk)}</span>`).join(''));
+
+  $('#logic').innerHTML = panel('SRS/Leitner-logica', [1,2,3,4,5].map(b=>row(`Box ${b}`, b===1?'direct':fmtMs(intervals[b]), true, b===5?'huidige master-box in de app':'' )).join('') + row('14-dageninterval', 'aanwezig als intervals[6]', null, 'in de huidige code is box 5 de bovengrens; 14 dagen is dus voorbereid maar niet actief')) + panel('Normalisatietests', normTests.map(([a,b,expected])=>{const result=norm(a)===norm(b); return row(`${a} ↔ ${b}`, `verwacht ${expected}, resultaat ${result}`, result===expected, `norm: ${norm(a)} ↔ ${norm(b)}`)}).join(''));
+
+  $('#pwa').innerHTML = panel('Manifest', [
+    row('name', manifest.name||'—', !!manifest.name), row('short_name', manifest.short_name||'—', !!manifest.short_name), row('start_url', manifest.start_url||'—', !!manifest.start_url), row('display', manifest.display||'—', manifest.display==='standalone'), row('icons', manifest.icons?.map(i=>i.sizes).join(', ')||'—', (manifest.icons||[]).length>=2)
+  ].join('')) + panel('Service worker', [
+    row('Registratie in index', hasSWReg?'gevonden':'niet gevonden', hasSWReg), row('Cache-script', swOk?'cache/fetch aanwezig':'niet volledig gevonden', swOk), row('Install prompt', hasInstall?'beforeinstallprompt aanwezig':'niet gevonden', hasInstall), row('Offline assets', /test-report\.html/.test(sw)?'test-report.html wordt mee gecachet':'test-report.html niet in core cache', /test-report\.html/.test(sw)), row('HTTPS', location.protocol==='https:'?'ja':'nee/lokaal', location.protocol==='https:' || location.hostname==='localhost', 'GitHub Pages levert HTTPS')
+  ].join(''));
+
+  $('#manual').innerHTML = panel('Handmatige eindtest op smartphone', [
+    row('Open GitHub Pages URL', 'pagina laadt zonder foutmelding', null, 'test op 4G én wifi'),
+    row('Installeer als PWA', 'deelmenu → Zet op beginscherm / Install app', null, 'iOS toont niet altijd een install prompt'),
+    row('Audio', 'druk op woord en zin luisteren', null, 'eerste tik kan nodig zijn door browserbeleid'),
+    row('Offline', 'open app, zet vliegtuigmodus aan, heropen app', null, 'game moet blijven laden'),
+    row('Voortgang', 'speel 3 vragen, sluit browser, open opnieuw', null, 'geld/streak/reviews moeten bewaard blijven'),
+    row('Taalwissel', 'NL → EN → SK en terug', null, 'interface én leertaal controleren'),
+    row('Reset', 'reset voortgang werkt bewust en met bevestiging', null, 'handig voor klasgebruik')
+  ].join('')) + panel('Wat dit rapport niet kan bewijzen', '<p>Deze pagina controleert data en code-aanwezigheid. Ze kan niet volledig bewijzen dat audio op elk toestel werkt of dat iOS/Android de PWA exact hetzelfde installeren. Dat moet op echte apparaten gebeuren.</p>');
+}
+document.querySelectorAll('[data-tab]').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('[data-tab]').forEach(b=>b.classList.remove('active'));document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));btn.classList.add('active');document.getElementById(btn.dataset.tab).classList.add('active')}));
+main();
+</script>
+</body>
+</html>

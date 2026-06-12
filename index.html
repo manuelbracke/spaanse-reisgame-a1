@@ -1,1134 +1,189 @@
 <!doctype html>
 <html lang="nl">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="color-scheme" content="light">
-  <title>Pasaporte A1 — Spanish travel game</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#1d4ed8" />
+  <meta name="color-scheme" content="light" />
+  <meta name="description" content="Pasaporte A1: a mobile Spanish travel vocabulary PWA with audio, offline support, local progress and spaced review." />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <title>Pasaporte A1 — PWA</title>
   <style>
-    :root{
-      --accent:#2563eb;
-      --accent-dark:#1e3a8a;
-      --accent-soft:#dbeafe;
-      --bg:#fff7ed;
-      --card:#ffffff;
-      --ink:#172033;
-      --muted:#667085;
-      --line:rgba(23,32,51,.14);
-      --good:#137333;
-      --bad:#b3261e;
-      --warn:#9a5b00;
-      --radius:22px;
-      --tap:58px;
-      --shadow:0 10px 28px rgba(16,24,40,.12);
-    }
-    *{box-sizing:border-box}
-    html{
-      min-width:320px;
-      -webkit-text-size-adjust:100%;
-      text-size-adjust:100%;
-      background:var(--bg);
-    }
-    body{
-      margin:0;
-      min-height:100vh;
-      width:100%;
-      overflow-x:hidden;
-      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
-      color:var(--ink);
-      background:linear-gradient(135deg,var(--bg),#fffef8 52%,#edf7ff);
-    }
-    body::before{
-      content:"";
-      position:fixed;
-      inset:0;
-      z-index:-1;
-      pointer-events:none;
-      background:radial-gradient(circle at 12% 4%, rgba(255,255,255,.96), transparent 22rem),radial-gradient(circle at 92% 16%, var(--accent-soft), transparent 18rem);
-    }
-    button,input{font:inherit;font-size:16px}
-    button{
-      -webkit-appearance:none;
-      appearance:none;
-      border:0;
-      border-radius:999px;
-      min-height:var(--tap);
-      padding:.95rem 1.1rem;
-      line-height:1.15;
-      font-weight:850;
-      color:#fff;
-      background:var(--accent);
-      box-shadow:0 8px 20px rgba(16,24,40,.14);
-      cursor:pointer;
-      touch-action:manipulation;
-      -webkit-tap-highlight-color:rgba(37,99,235,.18);
-    }
-    button:active{transform:translateY(1px)}
-    button:disabled{opacity:.48;cursor:not-allowed;box-shadow:none;filter:grayscale(.25)}
-    button.secondary{background:#fff;color:var(--accent-dark);border:1px solid var(--line);box-shadow:none}
-    button.ghost{background:transparent;color:var(--accent-dark);border:1px solid var(--line);box-shadow:none}
-    button.danger{background:var(--bad)}
-    input{
-      width:100%;
-      min-height:var(--tap);
-      border-radius:999px;
-      border:1px solid var(--line);
-      padding:1rem 1.05rem;
-      background:#fff;
-      color:var(--ink);
-      outline:none;
-    }
-    input:focus{border-color:var(--accent);box-shadow:0 0 0 4px rgba(37,99,235,.16)}
-    h1,h2,h3,p{margin:0}
-    h1{font-size:clamp(1.35rem,5vw,2.6rem);line-height:1.05;letter-spacing:-.04em}
-    h2{font-size:clamp(1.25rem,4.6vw,2rem);line-height:1.1;letter-spacing:-.025em}
-    h3{font-size:1rem}
-    a{color:var(--accent-dark)}
-    .wrap{
-      width:min(1120px,100%);
-      margin:0 auto;
-      padding:calc(1rem + env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) calc(1rem + env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left));
-    }
-    header{position:relative;margin:0 0 1rem;padding:.25rem 0 .85rem;background:transparent}
-    .topbar{display:grid;grid-template-columns:1fr auto;gap:.85rem;align-items:center}
-    .brand{display:flex;gap:.8rem;align-items:center;min-width:0}
-    .logo{width:3.1rem;height:3.1rem;border-radius:1rem;display:grid;place-items:center;background:var(--accent);color:#fff;font-size:1.8rem;box-shadow:var(--shadow);flex:none}
-    .small{font-size:.94rem;color:var(--muted);line-height:1.42}
-    .tiny{font-size:.82rem;color:var(--muted);line-height:1.35}
-    .lang-switch{display:flex;gap:.4rem;align-items:center;justify-content:flex-end;flex-wrap:wrap}
-    .lang-switch button{min-height:44px;padding:.65rem .85rem;box-shadow:none;border:1px solid var(--line);background:#fff;color:var(--accent-dark)}
-    .lang-switch button.active{background:var(--accent);color:#fff;border-color:var(--accent)}
-    .hud{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.55rem;margin-top:.85rem}
-    .chip{background:rgba(255,255,255,.9);border:1px solid var(--line);border-radius:999px;padding:.65rem .75rem;display:flex;align-items:center;justify-content:center;gap:.35rem;font-weight:850;min-width:0;white-space:nowrap;box-shadow:0 4px 14px rgba(16,24,40,.06)}
-    .chip span{overflow:hidden;text-overflow:ellipsis}
-    .screen{display:none}
-    .screen.active{display:block}
-    .panel{background:rgba(255,255,255,.94);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:clamp(1rem,3.5vw,1.5rem);overflow:hidden}
-    .hero{display:grid;grid-template-columns:1.2fr .8fr;gap:1rem;align-items:start}
-    .grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(260px,.75fr);gap:1rem;align-items:start}
-    .countries{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.8rem;margin-top:1rem}
-    .country-card{position:relative;text-align:left;border-radius:22px;padding:1rem;min-height:11rem;color:#fff;background:var(--accent);overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;box-shadow:var(--shadow);width:100%}
-    .country-card::after{content:"";position:absolute;right:-2.2rem;bottom:-2.6rem;width:8rem;height:8rem;border-radius:999px;background:rgba(255,255,255,.22)}
-    .country-card .emoji{font-size:2.5rem}
-    .country-card strong{font-size:1.15rem}
-    .country-card .meta{position:relative;z-index:1;color:rgba(255,255,255,.94);font-size:.9rem;line-height:1.35}
-    .notice{margin-top:.9rem;border-radius:18px;border:1px solid rgba(181,106,0,.22);background:rgba(255,247,204,.78);padding:.85rem;line-height:1.45;color:#6d4200}
-    .scene{display:flex;gap:.75rem;align-items:flex-start;background:linear-gradient(135deg,var(--accent-soft),rgba(255,255,255,.9));border:1px solid var(--line);border-radius:20px;padding:1rem;margin:.9rem 0}
-    .scene .avatar{font-size:2.2rem;line-height:1;flex:none}
-    .task{border-radius:22px;border:1px solid var(--line);background:#fff;padding:1rem}
-    .question-line{font-size:clamp(1.15rem,4.4vw,1.55rem);font-weight:900;letter-spacing:-.02em;line-height:1.2;margin:.5rem 0 .65rem}
-    .gap{display:inline-block;border-bottom:3px solid var(--accent);min-width:4.2rem;text-align:center;color:var(--accent-dark);font-weight:900}
-    .actions{display:flex;flex-wrap:wrap;gap:.65rem;margin-top:.9rem;align-items:center}
-    .answers{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,13.5rem),1fr));gap:.65rem;margin-top:.8rem}
-    .choice{width:100%;text-align:center;border-radius:18px;background:#fff;color:var(--accent-dark);border:1px solid var(--line);box-shadow:none;justify-content:center}
-    .type-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.65rem;margin-top:.8rem}
-    .feedback{display:none;margin-top:.85rem;border-radius:18px;padding:.9rem;line-height:1.45;border:1px solid var(--line);background:#f8fafc}
-    .feedback.show{display:block}
-    .feedback.good{border-color:rgba(19,115,51,.25);background:rgba(231,245,234,.94);color:#0b4f23}
-    .feedback.bad{border-color:rgba(179,38,30,.25);background:rgba(255,235,232,.94);color:#7c1b15}
-    .mini{background:rgba(255,255,255,.9);border:1px solid var(--line);border-radius:20px;padding:.9rem;min-width:0}
-    .mini + .mini{margin-top:.75rem}
-    .list{display:grid;gap:.55rem;margin-top:.55rem}
-    .item{border:1px solid var(--line);background:#fff;border-radius:16px;padding:.75rem;line-height:1.35}
-    .big{font-size:clamp(1.6rem,8vw,2.45rem);font-weight:950;letter-spacing:-.045em;overflow-wrap:anywhere}
-    .speed-head{display:flex;justify-content:space-between;gap:1rem;align-items:center;margin-bottom:1rem}
-    .timer{width:4.4rem;height:4.4rem;border-radius:999px;display:grid;place-items:center;background:var(--accent);color:#fff;font-size:1.75rem;font-weight:950;box-shadow:var(--shadow);flex:none}
-    .results{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.8rem;margin-top:1rem}
-    .hidden{display:none!important}
-    .shake{animation:shake .25s ease-in-out}
-    @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
-    .fatal{display:none;margin:0 0 1rem;padding:1rem;border:1px solid rgba(179,38,30,.35);border-radius:18px;background:#fff1f0;color:#7c1b15;line-height:1.45}
-    .version{display:inline-block;margin-top:.35rem;font-size:.76rem;color:var(--muted)}
+    :root { --blue:#1d4ed8; --blueDark:#1e3a8a; --blueSoft:#dbeafe; --cream:#fff7ed; --paper:#ffffff; --ink:#111827; --muted:#5b6472; --line:rgba(17,24,39,.14); --good:#0f6b2d; --bad:#a11b16; --warn:#8a5200; --gold:#f59e0b; --radius:24px; --tap:58px; --shadow:0 16px 40px rgba(15,23,42,.13); }
+    *{box-sizing:border-box} html{min-width:320px;-webkit-text-size-adjust:100%;text-size-adjust:100%;background:var(--cream)} body{margin:0;min-height:100vh;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;color:var(--ink);background:linear-gradient(135deg,#fff7ed,#fff 52%,#e0f2fe);overflow-x:hidden} body:before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(circle at 5% 5%,rgba(255,255,255,.95),transparent 20rem),radial-gradient(circle at 95% 12%,rgba(191,219,254,.9),transparent 18rem),radial-gradient(circle at 35% 100%,rgba(254,215,170,.55),transparent 22rem)}
+    button,input,select{font:inherit;font-size:16px} button,select{touch-action:manipulation} button{min-height:var(--tap);border:0;border-radius:999px;padding:.9rem 1rem;font-weight:850;background:var(--blue);color:#fff;box-shadow:0 8px 22px rgba(30,64,175,.22);cursor:pointer;-webkit-tap-highlight-color:rgba(29,78,216,.16)} button:disabled{opacity:.48;cursor:not-allowed;filter:grayscale(.25);box-shadow:none} button:active{transform:translateY(1px)} button.secondary{background:#fff;color:var(--blueDark);border:1px solid var(--line);box-shadow:none} button.ghost{background:transparent;color:var(--blueDark);border:1px solid var(--line);box-shadow:none} button.danger{background:#fff;color:var(--bad);border:1px solid rgba(161,27,22,.25);box-shadow:none} input,select{width:100%;min-height:var(--tap);border:1px solid var(--line);border-radius:999px;padding:.9rem 1rem;background:#fff;color:var(--ink);outline:none} input:focus,select:focus,button:focus-visible{outline:4px solid rgba(29,78,216,.22);outline-offset:2px}
+    h1,h2,h3,p{margin:0} h1{font-size:clamp(1.45rem,5.5vw,2.7rem);line-height:1.02;letter-spacing:-.045em} h2{font-size:clamp(1.25rem,4.8vw,2rem);line-height:1.08;letter-spacing:-.025em} h3{font-size:1rem} .small{font-size:.94rem;line-height:1.45;color:var(--muted)} .tiny{font-size:.8rem;line-height:1.35;color:var(--muted)} .wrap{width:min(1120px,100%);margin:0 auto;padding:calc(.9rem + env(safe-area-inset-top)) max(.9rem,env(safe-area-inset-right)) calc(1rem + env(safe-area-inset-bottom)) max(.9rem,env(safe-area-inset-left))}
+    header{position:sticky;top:0;z-index:5;margin:0 0 .9rem;padding:.55rem 0;background:linear-gradient(180deg,rgba(255,247,237,.96),rgba(255,247,237,.72));backdrop-filter:blur(16px)} .topbar{display:grid;grid-template-columns:1fr auto;gap:.75rem;align-items:center} .brand{display:flex;gap:.72rem;align-items:center;min-width:0} .logo{width:3rem;height:3rem;border-radius:1rem;background:var(--blue);display:grid;place-items:center;color:#fff;font-size:1.65rem;box-shadow:var(--shadow);flex:none} .brandText{min-width:0} .version{display:inline-flex;margin-top:.25rem;border:1px solid var(--line);border-radius:999px;padding:.16rem .5rem;background:#fff;color:var(--muted);font-size:.75rem} .topActions{display:flex;gap:.45rem;align-items:center;justify-content:flex-end;flex-wrap:wrap} .topActions button{min-height:44px;padding:.65rem .78rem;box-shadow:none}
+    .hud{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.5rem;margin:.55rem 0 .8rem} .chip{background:rgba(255,255,255,.92);border:1px solid var(--line);border-radius:999px;padding:.62rem .7rem;display:flex;gap:.35rem;align-items:center;justify-content:center;font-weight:850;min-width:0;box-shadow:0 5px 15px rgba(15,23,42,.06);white-space:nowrap} .chip span:last-child{overflow:hidden;text-overflow:ellipsis} .statusDot{display:inline-block;width:.55rem;height:.55rem;border-radius:999px;background:var(--good);margin-right:.25rem} .statusDot.off{background:var(--warn)}
+    .screen{display:none} .screen.active{display:block} .panel{background:rgba(255,255,255,.95);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:clamp(1rem,3.6vw,1.55rem);overflow:hidden} .hero{display:grid;grid-template-columns:1.2fr .8fr;gap:1rem;align-items:start} .grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(260px,.75fr);gap:1rem;align-items:start} .stack{display:grid;gap:.75rem} .cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.75rem;margin-top:1rem} .mini{background:rgba(255,255,255,.94);border:1px solid var(--line);border-radius:20px;padding:.9rem;min-width:0} .item{border:1px solid var(--line);background:#fff;border-radius:16px;padding:.75rem;line-height:1.38} .list{display:grid;gap:.55rem;margin-top:.55rem} .actions{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:.85rem;align-items:center} .actions > button{min-width:min(100%,12rem)}
+    .introCards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.75rem;margin-top:1rem} .metricGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.65rem;margin-top:.85rem} .metric{border:1px solid var(--line);background:#fff;border-radius:18px;padding:.8rem} .metric strong{display:block;font-size:clamp(1.25rem,5vw,1.85rem);letter-spacing:-.04em} .progressOuter{height:.7rem;background:#e5e7eb;border-radius:999px;overflow:hidden;margin-top:.55rem} .progressInner{height:100%;width:0;background:var(--blue);border-radius:999px;transition:width .25s ease}
+    .countries{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem;margin-top:1rem} .countryCard{position:relative;text-align:left;border-radius:22px;padding:1rem;min-height:10.8rem;color:#fff;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;box-shadow:var(--shadow);width:100%} .countryCard:after{content:"";position:absolute;right:-2.4rem;bottom:-2.7rem;width:8rem;height:8rem;border-radius:999px;background:rgba(255,255,255,.16)} .countryCard .flag{font-size:2.4rem} .countryCard strong{font-size:1.2rem} .countryCard .meta{position:relative;z-index:1;color:rgba(255,255,255,.98);font-size:.93rem;line-height:1.4} .countryCard.done{filter:saturate(.95)}
+    .scene{display:flex;gap:.75rem;align-items:flex-start;background:linear-gradient(135deg,var(--blueSoft),rgba(255,255,255,.93));border:1px solid var(--line);border-radius:20px;padding:1rem;margin:.85rem 0} .avatar{font-size:2.25rem;line-height:1;flex:none} .task{border:1px solid var(--line);background:#fff;border-radius:22px;padding:1rem} .sentence{margin:.45rem 0 .65rem} .questionLine{font-size:clamp(1.15rem,4.6vw,1.65rem);font-weight:950;letter-spacing:-.025em;line-height:1.2;margin:.35rem 0 .65rem} .meaning{display:inline-block;color:var(--blueDark);background:var(--blueSoft);border-radius:.75rem;padding:.1rem .45rem} .answers{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,13.5rem),1fr));gap:.6rem;margin-top:.75rem} .choice{width:100%;text-align:center;border-radius:18px;background:#fff;color:var(--blueDark);border:1px solid var(--line);box-shadow:none} .typeRow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.6rem;margin-top:.75rem} .feedback{display:none;margin-top:.85rem;border:1px solid var(--line);border-radius:18px;padding:.9rem;line-height:1.45;background:#f8fafc} .feedback.show{display:block} .feedback.good{border-color:rgba(15,107,45,.24);background:#ecfdf3;color:#084c22} .feedback.bad{border-color:rgba(161,27,22,.25);background:#fff1f0;color:#7f1d1d} .audioRow{display:flex;gap:.45rem;flex-wrap:wrap;margin-top:.6rem} .audioRow button{min-height:44px;padding:.62rem .78rem;font-size:.9rem;box-shadow:none}
+    .timer{width:4.4rem;height:4.4rem;border-radius:999px;background:var(--blue);color:#fff;display:grid;place-items:center;font-weight:950;font-size:1.7rem;box-shadow:var(--shadow);flex:none} .speedHead{display:flex;gap:1rem;justify-content:space-between;align-items:center;margin-bottom:.85rem} .big{font-size:clamp(1.55rem,8vw,2.5rem);font-weight:950;letter-spacing:-.04em;overflow-wrap:anywhere} .hidden{display:none!important} .fatal{display:none;margin-bottom:.8rem;padding:1rem;border-radius:18px;border:1px solid rgba(161,27,22,.3);background:#fff1f0;color:#7f1d1d}
+    dialog{border:1px solid var(--line);border-radius:24px;box-shadow:0 24px 80px rgba(15,23,42,.28);padding:0;width:min(560px,calc(100% - 1.5rem));color:var(--ink)} dialog::backdrop{background:rgba(15,23,42,.42)} .dialogBody{padding:1rem} .settingsGrid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-top:.8rem}
     footer{text-align:center;margin-top:1rem}
-
-    @media (max-width:820px){
-      :root{--radius:18px;--tap:60px}
-      body{background:#fff8ef}
-      .wrap{padding:calc(.75rem + env(safe-area-inset-top)) max(.75rem, env(safe-area-inset-right)) calc(1rem + env(safe-area-inset-bottom)) max(.75rem, env(safe-area-inset-left))}
-      header{margin:0 0 .75rem;padding:0 0 .65rem}
-      .topbar{grid-template-columns:1fr;gap:.65rem}
-      .brand{align-items:flex-start}
-      .logo{width:2.7rem;height:2.7rem;font-size:1.5rem;border-radius:.85rem}
-      .lang-switch{display:grid;grid-template-columns:1fr 1fr;width:100%}
-      .lang-switch button{width:100%;min-height:50px}
-      .hud{grid-template-columns:repeat(2,minmax(0,1fr));gap:.45rem}
-      .chip{border-radius:16px;padding:.68rem .55rem;font-size:.92rem;justify-content:flex-start}
-      .hero,.grid{grid-template-columns:1fr;gap:.75rem}
-      .countries{grid-template-columns:1fr;gap:.65rem}
-      .country-card{min-height:8.3rem;border-radius:18px;padding:.95rem}
-      .panel{border-radius:18px;padding:.9rem;box-shadow:0 6px 18px rgba(16,24,40,.10)}
-      .scene{border-radius:17px;padding:.8rem;margin:.75rem 0}
-      .task{border-radius:17px;padding:.85rem}
-      .actions{display:grid;grid-template-columns:1fr;gap:.55rem}
-      .actions > button{width:100%}
-      .answers{grid-template-columns:1fr;gap:.55rem}
-      .choice{border-radius:16px;min-height:60px;padding:1rem .9rem}
-      .type-row{grid-template-columns:1fr;gap:.55rem}
-      .type-row button{width:100%}
-      .speed-head{align-items:flex-start}
-      .timer{width:3.8rem;height:3.8rem;font-size:1.45rem}
-      .results{grid-template-columns:1fr;gap:.65rem}
-      .small{font-size:.93rem}
-      .mini + .mini{margin-top:.65rem}
-    }
-    @media (max-width:380px){
-      .hud{grid-template-columns:1fr}
-      h1{font-size:1.3rem}
-      .logo{display:none}
-      .question-line{font-size:1.12rem}
-    }
-    @media (max-height:560px) and (orientation:landscape){
-      .hud{grid-template-columns:repeat(4,minmax(0,1fr))}
-      .country-card{min-height:7.4rem}
-    }
-    @media (hover:hover){button:hover{filter:brightness(1.03)} .choice:hover{background:var(--accent-soft)}}
-    @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+    @media(max-width:860px){:root{--radius:20px;--tap:60px} .wrap{padding:calc(.72rem + env(safe-area-inset-top)) max(.72rem,env(safe-area-inset-right)) calc(.9rem + env(safe-area-inset-bottom)) max(.72rem,env(safe-area-inset-left))} header{margin-bottom:.65rem} .topbar{grid-template-columns:1fr;gap:.6rem} .topActions{display:grid;grid-template-columns:1fr 1fr 1fr;width:100%} .topActions button{width:100%;padding:.62rem .35rem} .hud{grid-template-columns:repeat(2,minmax(0,1fr));gap:.42rem} .chip{border-radius:16px;justify-content:flex-start;padding:.62rem .55rem;font-size:.92rem} .hero,.grid{grid-template-columns:1fr;gap:.75rem} .introCards,.cards{grid-template-columns:1fr;gap:.65rem} .metricGrid{grid-template-columns:repeat(2,minmax(0,1fr))} .countries{grid-template-columns:1fr} .countryCard{min-height:8.8rem;border-radius:18px} .panel{border-radius:19px;padding:.9rem;box-shadow:0 8px 24px rgba(15,23,42,.10)} .mini{border-radius:17px;padding:.8rem} .scene{border-radius:17px;padding:.85rem} .task{border-radius:17px;padding:.85rem} .actions{display:grid;grid-template-columns:1fr;gap:.55rem} .actions>button{width:100%;min-width:0} .answers{grid-template-columns:1fr} .choice{min-height:60px} .typeRow{grid-template-columns:1fr} .typeRow button{width:100%} .speedHead{align-items:flex-start} .timer{width:3.8rem;height:3.8rem;font-size:1.45rem} .settingsGrid{grid-template-columns:1fr} }
+    @media(max-width:390px){.hud{grid-template-columns:1fr} .logo{display:none} .topActions{grid-template-columns:1fr} .metricGrid{grid-template-columns:1fr} .questionLine{font-size:1.12rem}}
+    @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
   </style>
-  <script>
-    window.addEventListener('error', function(event){
-      var box = document.getElementById('fatalError');
-      if(box){
-        box.style.display = 'block';
-        box.innerHTML = '<strong>De game is niet volledig gestart.</strong><br>Probeer de pagina te verversen. Blijft dit gebeuren, upload dan opnieuw de nieuwste <code>index.html</code>.<br><span class="small">Technische melding: '+ String(event.message || 'onbekende fout') +'</span>';
-      }
-    });
-    window.addEventListener('unhandledrejection', function(event){
-      var box = document.getElementById('fatalError');
-      if(box){
-        box.style.display = 'block';
-        box.innerHTML = '<strong>De game is niet volledig gestart.</strong><br>Probeer de pagina te verversen of upload opnieuw de nieuwste <code>index.html</code>.';
-      }
-    });
-  </script>
 </head>
 <body>
-  <div class="wrap">
-    <div id="fatalError" class="fatal" role="alert"></div>
-    <header>
-      <div class="topbar">
-        <div class="brand">
-          <div class="logo" aria-hidden="true">🧳</div>
-          <div>
-            <h1>Pasaporte A1</h1>
-            <p id="tagline" class="small">Spaanse reiswoordenschat als browsergame.</p><span class="version">v4 mobile-safe</span>
+<div class="wrap">
+  <div id="fatal" class="fatal" role="alert"></div>
+  <header>
+    <div class="topbar">
+      <div class="brand"><div class="logo" aria-hidden="true">🧳</div><div class="brandText"><h1 id="appTitle">Pasaporte A1</h1><p id="tagline" class="small"></p><span id="version" class="version"></span></div></div>
+      <div class="topActions" aria-label="App actions"><button id="installBtn" type="button" class="secondary">Install</button><button id="settingsBtn" type="button" class="secondary">Settings</button><button id="audioToggle" type="button" class="secondary">🔊</button></div>
+    </div>
+    <div class="hud" aria-label="Game status">
+      <div class="chip" aria-live="polite">💶 <span id="hudMoney">€500</span></div>
+      <div class="chip" aria-live="polite">🔥 <span id="hudCombo">x1.00</span></div>
+      <div class="chip" aria-live="polite">🛂 <span id="hudStamps">0/4</span></div>
+      <div class="chip" aria-live="polite">🧠 <span id="hudDue">0</span></div>
+      <div class="chip"><span id="netDot" class="statusDot"></span><span id="netText">Online</span></div>
+    </div>
+  </header>
+
+  <main>
+    <section id="start" class="screen active">
+      <div class="hero">
+        <div class="panel">
+          <h2 id="startTitle"></h2>
+          <p id="startText" class="small" style="margin-top:.55rem"></p>
+          <div class="introCards">
+            <div class="mini"><h3 id="onboard1Title"></h3><p id="onboard1Text" class="small" style="margin-top:.35rem"></p></div>
+            <div class="mini"><h3 id="onboard2Title"></h3><p id="onboard2Text" class="small" style="margin-top:.35rem"></p></div>
+            <div class="mini"><h3 id="onboard3Title"></h3><p id="onboard3Text" class="small" style="margin-top:.35rem"></p></div>
           </div>
+          <div class="actions"><button id="startGame" type="button"></button><button id="startSettings" type="button" class="secondary"></button></div>
         </div>
-        <div class="lang-switch" role="group" aria-label="Language / taal">
-          <button id="langNl" type="button" data-lang="nl" class="active" aria-pressed="true">Nederlands</button>
-          <button id="langEn" type="button" data-lang="en" aria-pressed="false">English</button>
-        </div>
+        <aside class="stack">
+          <div class="mini"><h3 id="dailyGoalStart"></h3><p id="dailyStartText" class="small" style="margin-top:.35rem"></p><div class="progressOuter"><div id="dailyStartBar" class="progressInner"></div></div></div>
+          <div class="mini"><h3>PWA</h3><p id="installHelp" class="small" style="margin-top:.35rem"></p><p id="offlineReady" class="small" style="margin-top:.55rem"></p></div>
+        </aside>
       </div>
-      <div class="hud" aria-live="polite">
-        <div class="chip"><span>💶</span><span id="money">€500</span></div>
-        <div class="chip"><span class="flame">🔥</span><span id="combo">x1.00</span></div>
-        <div class="chip"><span>🛂</span><span id="stamps">0/3</span></div>
-        <div class="chip"><span>🧠</span><span id="leitnerCount">0</span></div>
+    </section>
+
+    <section id="home" class="screen">
+      <div class="hero">
+        <div class="panel">
+          <h2 id="homeTitle"></h2><p id="mapIntro" class="small" style="margin-top:.45rem"></p>
+          <div class="metricGrid">
+            <div class="metric"><span class="tiny" id="dailyGoalLabel"></span><strong id="dailyDone">0/10</strong><div class="progressOuter"><div id="dailyBar" class="progressInner"></div></div></div>
+            <div class="metric"><span class="tiny" id="streakLabel"></span><strong id="streakValue">0</strong></div>
+            <div class="metric"><span class="tiny" id="knownLabel"></span><strong id="knownValue">0</strong></div>
+            <div class="metric"><span class="tiny" id="dueLabel"></span><strong id="dueValue">0</strong></div>
+          </div>
+          <div id="countries" class="countries"></div>
+          <div class="actions"><button id="finishBtn" type="button" class="secondary"></button><button id="exportBtn" type="button" class="secondary"></button><button id="resetBtn" type="button" class="danger"></button></div>
+        </div>
+        <aside class="stack"><div class="mini"><h3 id="howTitle"></h3><p id="howText" class="small" style="margin-top:.35rem"></p></div><div class="mini"><h3 id="reviewTitle"></h3><div id="reviewList" class="list"></div></div></aside>
       </div>
-    </header>
+    </section>
 
-    <main>
-      <section id="map" class="screen active" aria-labelledby="mapTitle">
-        <div class="hero">
-          <div class="panel">
-            <h2 id="mapTitle">Kies je volgende land</h2>
-            <p id="mapIntro" class="small" style="margin-top:.45rem">Je start met €500. Reizen kost geld. Taalopdrachten leveren geld op.</p>
-            <div id="mapNotice" class="notice hidden"></div>
-            <div id="countries" class="countries"></div>
-            <div class="actions">
-              <button id="endNow" type="button" class="secondary">Eindscherm bekijken</button>
-            </div>
-          </div>
-          <aside>
-            <div class="mini">
-              <h3 id="howTitle">🎯 Doel</h3>
-              <p id="howText" class="small" style="margin-top:.35rem">Bezoek de drie landen, verzamel stempels en leer je fout beantwoorde woorden verplicht opnieuw.</p>
-            </div>
-            <div class="mini">
-              <h3 id="rulesTitle">🔥 Combo-vlam</h3>
-              <p id="rulesText" class="small" style="margin-top:.35rem">Elk juist antwoord verhoogt je multiplier. Eén fout antwoord dooft de vlam.</p>
-            </div>
-            <div class="mini">
-              <h3 id="leitnerTitleMap">🧠 Leitner verplicht</h3>
-              <div id="queueMap" class="list"><div class="item small">Nog leeg.</div></div>
-            </div>
-          </aside>
-        </div>
-      </section>
-
-      <section id="question" class="screen" aria-labelledby="scenarioTitle">
-        <div class="grid">
-          <div class="panel">
-            <p id="countryLine" class="small"></p>
-            <div class="scene">
-              <div id="scenarioEmoji" class="avatar">🏨</div>
-              <div>
-                <h2 id="scenarioTitle">Scenario</h2>
-                <p id="scenarioSetup" class="small" style="margin-top:.3rem"></p>
-              </div>
-            </div>
-            <div id="taskBox" class="task">
-              <p id="reviewBadge" class="small hidden"></p>
-              <p id="sentence" class="small"></p>
-              <div id="prompt" class="question-line"></div>
-              <div id="modeChooser" class="actions">
-                <button id="chooseMc" type="button">Meerkeuze · €10</button>
-                <button id="chooseType" type="button" class="secondary">Typen · €25</button>
-              </div>
-              <div id="answerArea"></div>
-              <div id="feedback" class="feedback" role="status" aria-live="polite"></div>
-              <div id="nextBox" class="actions hidden"><button id="nextQuestion" type="button">Volgende vraag</button></div>
-            </div>
-          </div>
-          <aside>
-            <div class="mini">
-              <h3 id="progressTitle">📍 Voortgang</h3>
-              <p id="progressText" class="small" style="margin-top:.35rem"></p>
-            </div>
-            <div class="mini">
-              <h3 id="bagTitle">🎒 Rugzak</h3>
-              <p id="bag" class="small" style="margin-top:.35rem">Nog geen souvenirs.</p>
-            </div>
-            <div class="mini">
-              <h3 id="leitnerTitle">🧠 Leitner-wachtrij</h3>
-              <div id="queue" class="list"><div class="item small">Nog leeg.</div></div>
-            </div>
-          </aside>
-        </div>
-      </section>
-
-      <section id="speed" class="screen" aria-labelledby="speedTitle">
+    <section id="question" class="screen">
+      <div class="grid">
         <div class="panel">
-          <div class="speed-head">
-            <div>
-              <h2 id="speedTitle">Snelronde</h2>
-              <p id="speedIntro" class="small">30 seconden. Kies zo snel mogelijk.</p>
-            </div>
-            <div id="timer" class="timer">30</div>
-          </div>
-          <div class="task">
-            <h2 id="speedQuestion">Klaar?</h2>
-            <p id="speedHelp" class="small">Druk op start.</p>
-            <div id="speedAnswers" class="answers"></div>
-            <div id="speedFeedback" class="feedback" role="status" aria-live="polite"></div>
-            <div class="actions"><button id="startSpeed" type="button">Start snelronde</button></div>
-          </div>
+          <p id="questionMeta" class="small"></p>
+          <div class="scene"><div id="scenarioEmoji" class="avatar">🏨</div><div><h2 id="scenarioTitle"></h2><p id="scenarioSetup" class="small" style="margin-top:.3rem"></p></div></div>
+          <div class="task"><p id="sentence" class="small sentence"></p><div id="prompt" class="questionLine"></div><div class="audioRow"><button id="speakWord" type="button" class="secondary"></button><button id="speakSentence" type="button" class="secondary"></button></div><div id="modeChooser" class="actions"><button id="chooseMc" type="button"></button><button id="chooseType" type="button" class="secondary"></button></div><div id="answerArea"></div><div id="feedback" class="feedback" role="status" aria-live="polite"></div><div id="nextBox" class="actions hidden"><button id="nextQuestion" type="button"></button></div></div>
         </div>
-      </section>
+        <aside class="stack"><div class="mini"><h3 id="dailySideTitle"></h3><p id="dailySide" class="small" style="margin-top:.35rem"></p><div class="progressOuter"><div id="dailySideBar" class="progressInner"></div></div></div><div class="mini"><h3 id="wordBoxTitle">🧠</h3><p id="wordBox" class="small" style="margin-top:.35rem"></p></div></aside>
+      </div>
+    </section>
 
-      <section id="stamp" class="screen" aria-labelledby="stampTitle">
-        <div class="panel">
-          <h2 id="stampTitle">Stempel verdiend</h2>
-          <p id="stampText" style="margin-top:.5rem;line-height:1.5"></p>
-          <div class="results">
-            <div class="mini"><h3 id="stampLabel">Stempel</h3><div id="stampEmoji" class="big">🛂</div></div>
-            <div class="mini"><h3 id="souvenirLabel">Souvenir-woord</h3><div id="souvenirWord" class="big">—</div><p id="souvenirMeaning" class="small"></p></div>
-            <div class="mini"><h3 id="balanceLabel">Saldo</h3><div id="stampMoney" class="big">€0</div></div>
-          </div>
-          <div class="actions">
-            <button id="continueTrip" type="button">Verder reizen</button>
-            <button id="finishTrip" type="button" class="secondary">Eindscherm bekijken</button>
-          </div>
-        </div>
-      </section>
+    <section id="speed" class="screen"><div class="panel"><div class="speedHead"><div><h2 id="speedTitle"></h2><p id="speedIntro" class="small"></p></div><div id="timer" class="timer">30</div></div><div class="task"><h2 id="speedQuestion"></h2><p id="speedHelp" class="small" style="margin-top:.35rem"></p><div id="speedAnswers" class="answers"></div><div id="speedFeedback" class="feedback" role="status" aria-live="polite"></div><div class="actions"><button id="startSpeed" type="button"></button></div></div></div></section>
 
-      <section id="end" class="screen" aria-labelledby="endTitle">
-        <div class="panel">
-          <h2 id="endTitle">🏁 Einde van je reis</h2>
-          <p id="endIntro" class="small" style="margin-top:.35rem">Route, saldo en persoonlijke herhaallijst.</p>
-          <div class="results">
-            <div class="mini"><h3 id="endMoneyLabel">Saldo</h3><div id="endMoney" class="big">€0</div></div>
-            <div class="mini"><h3 id="endStampLabel">Stempels</h3><div id="endStampCount" class="big">0/3</div></div>
-            <div class="mini"><h3 id="endComboLabel">Beste combo</h3><div id="endCombo" class="big">x1.00</div></div>
-          </div>
-          <div class="results">
-            <div class="mini"><h3 id="routeTitle">🗺️ Route</h3><div id="endRoute" class="list"></div></div>
-            <div class="mini"><h3 id="souvenirsTitle">🎁 Souvenirs</h3><div id="endSouvenirs" class="list"></div></div>
-            <div class="mini"><h3 id="reviewTitle">🧠 Herhaallijst</h3><div id="endReview" class="list"></div></div>
-          </div>
-          <div class="actions"><button id="restart" type="button">Opnieuw spelen</button></div>
-        </div>
-      </section>
-    </main>
-    <footer><p id="footerNote" class="tiny">Eén HTML-bestand · vanilla JavaScript · emoji graphics · data en engine gescheiden.</p></footer>
-  </div>
+    <section id="stamp" class="screen"><div class="panel"><h2 id="stampTitle"></h2><p id="stampText" class="small" style="margin-top:.45rem"></p><div class="cards"><div class="mini"><h3>🛂</h3><div id="stampEmoji" class="big">—</div></div><div class="mini"><h3 id="souvenirLabel"></h3><div id="souvenirWord" class="big">—</div><p id="souvenirMeaning" class="small"></p></div><div class="mini"><h3 id="moneyLabelStamp"></h3><div id="stampMoney" class="big">€0</div></div></div><div class="actions"><button id="continueTrip" type="button"></button><button id="finishTrip" type="button" class="secondary"></button></div></div></section>
 
-  <!-- =========================================================
-       JSON WOORDENLIJST — VERVANG ALLEEN DE ARRAY HIERONDER
-       Verplicht per item:
-       { "es": "...", "nl": "...", "thema": "...", "afleiders": ["...", "..."], "zin": "... ____ ..." }
-       Optioneel maar aanbevolen voor Engelstalige spelers:
-       { "en": "..." }
-       Thema's: balie, vervoer, restaurant, markt, hulp
-       ========================================================= -->
-  <script id="word-data" type="application/json">
-[
-  {
-    "es": "la habitación",
-    "nl": "de kamer",
-    "en": "the room",
-    "thema": "balie",
-    "afleiders": [
-      "la mesa",
-      "la estación"
-    ],
-    "zin": "Tengo una reserva para ____ ."
-  },
-  {
-    "es": "la llave",
-    "nl": "de sleutel",
-    "en": "the key",
-    "thema": "balie",
-    "afleiders": [
-      "la cuenta",
-      "el tren"
-    ],
-    "zin": "¿Puede darme ____ de mi habitación?"
-  },
-  {
-    "es": "el pasaporte",
-    "nl": "het paspoort",
-    "en": "the passport",
-    "thema": "balie",
-    "afleiders": [
-      "el menú",
-      "el mercado"
-    ],
-    "zin": "Aquí tiene ____ para registrarme."
-  },
-  {
-    "es": "la reserva",
-    "nl": "de reservatie",
-    "en": "the reservation",
-    "thema": "balie",
-    "afleiders": [
-      "la playa",
-      "la ayuda"
-    ],
-    "zin": "Tengo ____ a nombre de Lola."
-  },
-  {
-    "es": "el ascensor",
-    "nl": "de lift",
-    "en": "the elevator / lift",
-    "thema": "balie",
-    "afleiders": [
-      "el autobús",
-      "el queso"
-    ],
-    "zin": "¿Dónde está ____?"
-  },
-  {
-    "es": "la recepción",
-    "nl": "de receptie",
-    "en": "the reception desk",
-    "thema": "balie",
-    "afleiders": [
-      "la plaza",
-      "la salida"
-    ],
-    "zin": "Voy a preguntar en ____ ."
-  },
-  {
-    "es": "el tren",
-    "nl": "de trein",
-    "en": "the train",
-    "thema": "vervoer",
-    "afleiders": [
-      "el pan",
-      "el hotel"
-    ],
-    "zin": "Tomamos ____ a Madrid."
-  },
-  {
-    "es": "el billete",
-    "nl": "het ticket",
-    "en": "the ticket",
-    "thema": "vervoer",
-    "afleiders": [
-      "el vaso",
-      "el mapa"
-    ],
-    "zin": "Necesito ____ para Valencia."
-  },
-  {
-    "es": "la estación",
-    "nl": "het station",
-    "en": "the station",
-    "thema": "vervoer",
-    "afleiders": [
-      "la ensalada",
-      "la habitación"
-    ],
-    "zin": "¿Dónde está ____ de autobuses?"
-  },
-  {
-    "es": "la salida",
-    "nl": "het vertrek / de uitgang",
-    "en": "the departure / exit",
-    "thema": "vervoer",
-    "afleiders": [
-      "la comida",
-      "la llave"
-    ],
-    "zin": "La próxima ____ es a las ocho."
-  },
-  {
-    "es": "el mapa",
-    "nl": "de kaart",
-    "en": "the map",
-    "thema": "vervoer",
-    "afleiders": [
-      "el agua",
-      "el camarero"
-    ],
-    "zin": "No entiendo ____ de la ciudad."
-  },
-  {
-    "es": "el autobús",
-    "nl": "de bus",
-    "en": "the bus",
-    "thema": "vervoer",
-    "afleiders": [
-      "el pescado",
-      "el dinero"
-    ],
-    "zin": "¿Qué número tiene ____ al centro?"
-  },
-  {
-    "es": "la mesa",
-    "nl": "de tafel",
-    "en": "the table",
-    "thema": "restaurant",
-    "afleiders": [
-      "la maleta",
-      "la calle"
-    ],
-    "zin": "Queremos ____ para dos personas."
-  },
-  {
-    "es": "el menú",
-    "nl": "de menukaart",
-    "en": "the menu",
-    "thema": "restaurant",
-    "afleiders": [
-      "el tren",
-      "el pasaporte"
-    ],
-    "zin": "¿Puede traer ____?"
-  },
-  {
-    "es": "el agua",
-    "nl": "het water",
-    "en": "the water",
-    "thema": "restaurant",
-    "afleiders": [
-      "el billete",
-      "el precio"
-    ],
-    "zin": "Quiero ____ sin gas, por favor."
-  },
-  {
-    "es": "la cuenta",
-    "nl": "de rekening",
-    "en": "the bill",
-    "thema": "restaurant",
-    "afleiders": [
-      "la reserva",
-      "la estación"
-    ],
-    "zin": "¿Nos trae ____, por favor?"
-  },
-  {
-    "es": "el camarero",
-    "nl": "de ober",
-    "en": "the waiter",
-    "thema": "restaurant",
-    "afleiders": [
-      "el museo",
-      "el autobús"
-    ],
-    "zin": "____ recomienda la sopa."
-  },
-  {
-    "es": "el pan",
-    "nl": "het brood",
-    "en": "the bread",
-    "thema": "restaurant",
-    "afleiders": [
-      "el mapa",
-      "el bolso"
-    ],
-    "zin": "¿Tiene ____ sin gluten?"
-  },
-  {
-    "es": "el mercado",
-    "nl": "de markt",
-    "en": "the market",
-    "thema": "markt",
-    "afleiders": [
-      "el hotel",
-      "el tren"
-    ],
-    "zin": "Compramos fruta en ____ ."
-  },
-  {
-    "es": "el precio",
-    "nl": "de prijs",
-    "en": "the price",
-    "thema": "markt",
-    "afleiders": [
-      "el agua",
-      "el ascensor"
-    ],
-    "zin": "¿Cuál es ____ de las naranjas?"
-  },
-  {
-    "es": "la fruta",
-    "nl": "het fruit",
-    "en": "the fruit",
-    "thema": "markt",
-    "afleiders": [
-      "la llave",
-      "la salida"
-    ],
-    "zin": "Me gusta ____ fresca."
-  },
-  {
-    "es": "el dinero",
-    "nl": "het geld",
-    "en": "the money",
-    "thema": "markt",
-    "afleiders": [
-      "el menú",
-      "el tren"
-    ],
-    "zin": "No tengo mucho ____ ."
-  },
-  {
-    "es": "la bolsa",
-    "nl": "de zak / tas",
-    "en": "the bag",
-    "thema": "markt",
-    "afleiders": [
-      "la cuenta",
-      "la reserva"
-    ],
-    "zin": "Necesito ____ para las manzanas."
-  },
-  {
-    "es": "barato",
-    "nl": "goedkoop",
-    "en": "cheap",
-    "thema": "markt",
-    "afleiders": [
-      "cerrado",
-      "perdido"
-    ],
-    "zin": "Este queso es muy ____ ."
-  },
-  {
-    "es": "ayuda",
-    "nl": "hulp",
-    "en": "help",
-    "thema": "hulp",
-    "afleiders": [
-      "cuenta",
-      "fruta"
-    ],
-    "zin": "Necesito ____, por favor."
-  },
-  {
-    "es": "perdido",
-    "nl": "verdwaald",
-    "en": "lost",
-    "thema": "hulp",
-    "afleiders": [
-      "barato",
-      "abierto"
-    ],
-    "zin": "Estoy ____ en esta calle."
-  },
-  {
-    "es": "el hospital",
-    "nl": "het ziekenhuis",
-    "en": "the hospital",
-    "thema": "hulp",
-    "afleiders": [
-      "el mercado",
-      "el menú"
-    ],
-    "zin": "¿Dónde está ____ más cercano?"
-  },
-  {
-    "es": "la farmacia",
-    "nl": "de apotheek",
-    "en": "the pharmacy",
-    "thema": "hulp",
-    "afleiders": [
-      "la mesa",
-      "la estación"
-    ],
-    "zin": "Busco ____ porque me duele la cabeza."
-  },
-  {
-    "es": "la policía",
-    "nl": "de politie",
-    "en": "the police",
-    "thema": "hulp",
-    "afleiders": [
-      "la fruta",
-      "la llave"
-    ],
-    "zin": "Tengo que llamar a ____ ."
-  },
-  {
-    "es": "abierto",
-    "nl": "open",
-    "en": "open",
-    "thema": "hulp",
-    "afleiders": [
-      "caro",
-      "perdido"
-    ],
-    "zin": "¿Está ____ el museo?"
-  }
-]
-  </script>
-  <!-- ======================= EINDE JSON WOORDENLIJST ======================= -->
+    <section id="end" class="screen"><div class="panel"><h2 id="endTitle"></h2><p id="endIntro" class="small" style="margin-top:.35rem"></p><div class="metricGrid"><div class="metric"><span class="tiny" id="endMoneyLabel"></span><strong id="endMoney">€0</strong></div><div class="metric"><span class="tiny" id="endStampLabel"></span><strong id="endStamps">0/4</strong></div><div class="metric"><span class="tiny" id="endKnownLabel"></span><strong id="endKnown">0</strong></div><div class="metric"><span class="tiny" id="endDueLabel"></span><strong id="endDue">0</strong></div></div><div class="cards"><div class="mini"><h3 id="routeTitle"></h3><div id="routeList" class="list"></div></div><div class="mini"><h3 id="souvenirsTitle"></h3><div id="souvenirList" class="list"></div></div><div class="mini"><h3 id="adviceTitle"></h3><p id="adviceText" class="small" style="margin-top:.35rem"></p></div></div><div class="actions"><button id="homeAgain" type="button"></button><button id="restartBtn" type="button" class="danger"></button></div></div></section>
+  </main>
+  <footer><p class="tiny">Pasaporte A1 · PWA · local-first · no account · no external libraries</p></footer>
+</div>
 
-  <script>
-  (() => {
-    "use strict";
+<dialog id="settingsDialog"><div class="dialogBody"><h2 id="settingsTitle"></h2><div class="settingsGrid"><label class="small"><span id="interfaceLabel"></span><select id="uiLang"><option value="nl">Nederlands</option><option value="en">English</option><option value="sk">Slovenčina</option></select></label><label class="small"><span id="learnLabel"></span><select id="learnLang"><option value="nl">Nederlands</option><option value="en">English</option><option value="sk">Slovenčina</option></select></label></div><div class="actions"><button id="saveSettings" type="button"></button><button id="closeSettings" type="button" class="secondary"></button></div></div></dialog>
 
-    /**********************************************************************
-     * ENGINE — gescheiden van de woordenlijst hierboven.
-     * De engine leest exact één externe data-bron: de JSON-array #word-data.
-     **********************************************************************/
-
-    const setViewportHeight = () => {
-      document.documentElement.style.setProperty("--vh", `${window.innerHeight * 0.01}px`);
-    };
-    setViewportHeight();
-    window.addEventListener("resize", setViewportHeight, { passive:true });
-    window.addEventListener("orientationchange", setViewportHeight, { passive:true });
-    if(window.visualViewport){ window.visualViewport.addEventListener("resize", setViewportHeight, { passive:true }); }
-    document.addEventListener("touchstart", function(){}, { passive:true });
-
-    const QUESTIONS_PER_COUNTRY = 5;
-    const START_MONEY = 500;
-    const SPEED_SECONDS = 30;
-
-    const I18N = Object.freeze({
-      nl: {
-        htmlLang:"nl", tagline:"Spaanse reiswoordenschat als browsergame.",
-        mapTitle:"Kies je volgende land", mapIntro:"Je start met €500. Reizen kost geld. Taalopdrachten leveren geld op.",
-        howTitle:"🎯 Doel", howText:"Bezoek de drie landen, verzamel stempels en leer je fout beantwoorde woorden verplicht opnieuw.",
-        rulesTitle:"🔥 Combo-vlam", rulesText:"Elk juist antwoord verhoogt je multiplier. Eén fout antwoord dooft de vlam.",
-        leitnerTitleMap:"🧠 Leitner verplicht", leitnerTitle:"🧠 Leitner-wachtrij", emptyQueue:"Nog leeg.",
-        endNow:"Eindscherm bekijken", continueTrip:"Verder reizen", finishTrip:"Eindscherm bekijken", restart:"Opnieuw spelen",
-        chooseMc:"Meerkeuze · €10", chooseType:"Typen · €25", check:"Controleer", next:"Volgende vraag",
-        typePlaceholder:"Typ het Spaanse woord...", startSpeed:"Start snelronde", speedRound:"Snelronde", speedIntro:"30 seconden. Kies zo snel mogelijk. Elk juist antwoord levert €8 × multiplier op.",
-        ready:"Klaar?", pressStart:"Druk op start.", speedReady:"Klaar voor 30 seconden?", speedHelp:"Kies het juiste Spaanse woord. Fouten gaan ook naar je verplichte Leitner-wachtrij.",
-        countryLine:(country, done) => `${country.emoji} ${country.name} · vraag ${done + 1}/${QUESTIONS_PER_COUNTRY}`,
-        reviewBadge:(count) => `🧠 Verplichte herhaling: nog ${count} woord(en). Een fout woord moet 2× juist zijn.`,
-        progress:(done) => `Normale scenario's: ${Math.min(done, QUESTIONS_PER_COUNTRY)}/${QUESTIONS_PER_COUNTRY}. Daarna volgt een snelronde van 30 seconden.`,
-        prompt:(meaning) => `Welk Spaans woord betekent <strong>${safe(meaning)}</strong>?`,
-        mcInstruction:"Kies het juiste Spaanse woord.", typeInstruction:"Typ het Spaanse woord. Accenten en lidwoorden tellen soepel mee.",
-        correct:(w, reward, review, pending) => `Juist. <strong>${safe(w.es)}</strong> = ${safe(meaning(w))}. Je verdient <strong>${euro(reward)}</strong>. De combo-vlam groeit.${review ? " " + pending : ""}`,
-        allReviewDone:"Alle verplichte herhaling is klaar.", pendingReview:(n)=>`Nog ${n} verplichte herhaalwoord(en) te gaan.`,
-        wrong:(raw, w, consequence, lola) => `<strong>Niet juist.</strong> Jij koos: “${safe(raw || "niets")}”. Het juiste antwoord is <strong>${safe(w.es)}</strong>.<br><br>🎭 ${safe(consequence)}<br><br>${lola}`,
-        mapBlockedTrip:"Je bent nog midden in een land. Rond eerst deze reis af.", mapBlockedReview:(n)=>`Je hebt nog ${n} verplicht(e) Leitner-woord(en). Beantwoord ze eerst 2× juist.`,
-        travelCost:"Reiskost", cluster:"Thema-cluster", visited:"Bezocht", go:"Reis naar",
-        notEnough:(name,cost,money)=>`Je hebt niet genoeg geld voor ${name}. Nodig: ${euro(cost)}. Je hebt: ${euro(money)}. Verdien eerst geld in een ander land.`,
-        bagEmpty:"Nog geen souvenirs.", bagItems:(items)=>items.map(s=>`${s.emoji} ${s.es} = ${s.nl}`).join("<br>"),
-        speedDone:(score)=>`Snelronde klaar: ${score} juiste antwoorden.`,
-        speedToReview:(n)=>`Nog ${n} fout woord(en) moeten 2× juist herhaald worden voor je je stempel krijgt.`,
-        speedToStamp:"Je krijgt nu je paspoortstempel.", speedCorrect:(reward,w)=>`+${euro(reward)} · ${w.es} = ${meaning(w)}`, speedWrong:(w)=>`Oei. ${w.es} = ${meaning(w)}. Lola zet het in je wachtrij.`,
-        stampTitle:(c)=>`${c.emoji} Stempel voor ${c.name}`, stampText:"Je rondde de scenario’s en snelronde af. Lola 🦜 noemt je Spaans ‘voldoende verstaanbaar voor mens én vogel’.",
-        stampLabel:"Stempel", souvenirLabel:"Souvenir-woord", balanceLabel:"Saldo",
-        endTitle:"🏁 Einde van je reis", endIntro:"Route, saldo en persoonlijke herhaallijst.", endMoneyLabel:"Saldo", endStampLabel:"Stempels", endComboLabel:"Beste combo",
-        routeTitle:"🗺️ Route", souvenirsTitle:"🎁 Souvenirs", reviewTitle:"🧠 Herhaallijst",
-        routeEmpty:"Je bent nog niet vertrokken.", routeLine:(i,c,r)=>`${i}. ${c.emoji} ${c.name}<br>Reiskost: ${euro(r.paid)} · Verdiend: ${euro(r.earned)} · Snelronde: ${r.speedScore} juist`,
-        noWrong:"Geen foute woorden. Lola is verdacht stil.", theme:"Thema", example:"voorbeeld",
-        footerNote:"Eén HTML-bestand · vanilla JavaScript · emoji graphics · data en engine gescheiden.",
-        themes:{balie:"balie",vervoer:"vervoer",restaurant:"restaurant",markt:"markt",hulp:"hulp"},
-        countries:{mexico:"Mexico",spain:"Spanje",argentina:"Argentinië"},
-        souvenirs:{gracias:"dank je",tapas:"kleine hapjes",mate:"Argentijnse infusie"},
-        templates:{
-          balie:{title:"Aan de balie",speaker:"Receptionist",setup:"Je staat aan een balie. Lola probeert beleefd te knikken, maar ze knikt met haar hele lijf.",lola:(w)=>`Lola 🦜 legt uit: “Aan de balie heb je praktische woorden nodig. <strong>${safe(w.es)}</strong> betekent <strong>${safe(meaning(w))}</strong>.”`},
-          vervoer:{title:"Vervoer",speaker:"Chauffeur",setup:"Je zoekt bus, trein of uitgang. Lola leest de kaart ondersteboven en doet alsof dat Spaans is.",lola:(w)=>`Lola 🦜 tikt tegen het raam: “Voor onderweg is <strong>${safe(w.es)}</strong> handig. Dat is <strong>${safe(meaning(w))}</strong>.”`},
-          restaurant:{title:"Restaurant",speaker:"Camarero",setup:"Je zit aan tafel. Lola heeft al brood besteld, maar alleen met vogelaccent.",lola:(w)=>`Lola 🦜 fluistert: “In een restaurant red je je beter met <strong>${safe(w.es)}</strong>. Dat betekent <strong>${safe(meaning(w))}</strong>.”`},
-          markt:{title:"Op de markt",speaker:"Verkoper",setup:"De markt ruikt naar fruit. Lola onderhandelt luid, maar kent alleen het woord ‘olé’.",lola:(w)=>`Lola 🦜 kraait: “Op de markt is <strong>${safe(w.es)}</strong> nuttig. In jouw taal: <strong>${safe(meaning(w))}</strong>.”`},
-          hulp:{title:"Hulp vragen",speaker:"Voorbijganger",setup:"Je weet het even niet meer. Lola wijst drie richtingen tegelijk aan.",lola:(w)=>`Lola 🦜 zegt ernstig: “Als je hulp nodig hebt, onthoud <strong>${safe(w.es)}</strong>. Dat betekent <strong>${safe(meaning(w))}</strong>.”`}
-        },
-        consequences:["Lola bestelt per ongeluk drie liften en één croissant.","De receptionist geeft je een kaart van de maan.","Een ober brengt een buskaartje met extra saus.","Je vraagt de weg en krijgt applaus van een straatmuzikant.","Lola roept ‘perfecto!’ en verstopt zich achter je rugzak."]
-      },
-      en: {
-        htmlLang:"en", tagline:"Spanish travel vocabulary as a browser game.",
-        mapTitle:"Choose your next country", mapIntro:"You start with €500. Travelling costs money. Language tasks earn money.",
-        howTitle:"🎯 Goal", howText:"Visit all three countries, collect passport stamps and relearn every wrong word until it is correct twice.",
-        rulesTitle:"🔥 Combo flame", rulesText:"Every correct answer raises your multiplier. One wrong answer puts out the flame.",
-        leitnerTitleMap:"🧠 Mandatory Leitner", leitnerTitle:"🧠 Leitner queue", emptyQueue:"Empty for now.",
-        endNow:"View end screen", continueTrip:"Keep travelling", finishTrip:"View end screen", restart:"Play again",
-        chooseMc:"Multiple choice · €10", chooseType:"Typing · €25", check:"Check", next:"Next question",
-        typePlaceholder:"Type the Spanish word...", startSpeed:"Start speed round", speedRound:"Speed round", speedIntro:"30 seconds. Choose as quickly as possible. Each correct answer earns €8 × multiplier.",
-        ready:"Ready?", pressStart:"Press start.", speedReady:"Ready for 30 seconds?", speedHelp:"Choose the correct Spanish word. Wrong answers also go into your mandatory Leitner queue.",
-        countryLine:(country, done) => `${country.emoji} ${country.name} · question ${done + 1}/${QUESTIONS_PER_COUNTRY}`,
-        reviewBadge:(count) => `🧠 Mandatory review: ${count} word(s) left. A wrong word must be answered correctly twice.`,
-        progress:(done) => `Normal scenarios: ${Math.min(done, QUESTIONS_PER_COUNTRY)}/${QUESTIONS_PER_COUNTRY}. Then you get a 30-second speed round.`,
-        prompt:(meaning) => `Which Spanish word means <strong>${safe(meaning)}</strong>?`,
-        mcInstruction:"Choose the correct Spanish word.", typeInstruction:"Type the Spanish word. Accents and articles are checked flexibly.",
-        correct:(w, reward, review, pending) => `Correct. <strong>${safe(w.es)}</strong> = ${safe(meaning(w))}. You earn <strong>${euro(reward)}</strong>. The combo flame grows.${review ? " " + pending : ""}`,
-        allReviewDone:"All mandatory review is done.", pendingReview:(n)=>`${n} mandatory review word(s) still to go.`,
-        wrong:(raw, w, consequence, lola) => `<strong>Not correct.</strong> You chose: “${safe(raw || "nothing")}”. The correct answer is <strong>${safe(w.es)}</strong>.<br><br>🎭 ${safe(consequence)}<br><br>${lola}`,
-        mapBlockedTrip:"You are still in the middle of a trip. Finish this country first.", mapBlockedReview:(n)=>`You still have ${n} mandatory Leitner word(s). Answer them correctly twice first.`,
-        travelCost:"Travel cost", cluster:"Theme cluster", visited:"Visited", go:"Travel to",
-        notEnough:(name,cost,money)=>`You do not have enough money for ${name}. Needed: ${euro(cost)}. You have: ${euro(money)}. Earn money in another country first.`,
-        bagEmpty:"No souvenirs yet.", bagItems:(items)=>items.map(s=>`${s.emoji} ${s.es} = ${s.en || s.nl}`).join("<br>"),
-        speedDone:(score)=>`Speed round finished: ${score} correct answer(s).`,
-        speedToReview:(n)=>`${n} wrong word(s) still need to be answered correctly twice before you get your stamp.`,
-        speedToStamp:"You now get your passport stamp.", speedCorrect:(reward,w)=>`+${euro(reward)} · ${w.es} = ${meaning(w)}`, speedWrong:(w)=>`Oops. ${w.es} = ${meaning(w)}. Lola puts it in your queue.`,
-        stampTitle:(c)=>`${c.emoji} Stamp for ${c.name}`, stampText:"You completed the scenarios and the speed round. Lola 🦜 says your Spanish is ‘understandable to humans and birds alike’.",
-        stampLabel:"Stamp", souvenirLabel:"Souvenir word", balanceLabel:"Balance",
-        endTitle:"🏁 End of your trip", endIntro:"Route, balance and personal review list.", endMoneyLabel:"Balance", endStampLabel:"Stamps", endComboLabel:"Best combo",
-        routeTitle:"🗺️ Route", souvenirsTitle:"🎁 Souvenirs", reviewTitle:"🧠 Review list",
-        routeEmpty:"You have not left yet.", routeLine:(i,c,r)=>`${i}. ${c.emoji} ${c.name}<br>Travel cost: ${euro(r.paid)} · Earned: ${euro(r.earned)} · Speed round: ${r.speedScore} correct`,
-        noWrong:"No wrong words. Lola is suspiciously quiet.", theme:"Theme", example:"example",
-        footerNote:"One HTML file · vanilla JavaScript · emoji graphics · separated data and engine.",
-        themes:{balie:"reception desk",vervoer:"transport",restaurant:"restaurant",markt:"market",hulp:"asking for help"},
-        countries:{mexico:"Mexico",spain:"Spain",argentina:"Argentina"},
-        souvenirs:{gracias:"thank you",tapas:"small dishes",mate:"Argentinian infusion"},
-        templates:{
-          balie:{title:"At reception",speaker:"Receptionist",setup:"You are standing at a reception desk. Lola tries to nod politely, but somehow nods with her whole body.",lola:(w)=>`Lola 🦜 explains: “At reception you need practical words. <strong>${safe(w.es)}</strong> means <strong>${safe(meaning(w))}</strong>.”`},
-          vervoer:{title:"Transport",speaker:"Driver",setup:"You are looking for a bus, train or exit. Lola reads the map upside down and pretends that is Spanish.",lola:(w)=>`Lola 🦜 taps the window: “On the road, <strong>${safe(w.es)}</strong> is useful. It means <strong>${safe(meaning(w))}</strong>.”`},
-          restaurant:{title:"Restaurant",speaker:"Waiter",setup:"You are sitting at a table. Lola has already ordered bread, but only in parrot accent.",lola:(w)=>`Lola 🦜 whispers: “In a restaurant, <strong>${safe(w.es)}</strong> helps. It means <strong>${safe(meaning(w))}</strong>.”`},
-          markt:{title:"At the market",speaker:"Seller",setup:"The market smells like fruit. Lola negotiates loudly, but only knows the word ‘olé’.",lola:(w)=>`Lola 🦜 squawks: “At the market, <strong>${safe(w.es)}</strong> is useful. In your language: <strong>${safe(meaning(w))}</strong>.”`},
-          hulp:{title:"Asking for help",speaker:"Passer-by",setup:"You are not sure what to do. Lola points in three directions at once.",lola:(w)=>`Lola 🦜 says seriously: “When you need help, remember <strong>${safe(w.es)}</strong>. It means <strong>${safe(meaning(w))}</strong>.”`}
-        },
-        consequences:["Lola accidentally orders three elevators and one croissant.","The receptionist gives you a map of the moon.","A waiter brings a bus ticket with extra sauce.","You ask for directions and get applause from a street musician.","Lola shouts ‘perfecto!’ and hides behind your backpack."]
-      }
-    });
-
-    const COUNTRY_DATA = Object.freeze({
-      mexico: { id:"mexico", emoji:"🇲🇽", cost:90, color:"#0f766e", themes:["balie","markt"], souvenir:{ es:"gracias", nl:"dank je", en:"thank you" } },
-      spain: { id:"spain", emoji:"🇪🇸", cost:120, color:"#c2410c", themes:["restaurant","balie"] , souvenir:{ es:"tapas", nl:"kleine hapjes", en:"small dishes" } },
-      argentina: { id:"argentina", emoji:"🇦🇷", cost:140, color:"#2563eb", themes:["vervoer","hulp"], souvenir:{ es:"mate", nl:"Argentijnse infusie", en:"Argentinian infusion" } }
-    });
-    const countryIds = Object.keys(COUNTRY_DATA);
-
-    const ui = {
-      tagline: byId("tagline"), langNl: byId("langNl"), langEn: byId("langEn"), money: byId("money"), combo: byId("combo"), stamps: byId("stamps"), leitnerCount: byId("leitnerCount"),
-      mapTitle: byId("mapTitle"), mapIntro: byId("mapIntro"), mapNotice: byId("mapNotice"), countries: byId("countries"), endNow: byId("endNow"),
-      howTitle: byId("howTitle"), howText: byId("howText"), rulesTitle: byId("rulesTitle"), rulesText: byId("rulesText"), leitnerTitleMap: byId("leitnerTitleMap"), queueMap: byId("queueMap"),
-      countryLine: byId("countryLine"), scenarioEmoji: byId("scenarioEmoji"), scenarioTitle: byId("scenarioTitle"), scenarioSetup: byId("scenarioSetup"), taskBox: byId("taskBox"),
-      reviewBadge: byId("reviewBadge"), sentence: byId("sentence"), prompt: byId("prompt"), modeChooser: byId("modeChooser"), chooseMc: byId("chooseMc"), chooseType: byId("chooseType"),
-      answerArea: byId("answerArea"), feedback: byId("feedback"), nextBox: byId("nextBox"), nextQuestion: byId("nextQuestion"),
-      progressTitle: byId("progressTitle"), progressText: byId("progressText"), bagTitle: byId("bagTitle"), bag: byId("bag"), leitnerTitle: byId("leitnerTitle"), queue: byId("queue"),
-      speedTitle: byId("speedTitle"), speedIntro: byId("speedIntro"), timer: byId("timer"), speedQuestion: byId("speedQuestion"), speedHelp: byId("speedHelp"), speedAnswers: byId("speedAnswers"), speedFeedback: byId("speedFeedback"), startSpeed: byId("startSpeed"),
-      stampTitle: byId("stampTitle"), stampText: byId("stampText"), stampLabel: byId("stampLabel"), stampEmoji: byId("stampEmoji"), souvenirLabel: byId("souvenirLabel"), souvenirWord: byId("souvenirWord"), souvenirMeaning: byId("souvenirMeaning"), balanceLabel: byId("balanceLabel"), stampMoney: byId("stampMoney"), continueTrip: byId("continueTrip"), finishTrip: byId("finishTrip"),
-      endTitle: byId("endTitle"), endIntro: byId("endIntro"), endMoneyLabel: byId("endMoneyLabel"), endMoney: byId("endMoney"), endStampLabel: byId("endStampLabel"), endStampCount: byId("endStampCount"), endComboLabel: byId("endComboLabel"), endCombo: byId("endCombo"), routeTitle: byId("routeTitle"), endRoute: byId("endRoute"), souvenirsTitle: byId("souvenirsTitle"), endSouvenirs: byId("endSouvenirs"), reviewTitle: byId("reviewTitle"), endReview: byId("endReview"), restart: byId("restart"), footerNote: byId("footerNote")
-    };
-
-    const WORDS = validateWords(readWords());
-    const state = freshState();
-
-    function byId(id){ return document.getElementById(id); }
-    function t(){ return I18N[state.lang]; }
-    function country(id){ const base = COUNTRY_DATA[id]; return { ...base, name:t().countries[id], themeNames:base.themes.map(th => t().themes[th]), souvenir:{...base.souvenir, nl:base.souvenir.nl, en:base.souvenir.en} }; }
-    function meaning(word){ return state.lang === "en" ? (word.en || word.nl) : word.nl; }
-
-    function freshState(){
-      const browserLang = (navigator.language || "nl").toLowerCase().startsWith("en") ? "en" : "nl";
-      return {
-        lang: browserLang, screen:"map", money:START_MONEY, combo:0, multiplier:1, bestMultiplier:1,
-        visited:[], route:[], souvenirs:[], wrongWords:new Map(), leitner:new Map(),
-        currentCountryId:null, answeredInCountry:0, normalAsked:new Set(), currentWord:null, currentIsReview:false, currentMode:null,
-        speed:{active:false,left:SPEED_SECONDS,score:0,currentWord:null,timerId:null}, lastStampCountryId:null
-      };
-    }
-
-    function readWords(){
-      const raw = byId("word-data").textContent.trim();
-      try{ return JSON.parse(raw); }
-      catch(error){ document.body.innerHTML = `<main style="padding:1rem;font-family:system-ui"><h1>JSON-fout</h1><p>${safe(error.message)}</p></main>`; throw error; }
-    }
-
-    function validateWords(list){
-      if(!Array.isArray(list)) throw new Error("word-data moet één JSON-array zijn.");
-      const required = ["es","nl","thema","afleiders","zin"];
-      const seen = new Set();
-      list.forEach((w,i) => {
-        required.forEach(key => { if(!(key in w)) throw new Error(`Woord ${i+1} mist veld: ${key}`); });
-        if(typeof w.es !== "string" || typeof w.nl !== "string" || typeof w.thema !== "string" || typeof w.zin !== "string") throw new Error(`Woord ${i+1} bevat een ongeldig tekstveld.`);
-        if(w.en !== undefined && typeof w.en !== "string") throw new Error(`Woord ${i+1} heeft een ongeldig en-veld.`);
-        if(!Array.isArray(w.afleiders) || w.afleiders.length !== 2) throw new Error(`Woord ${i+1} moet exact 2 afleiders hebben.`);
-        if(!w.zin.includes("____")) throw new Error(`Woord ${i+1} moet een zin met ____ bevatten.`);
-        if(!I18N.nl.themes[w.thema]) throw new Error(`Woord ${i+1} heeft onbekend thema: ${w.thema}`);
-        if(seen.has(normalize(w.es))) throw new Error(`Dubbel Spaans woord: ${w.es}`);
-        seen.add(normalize(w.es));
-      });
-      return Object.freeze(list.map(w => Object.freeze({...w, afleiders:Object.freeze(w.afleiders.slice())})));
-    }
-
-    function show(screenId){
-      document.querySelectorAll(".screen").forEach(s => s.classList.toggle("active", s.id === screenId));
-      state.screen = screenId;
-      requestAnimationFrame(() => window.scrollTo({top:0,behavior:"smooth"}));
-    }
-
-    function setLang(lang){
-      if(!I18N[lang]) return;
-      state.lang = lang;
-      document.documentElement.lang = t().htmlLang;
-      renderStatic();
-      if(state.screen === "map") renderMap();
-      else if(state.screen === "question" && state.currentWord) renderScenario(state.currentWord, state.currentIsReview, true);
-      else if(state.screen === "speed") renderSpeedLabels();
-      else if(state.screen === "stamp") renderStamp();
-      else if(state.screen === "end") renderEnd();
-    }
-
-    function renderStatic(){
-      const l=t();
-      ui.tagline.textContent=l.tagline; ui.langNl.classList.toggle("active", state.lang==="nl"); ui.langEn.classList.toggle("active", state.lang==="en");
-      ui.langNl.setAttribute("aria-pressed", String(state.lang==="nl")); ui.langEn.setAttribute("aria-pressed", String(state.lang==="en"));
-      ui.mapTitle.textContent=l.mapTitle; ui.mapIntro.textContent=l.mapIntro; ui.endNow.textContent=l.endNow;
-      ui.howTitle.textContent=l.howTitle; ui.howText.textContent=l.howText; ui.rulesTitle.textContent=l.rulesTitle; ui.rulesText.textContent=l.rulesText; ui.leitnerTitleMap.textContent=l.leitnerTitleMap;
-      ui.chooseMc.textContent=l.chooseMc; ui.chooseType.textContent=l.chooseType; ui.nextQuestion.textContent=l.next; ui.progressTitle.textContent= state.lang === "en" ? "📍 Progress" : "📍 Voortgang";
-      ui.bagTitle.textContent= state.lang === "en" ? "🎒 Backpack" : "🎒 Rugzak"; ui.leitnerTitle.textContent=l.leitnerTitle;
-      ui.speedIntro.textContent=l.speedIntro; ui.startSpeed.textContent=l.startSpeed; ui.stampLabel.textContent=l.stampLabel; ui.souvenirLabel.textContent=l.souvenirLabel; ui.balanceLabel.textContent=l.balanceLabel;
-      ui.continueTrip.textContent=l.continueTrip; ui.finishTrip.textContent=l.finishTrip; ui.endTitle.textContent=l.endTitle; ui.endIntro.textContent=l.endIntro; ui.endMoneyLabel.textContent=l.endMoneyLabel; ui.endStampLabel.textContent=l.endStampLabel; ui.endComboLabel.textContent=l.endComboLabel;
-      ui.routeTitle.textContent=l.routeTitle; ui.souvenirsTitle.textContent=l.souvenirsTitle; ui.reviewTitle.textContent=l.reviewTitle; ui.restart.textContent=l.restart; ui.footerNote.textContent=l.footerNote;
-      updateHud(); renderLeitner(); renderBag();
-    }
-
-    function updateHud(){
-      ui.money.textContent=euro(state.money); ui.combo.textContent=`x${state.multiplier.toFixed(2)}`; ui.stamps.textContent=`${state.visited.length}/${countryIds.length}`; ui.leitnerCount.textContent=String(pendingLeitnerItems().length);
-    }
-
-    function renderLeitner(){
-      const items = pendingLeitnerItems();
-      const html = items.length ? items.map(item => `<div class="item"><strong>${safe(item.word.es)}</strong> = ${safe(meaning(item.word))}<br><span class="small">${item.correct}/2</span></div>`).join("") : `<div class="item small">${safe(t().emptyQueue)}</div>`;
-      ui.queue.innerHTML = html; ui.queueMap.innerHTML = html;
-    }
-
-    function renderBag(){
-      ui.bag.innerHTML = state.souvenirs.length ? t().bagItems(state.souvenirs) : t().bagEmpty;
-    }
-
-    function pendingLeitnerItems(){ return Array.from(state.leitner.values()).filter(item => item.correct < 2); }
-    function hasPendingLeitner(){ return pendingLeitnerItems().length > 0; }
-    function isTripActive(){ return !!state.currentCountryId && !state.visited.includes(state.currentCountryId); }
-
-    function renderMap(){
-      if(isTripActive()){
-        ui.mapNotice.textContent = t().mapBlockedTrip;
-        resumeCountry();
-        return;
-      }
-      setCountryAccent(null);
-      renderStatic();
-      const pending = pendingLeitnerItems().length;
-      if(pending){ ui.mapNotice.classList.remove("hidden"); ui.mapNotice.textContent = t().mapBlockedReview(pending); }
-      else { ui.mapNotice.classList.add("hidden"); ui.mapNotice.textContent = ""; }
-      ui.countries.innerHTML = countryIds.map(id => {
-        const c = country(id); const isVisited = state.visited.includes(id); const disabled = pending || isVisited || state.money < c.cost;
-        return `<button class="country-card" type="button" data-country="${attr(id)}" style="background:${attr(c.color)}" ${disabled ? "disabled" : ""}>
-          <span class="emoji" aria-hidden="true">${safe(c.emoji)}</span>
-          <span><strong>${safe(c.name)}</strong><br><span class="meta">${safe(t().travelCost)}: ${euro(c.cost)}<br>${safe(t().cluster)}: ${c.themeNames.map(safe).join(", ")}${isVisited ? `<br>✅ ${safe(t().visited)}` : ""}</span></span>
-          <span class="meta">${safe(t().go)} ${safe(c.name)}</span>
-        </button>`;
-      }).join("");
-      ui.countries.querySelectorAll("button[data-country]").forEach(btn => btn.addEventListener("click", () => startCountry(btn.dataset.country)));
-      show("map");
-    }
-
-    function startCountry(id){
-      if(hasPendingLeitner()){ renderMap(); return; }
-      const c = country(id);
-      if(state.money < c.cost){ ui.mapNotice.classList.remove("hidden"); ui.mapNotice.textContent = t().notEnough(c.name,c.cost,state.money); return; }
-      state.currentCountryId = id; state.answeredInCountry = 0; state.normalAsked = new Set(); state.currentWord = null; state.currentIsReview = false; state.currentMode = null;
-      state.money -= c.cost; state.route.push({id, paid:c.cost, earned:0, speedScore:0});
-      setCountryAccent(c.color); updateHud(); nextNormalQuestion();
-    }
-
-    function resumeCountry(){
-      if(!state.currentWord) nextNormalQuestion(); else renderScenario(state.currentWord, state.currentIsReview, true);
-    }
-
-    function nextNormalQuestion(){
-      if(!state.currentCountryId){ renderMap(); return; }
-      if(hasPendingLeitner()){ renderScenario(chooseLeitnerWord(), true); return; }
-      if(state.answeredInCountry >= QUESTIONS_PER_COUNTRY){ prepareSpeedRound(); return; }
-      renderScenario(chooseNormalWord(), false);
-    }
-
-    function chooseNormalWord(){
-      const c = country(state.currentCountryId);
-      const pool = WORDS.filter(w => c.themes.includes(w.thema));
-      const notAsked = pool.filter(w => !state.normalAsked.has(w.es));
-      const choice = sample(notAsked.length ? notAsked : pool);
-      state.normalAsked.add(choice.es);
-      return choice;
-    }
-
-    function chooseLeitnerWord(){ return sample(pendingLeitnerItems()).word; }
-
-    function renderScenario(word, isReview=false, preserveAnswer=false){
-      const l=t(), tmpl=l.templates[word.thema], c=country(state.currentCountryId);
-      state.currentWord=word; state.currentIsReview=isReview; state.currentMode = preserveAnswer ? state.currentMode : null;
-      setCountryAccent(c.color); updateHud(); renderLeitner(); renderBag();
-      ui.countryLine.textContent = l.countryLine(c, state.answeredInCountry);
-      ui.scenarioEmoji.textContent = themeEmoji(word.thema); ui.scenarioTitle.textContent = tmpl.title; ui.scenarioSetup.textContent = tmpl.setup;
-      ui.reviewBadge.classList.toggle("hidden", !isReview); ui.reviewBadge.textContent = isReview ? l.reviewBadge(pendingLeitnerItems().length) : "";
-      ui.sentence.innerHTML = safe(word.zin).replace("____", `<span class="gap">____</span>`);
-      ui.prompt.innerHTML = l.prompt(meaning(word)); ui.progressText.textContent = l.progress(state.answeredInCountry);
-      ui.feedback.className = "feedback"; ui.feedback.textContent = ""; ui.nextBox.classList.add("hidden");
-      ui.modeChooser.classList.toggle("hidden", !!state.currentMode);
-      if(!preserveAnswer || !state.currentMode) ui.answerArea.innerHTML = "";
-      if(state.currentMode === "mc") renderMultipleChoice();
-      if(state.currentMode === "type") renderTypeQuestion();
-      show("question");
-    }
-
-    function chooseMode(mode){
-      state.currentMode = mode; ui.modeChooser.classList.add("hidden"); ui.feedback.className = "feedback";
-      if(mode === "mc") renderMultipleChoice(); else renderTypeQuestion();
-    }
-
-    function renderMultipleChoice(){
-      const w = state.currentWord;
-      ui.answerArea.innerHTML = `<p class="small">${safe(t().mcInstruction)}</p><div class="answers">${shuffle([w.es, ...w.afleiders]).map(option => `<button class="choice" type="button" data-answer="${attr(option)}">${safe(option)}</button>`).join("")}</div>`;
-      ui.answerArea.querySelectorAll("button[data-answer]").forEach(btn => btn.addEventListener("click", () => evaluate(btn.dataset.answer)));
-    }
-
-    function renderTypeQuestion(){
-      ui.answerArea.innerHTML = `<p class="small">${safe(t().typeInstruction)}</p><div class="type-row"><input id="typedAnswer" type="text" inputmode="text" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="${attr(t().typePlaceholder)}"><button id="checkTyped" type="button">${safe(t().check)}</button></div>`;
-      const input = byId("typedAnswer"), button = byId("checkTyped");
-      button.addEventListener("click", () => evaluate(input.value));
-      input.addEventListener("keydown", e => { if(e.key === "Enter") evaluate(input.value); });
-      input.focus({preventScroll:true});
-    }
-
-    function evaluate(rawAnswer){
-      const w = state.currentWord; if(!w || ui.nextBox.classList.contains("hidden") === false) return;
-      const correct = isCorrect(rawAnswer, w.es); applyResult(correct, rawAnswer);
-    }
-
-    function applyResult(correct, rawAnswer){
-      const w=state.currentWord, wasReview=state.currentIsReview;
-      if(correct){
-        const reward = state.currentMode === "type" ? Math.round(25 * state.multiplier) : Math.round(10 * state.multiplier);
-        state.money += reward; state.combo += 1; state.multiplier = round2(state.multiplier + .15); state.bestMultiplier = Math.max(state.bestMultiplier, state.multiplier);
-        if(!wasReview) state.answeredInCountry += 1; addEarned(reward); markLeitnerCorrect(w);
-        const pending = hasPendingLeitner() ? t().pendingReview(pendingLeitnerItems().length) : t().allReviewDone;
-        feedback(true, t().correct(w,reward,wasReview,pending));
-      } else {
-        state.combo = 0; state.multiplier = 1; addWrong(w);
-        ui.taskBox.classList.remove("shake"); void ui.taskBox.offsetWidth; ui.taskBox.classList.add("shake");
-        feedback(false, t().wrong(rawAnswer,w,sample(t().consequences),t().templates[w.thema].lola(w)));
-      }
-      ui.nextBox.classList.remove("hidden"); updateHud(); renderLeitner(); renderBag();
-    }
-
-    function feedback(ok, html){ ui.feedback.className = `feedback show ${ok ? "good" : "bad"}`; ui.feedback.innerHTML = html; }
-    function addEarned(amount){ const r=state.route[state.route.length-1]; if(r) r.earned += amount; }
-    function addWrong(word){ state.wrongWords.set(word.es, word); if(!state.leitner.has(word.es)) state.leitner.set(word.es, {word, correct:0}); }
-    function markLeitnerCorrect(word){ const item=state.leitner.get(word.es); if(!item) return; item.correct += 1; if(item.correct >= 2) state.leitner.delete(word.es); }
-
-    function prepareSpeedRound(){
-      state.speed.active=false; state.speed.left=SPEED_SECONDS; state.speed.score=0; state.speed.currentWord=null; ui.timer.textContent=String(SPEED_SECONDS); renderSpeedLabels(); ui.speedAnswers.innerHTML=""; ui.speedFeedback.className="feedback"; ui.startSpeed.classList.remove("hidden"); show("speed");
-    }
-
-    function renderSpeedLabels(){
-      const c = state.currentCountryId ? country(state.currentCountryId) : null;
-      ui.speedTitle.textContent = c ? `${c.emoji} ${c.name} · ${t().speedRound.toLowerCase()}` : t().speedRound;
-      ui.speedIntro.textContent = t().speedIntro;
-      if(!state.speed.active){ ui.speedQuestion.textContent=t().speedReady; ui.speedHelp.textContent=t().speedHelp; }
-      else if(state.speed.currentWord){ renderSpeedQuestion(true); }
-    }
-
-    function startSpeed(){
-      clearInterval(state.speed.timerId); state.speed.active=true; state.speed.left=SPEED_SECONDS; state.speed.score=0; ui.startSpeed.classList.add("hidden"); ui.speedFeedback.className="feedback"; ui.timer.textContent=String(state.speed.left); renderSpeedQuestion();
-      state.speed.timerId = setInterval(() => { state.speed.left -= 1; ui.timer.textContent=String(state.speed.left); if(state.speed.left <= 0) finishSpeed(); }, 1000);
-    }
-
-    function renderSpeedQuestion(keepWord=false){
-      if(!state.speed.active) return;
-      const c=country(state.currentCountryId); const pool=WORDS.filter(w=>c.themes.includes(w.thema)); const w=keepWord && state.speed.currentWord ? state.speed.currentWord : sample(pool);
-      state.speed.currentWord=w; ui.speedQuestion.innerHTML=t().prompt(meaning(w)); ui.speedHelp.innerHTML=safe(w.zin).replace("____", `<span class="gap">____</span>`);
-      ui.speedAnswers.innerHTML = shuffle([w.es, ...w.afleiders]).map(option => `<button class="choice" type="button" data-answer="${attr(option)}">${safe(option)}</button>`).join("");
-      ui.speedAnswers.querySelectorAll("button").forEach(btn => btn.addEventListener("click", () => evaluateSpeed(btn.dataset.answer)));
-    }
-
-    function evaluateSpeed(answer){
-      if(!state.speed.active) return; const w=state.speed.currentWord;
-      if(isCorrect(answer,w.es)){ const reward=Math.round(8*state.multiplier); state.money += reward; addEarned(reward); state.speed.score += 1; state.combo += 1; state.multiplier=round2(state.multiplier+.1); state.bestMultiplier=Math.max(state.bestMultiplier,state.multiplier); markLeitnerCorrect(w); speedFeedback(true,t().speedCorrect(reward,w)); }
-      else { state.combo=0; state.multiplier=1; addWrong(w); speedFeedback(false,t().speedWrong(w)); }
-      updateHud(); renderLeitner(); renderSpeedQuestion();
-    }
-    function speedFeedback(ok,text){ ui.speedFeedback.className=`feedback show ${ok ? "good" : "bad"}`; ui.speedFeedback.textContent=text; }
-
-    function finishSpeed(){
-      clearInterval(state.speed.timerId); state.speed.active=false; const r=state.route[state.route.length-1]; if(r) r.speedScore=state.speed.score;
-      ui.speedAnswers.innerHTML=""; ui.speedQuestion.textContent=t().speedDone(state.speed.score);
-      if(hasPendingLeitner()){ ui.speedHelp.textContent=t().speedToReview(pendingLeitnerItems().length); setTimeout(nextNormalQuestion,650); }
-      else { ui.speedHelp.textContent=t().speedToStamp; setTimeout(awardStamp,520); }
-    }
-
-    function awardStamp(){ if(hasPendingLeitner()){ nextNormalQuestion(); return; } state.lastStampCountryId=state.currentCountryId; renderStamp(); }
-
-    function renderStamp(){
-      const c=country(state.lastStampCountryId || state.currentCountryId); if(!c){ renderMap(); return; }
-      if(!state.visited.includes(c.id)){ state.visited.push(c.id); state.souvenirs.push({ emoji:c.emoji, ...COUNTRY_DATA[c.id].souvenir }); }
-      updateHud(); renderBag(); ui.stampTitle.textContent=t().stampTitle(c); ui.stampText.textContent=t().stampText; ui.stampEmoji.textContent=`${c.emoji}🛂`; ui.souvenirWord.textContent=c.souvenir.es; ui.souvenirMeaning.textContent=`= ${state.lang === "en" ? c.souvenir.en : c.souvenir.nl}`; ui.stampMoney.textContent=euro(state.money); show("stamp");
-    }
-
-    function finishGame(){
-      clearInterval(state.speed.timerId);
-      if(isTripActive() || hasPendingLeitner()){ if(isTripActive()) resumeCountry(); else renderMap(); return; }
-      renderEnd();
-    }
-
-    function renderEnd(){
-      ui.endMoney.textContent=euro(state.money); ui.endStampCount.textContent=`${state.visited.length}/${countryIds.length}`; ui.endCombo.textContent=`x${state.bestMultiplier.toFixed(2)}`;
-      ui.endRoute.innerHTML = state.route.length ? state.route.map((r,i)=>`<div class="item"><strong>${t().routeLine(i+1,country(r.id),r)}</strong></div>`).join("") : `<div class="item small">${safe(t().routeEmpty)}</div>`;
-      ui.endSouvenirs.innerHTML = state.souvenirs.length ? state.souvenirs.map(s=>`<div class="item"><strong>${safe(s.emoji)} ${safe(s.es)}</strong><br>${safe(state.lang === "en" ? s.en : s.nl)}</div>`).join("") : `<div class="item small">${safe(t().bagEmpty)}</div>`;
-      const wrong=Array.from(state.wrongWords.values());
-      ui.endReview.innerHTML = wrong.length ? wrong.map(w=>`<div class="item"><strong>${safe(w.es)}</strong> = ${safe(meaning(w))}<br><span class="small">${safe(t().theme)}: ${safe(t().templates[w.thema].title)} · ${safe(t().example)}: ${safe(w.zin).replace("____", safe(w.es))}</span></div>`).join("") : `<div class="item small">${safe(t().noWrong)}</div>`;
-      show("end");
-    }
-
-    function restartGame(){
-      clearInterval(state.speed.timerId); const keepLang=state.lang; const fresh=freshState(); for(const key of Object.keys(state)) state[key]=fresh[key]; state.lang=keepLang; renderStatic(); renderMap();
-    }
-
-    function setCountryAccent(color){
-      const root=document.documentElement; const accent=color || "#2563eb";
-      root.style.setProperty("--accent", accent); root.style.setProperty("--accent-dark", darken(accent,.32)); root.style.setProperty("--accent-soft", hexToRgba(accent,.15));
-    }
-    function darken(hex, amount){ const rgb=hexToRgb(hex); return `rgb(${Math.round(rgb.r*(1-amount))},${Math.round(rgb.g*(1-amount))},${Math.round(rgb.b*(1-amount))})`; }
-    function hexToRgba(hex,a){ const rgb=hexToRgb(hex); return `rgba(${rgb.r},${rgb.g},${rgb.b},${a})`; }
-    function hexToRgb(hex){ const v=hex.replace("#",""); const n=parseInt(v.length===3 ? v.split("").map(ch=>ch+ch).join("") : v,16); return {r:(n>>16)&255,g:(n>>8)&255,b:n&255}; }
-    function themeEmoji(theme){ return {balie:"🏨",vervoer:"🚌",restaurant:"🍽️",markt:"🍊",hulp:"🆘"}[theme] || "💬"; }
-    function isCorrect(answer, correct){ const a=normalize(answer), c=normalize(correct); return a===c || stripArticle(a)===stripArticle(c); }
-    function stripArticle(value){ return value.replace(/^(el|la|los|las|un|una|unos|unas)\s+/,"").trim(); }
-    function normalize(value){ var s = String(value || "").toLowerCase(); if(s.normalize){ s = s.normalize("NFD"); } return s.replace(/[\u0300-\u036f]/g,"").replace(/[¡!¿?.,;:]/g,"").replace(/\s+/g," ").trim(); }
-    function shuffle(list){ const copy=list.slice(); for(let i=copy.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [copy[i],copy[j]]=[copy[j],copy[i]]; } return copy; }
-    function sample(list){ return list[Math.floor(Math.random()*list.length)]; }
-    function round2(n){ return Math.round(n*100)/100; }
-    function euro(n){ return `€${Math.round(n)}`; }
-    function safe(value){ return String(value).replace(/[&<>"\']/g, function(ch){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","\'":"&#39;"}[ch]; }); }
-    function attr(value){ return safe(value); }
-
-    document.querySelectorAll("[data-lang]").forEach(btn => btn.addEventListener("click", () => setLang(btn.dataset.lang)));
-    ui.chooseMc.addEventListener("click", () => chooseMode("mc")); ui.chooseType.addEventListener("click", () => chooseMode("type"));
-    ui.nextQuestion.addEventListener("click", nextNormalQuestion); ui.startSpeed.addEventListener("click", startSpeed);
-    ui.continueTrip.addEventListener("click", () => state.visited.length >= countryIds.length ? finishGame() : renderMap());
-    ui.finishTrip.addEventListener("click", finishGame); ui.endNow.addEventListener("click", finishGame); ui.restart.addEventListener("click", restartGame);
-
-    setLang(state.lang);
-  })();
-  </script>
+<script id="word-data" type="application/json">[{"id": "hola", "es": "hola", "nl": "hallo", "en": "hello", "sk": "ahoj", "theme": "basics", "sentence": "Hola, ¿cómo estás?", "distractors": ["buenos días", "el ascensor", "la noche", "el taxi"]}, {"id": "adios", "es": "adiós", "nl": "tot ziens", "en": "goodbye", "sk": "dovidenia", "theme": "basics", "sentence": "Adiós, hasta mañana.", "distractors": ["buenas tardes", "la recepción", "el tren", "el aeropuerto"]}, {"id": "por_favor", "es": "por favor", "nl": "alstublieft", "en": "please", "sk": "prosím", "theme": "basics", "sentence": "Un café, por favor.", "distractors": ["no entiendo", "el hotel", "el billete", "el metro"]}, {"id": "gracias", "es": "gracias", "nl": "bedankt", "en": "thank you", "sk": "ďakujem", "theme": "basics", "sentence": "Muchas gracias por su ayuda.", "distractors": ["la habitación", "la cama", "la estación", "el andén"]}, {"id": "perdon", "es": "perdón", "nl": "sorry / pardon", "en": "sorry / excuse me", "sk": "prepáčte", "theme": "basics", "sentence": "Perdón, ¿dónde está la estación?", "distractors": ["la llave", "la ducha", "la salida", "el retraso"]}, {"id": "si", "es": "sí", "nl": "ja", "en": "yes", "sk": "áno", "theme": "basics", "sentence": "Sí, tengo una reserva.", "distractors": ["el pasaporte", "el wifi", "el mapa", "el centro"]}, {"id": "no", "es": "no", "nl": "nee", "en": "no", "sk": "nie", "theme": "basics", "sentence": "No, no entiendo.", "distractors": ["la reserva", "la maleta", "el autobús", "la mesa"]}, {"id": "buenos_dias", "es": "buenos días", "nl": "goedemorgen", "en": "good morning", "sk": "dobré ráno", "theme": "basics", "sentence": "Buenos días, quiero una habitación.", "distractors": ["el ascensor", "la noche", "el taxi", "el menú"]}, {"id": "buenas_tardes", "es": "buenas tardes", "nl": "goedemiddag / goedenavond", "en": "good afternoon / evening", "sk": "dobrý deň / dobrý večer", "theme": "basics", "sentence": "Buenas tardes, ¿tiene una mesa?", "distractors": ["la recepción", "el tren", "el aeropuerto", "el agua"]}, {"id": "no_entiendo", "es": "no entiendo", "nl": "ik begrijp het niet", "en": "I do not understand", "sk": "nerozumiem", "theme": "basics", "sentence": "Lo siento, no entiendo.", "distractors": ["el hotel", "el billete", "el metro", "la cuenta"]}, {"id": "habitacion", "es": "la habitación", "nl": "de kamer", "en": "the room", "sk": "izba", "theme": "hotel", "sentence": "Tengo una reserva para la habitación.", "distractors": ["la cama", "la estación", "el andén", "el camarero"]}, {"id": "llave", "es": "la llave", "nl": "de sleutel", "en": "the key", "sk": "kľúč", "theme": "hotel", "sentence": "¿Puede darme la llave de mi habitación?", "distractors": ["la ducha", "la salida", "el retraso", "el pan"]}, {"id": "pasaporte", "es": "el pasaporte", "nl": "het paspoort", "en": "the passport", "sk": "pas", "theme": "hotel", "sentence": "Aquí tiene el pasaporte para registrarme.", "distractors": ["el wifi", "el mapa", "el centro", "el café"]}, {"id": "reserva", "es": "la reserva", "nl": "de reservatie", "en": "the reservation", "sk": "rezervácia", "theme": "hotel", "sentence": "Tengo una reserva a nombre de Lola.", "distractors": ["la maleta", "el autobús", "la mesa", "la leche"]}, {"id": "ascensor", "es": "el ascensor", "nl": "de lift", "en": "the elevator / lift", "sk": "výťah", "theme": "hotel", "sentence": "¿Dónde está el ascensor?", "distractors": ["la noche", "el taxi", "el menú", "el pescado"]}, {"id": "recepcion", "es": "la recepción", "nl": "de receptie", "en": "the reception desk", "sk": "recepcia", "theme": "hotel", "sentence": "Voy a preguntar en la recepción.", "distractors": ["el tren", "el aeropuerto", "el agua", "el pollo"]}, {"id": "hotel", "es": "el hotel", "nl": "het hotel", "en": "the hotel", "sk": "hotel", "theme": "hotel", "sentence": "El hotel está cerca del centro.", "distractors": ["el billete", "el metro", "la cuenta", "la sopa"]}, {"id": "cama", "es": "la cama", "nl": "het bed", "en": "the bed", "sk": "posteľ", "theme": "hotel", "sentence": "La cama es cómoda.", "distractors": ["la estación", "el andén", "el camarero", "el postre"]}, {"id": "ducha", "es": "la ducha", "nl": "de douche", "en": "the shower", "sk": "sprcha", "theme": "hotel", "sentence": "La ducha no funciona.", "distractors": ["la salida", "el retraso", "el pan", "el mercado"]}, {"id": "wifi", "es": "el wifi", "nl": "de wifi", "en": "the Wi-Fi", "sk": "wifi", "theme": "hotel", "sentence": "¿Cuál es la contraseña del wifi?", "distractors": ["el mapa", "el centro", "el café", "el precio"]}, {"id": "maleta", "es": "la maleta", "nl": "de koffer", "en": "the suitcase", "sk": "kufor", "theme": "hotel", "sentence": "Mi maleta está en la habitación.", "distractors": ["el autobús", "la mesa", "la leche", "la fruta"]}, {"id": "noche", "es": "la noche", "nl": "de nacht", "en": "the night", "sk": "noc", "theme": "hotel", "sentence": "Quiero quedarme una noche más.", "distractors": ["el taxi", "el menú", "el pescado", "el dinero"]}, {"id": "tren", "es": "el tren", "nl": "de trein", "en": "the train", "sk": "vlak", "theme": "transport", "sentence": "Tomamos el tren a Madrid.", "distractors": ["el aeropuerto", "el agua", "el pollo", "la bolsa"]}, {"id": "billete", "es": "el billete", "nl": "het ticket", "en": "the ticket", "sk": "lístok", "theme": "transport", "sentence": "Necesito un billete para Valencia.", "distractors": ["el metro", "la cuenta", "la sopa", "barato"]}, {"id": "estacion", "es": "la estación", "nl": "het station", "en": "the station", "sk": "stanica", "theme": "transport", "sentence": "¿Dónde está la estación de autobuses?", "distractors": ["el andén", "el camarero", "el postre", "caro"]}, {"id": "salida", "es": "la salida", "nl": "het vertrek / de uitgang", "en": "the departure / exit", "sk": "odchod / východ", "theme": "transport", "sentence": "La próxima salida es a las ocho.", "distractors": ["el retraso", "el pan", "el mercado", "la manzana"]}, {"id": "mapa", "es": "el mapa", "nl": "de kaart", "en": "the map", "sk": "mapa", "theme": "transport", "sentence": "No entiendo el mapa de la ciudad.", "distractors": ["el centro", "el café", "el precio", "el queso"]}, {"id": "autobus", "es": "el autobús", "nl": "de bus", "en": "the bus", "sk": "autobus", "theme": "transport", "sentence": "¿Qué número tiene el autobús al centro?", "distractors": ["la mesa", "la leche", "la fruta", "el tomate"]}, {"id": "taxi", "es": "el taxi", "nl": "de taxi", "en": "the taxi", "sk": "taxík", "theme": "transport", "sentence": "Necesito un taxi al aeropuerto.", "distractors": ["el menú", "el pescado", "el dinero", "el vino"]}, {"id": "aeropuerto", "es": "el aeropuerto", "nl": "de luchthaven", "en": "the airport", "sk": "letisko", "theme": "transport", "sentence": "El aeropuerto está lejos.", "distractors": ["el agua", "el pollo", "la bolsa", "¿cuánto cuesta?"]}, {"id": "metro", "es": "el metro", "nl": "de metro", "en": "the underground / subway", "sk": "metro", "theme": "transport", "sentence": "Vamos en metro al museo.", "distractors": ["la cuenta", "la sopa", "barato", "la calle"]}, {"id": "andén", "es": "el andén", "nl": "het perron", "en": "the platform", "sk": "nástupište", "theme": "transport", "sentence": "El tren sale del andén cinco.", "distractors": ["el camarero", "el postre", "caro", "la derecha"]}, {"id": "retraso", "es": "el retraso", "nl": "de vertraging", "en": "the delay", "sk": "meškanie", "theme": "transport", "sentence": "Hay un retraso de veinte minutos.", "distractors": ["el pan", "el mercado", "la manzana", "la izquierda"]}, {"id": "centro", "es": "el centro", "nl": "het centrum", "en": "the city centre", "sk": "centrum", "theme": "transport", "sentence": "Quiero ir al centro.", "distractors": ["el café", "el precio", "el queso", "recto"]}, {"id": "mesa", "es": "la mesa", "nl": "de tafel", "en": "the table", "sk": "stôl", "theme": "restaurant", "sentence": "Queremos una mesa para dos personas.", "distractors": ["la leche", "la fruta", "el tomate", "cerca"]}, {"id": "menu", "es": "el menú", "nl": "de menukaart", "en": "the menu", "sk": "jedálny lístok", "theme": "restaurant", "sentence": "¿Puede traer el menú?", "distractors": ["el pescado", "el dinero", "el vino", "lejos"]}, {"id": "agua", "es": "el agua", "nl": "het water", "en": "the water", "sk": "voda", "theme": "restaurant", "sentence": "Quiero agua sin gas, por favor.", "distractors": ["el pollo", "la bolsa", "¿cuánto cuesta?", "la plaza"]}, {"id": "cuenta", "es": "la cuenta", "nl": "de rekening", "en": "the bill", "sk": "účet", "theme": "restaurant", "sentence": "¿Nos trae la cuenta, por favor?", "distractors": ["la sopa", "barato", "la calle", "el museo"]}, {"id": "camarero", "es": "el camarero", "nl": "de ober", "en": "the waiter", "sk": "čašník", "theme": "restaurant", "sentence": "El camarero recomienda la sopa.", "distractors": ["el postre", "caro", "la derecha", "la entrada"]}, {"id": "pan", "es": "el pan", "nl": "het brood", "en": "the bread", "sk": "chlieb", "theme": "restaurant", "sentence": "¿Tiene pan sin gluten?", "distractors": ["el mercado", "la manzana", "la izquierda", "la salida"]}, {"id": "cafe", "es": "el café", "nl": "de koffie", "en": "the coffee", "sk": "káva", "theme": "restaurant", "sentence": "Un café con leche, por favor.", "distractors": ["el precio", "el queso", "recto", "ayuda"]}, {"id": "leche", "es": "la leche", "nl": "de melk", "en": "the milk", "sk": "mlieko", "theme": "restaurant", "sentence": "Quiero café con leche.", "distractors": ["la fruta", "el tomate", "cerca", "perdido"]}, {"id": "pescado", "es": "el pescado", "nl": "de vis", "en": "the fish", "sk": "ryba", "theme": "restaurant", "sentence": "El pescado está muy bueno.", "distractors": ["el dinero", "el vino", "lejos", "el hospital"]}, {"id": "pollo", "es": "el pollo", "nl": "de kip", "en": "the chicken", "sk": "kurča", "theme": "restaurant", "sentence": "Quiero pollo con arroz.", "distractors": ["la bolsa", "¿cuánto cuesta?", "la plaza", "la farmacia"]}, {"id": "sopa", "es": "la sopa", "nl": "de soep", "en": "the soup", "sk": "polievka", "theme": "restaurant", "sentence": "La sopa está caliente.", "distractors": ["barato", "la calle", "el museo", "la policía"]}, {"id": "postre", "es": "el postre", "nl": "het dessert", "en": "the dessert", "sk": "dezert", "theme": "restaurant", "sentence": "¿Qué postre recomienda?", "distractors": ["caro", "la derecha", "la entrada", "abierto"]}, {"id": "mercado", "es": "el mercado", "nl": "de markt", "en": "the market", "sk": "trh", "theme": "market", "sentence": "Compramos fruta en el mercado.", "distractors": ["la manzana", "la izquierda", "la salida", "cerrado"]}, {"id": "precio", "es": "el precio", "nl": "de prijs", "en": "the price", "sk": "cena", "theme": "market", "sentence": "¿Cuál es el precio de las naranjas?", "distractors": ["el queso", "recto", "ayuda", "el teléfono"]}, {"id": "fruta", "es": "la fruta", "nl": "het fruit", "en": "the fruit", "sk": "ovocie", "theme": "market", "sentence": "Me gusta la fruta fresca.", "distractors": ["el tomate", "cerca", "perdido", "los documentos"]}, {"id": "dinero", "es": "el dinero", "nl": "het geld", "en": "the money", "sk": "peniaze", "theme": "market", "sentence": "No tengo mucho dinero.", "distractors": ["el vino", "lejos", "el hospital", "la emergencia"]}, {"id": "bolsa", "es": "la bolsa", "nl": "de zak / tas", "en": "the bag", "sk": "taška", "theme": "market", "sentence": "Necesito una bolsa para las manzanas.", "distractors": ["¿cuánto cuesta?", "la plaza", "la farmacia", "el médico"]}, {"id": "barato", "es": "barato", "nl": "goedkoop", "en": "cheap", "sk": "lacný", "theme": "market", "sentence": "Este queso es muy barato.", "distractors": ["la calle", "el museo", "la policía", "el dolor"]}, {"id": "caro", "es": "caro", "nl": "duur", "en": "expensive", "sk": "drahý", "theme": "market", "sentence": "Este vino es demasiado caro.", "distractors": ["la derecha", "la entrada", "abierto", "la cabeza"]}, {"id": "manzana", "es": "la manzana", "nl": "de appel", "en": "the apple", "sk": "jablko", "theme": "market", "sentence": "Quiero dos manzanas.", "distractors": ["la izquierda", "la salida", "cerrado", "el estómago"]}, {"id": "queso", "es": "el queso", "nl": "de kaas", "en": "the cheese", "sk": "syr", "theme": "market", "sentence": "Me gusta el queso local.", "distractors": ["recto", "ayuda", "el teléfono", "la alergia"]}, {"id": "tomate", "es": "el tomate", "nl": "de tomaat", "en": "the tomato", "sk": "paradajka", "theme": "market", "sentence": "Compro tomates en el mercado.", "distractors": ["cerca", "perdido", "los documentos", "la medicina"]}, {"id": "vino", "es": "el vino", "nl": "de wijn", "en": "the wine", "sk": "víno", "theme": "market", "sentence": "Una botella de vino, por favor.", "distractors": ["lejos", "el hospital", "la emergencia", "el seguro"]}, {"id": "cuanto_cuesta", "es": "¿cuánto cuesta?", "nl": "hoeveel kost het?", "en": "how much does it cost?", "sk": "koľko to stojí?", "theme": "market", "sentence": "¿Cuánto cuesta esta bolsa?", "distractors": ["la plaza", "la farmacia", "el médico", "cansado"]}, {"id": "calle", "es": "la calle", "nl": "de straat", "en": "the street", "sk": "ulica", "theme": "directions", "sentence": "La calle está a la derecha.", "distractors": ["el museo", "la policía", "el dolor", "la tienda"]}, {"id": "derecha", "es": "la derecha", "nl": "rechts", "en": "the right", "sk": "vpravo", "theme": "directions", "sentence": "El hotel está a la derecha.", "distractors": ["la entrada", "abierto", "la cabeza", "la camiseta"]}, {"id": "izquierda", "es": "la izquierda", "nl": "links", "en": "the left", "sk": "vľavo", "theme": "directions", "sentence": "La farmacia está a la izquierda.", "distractors": ["la salida", "cerrado", "el estómago", "la talla"]}, {"id": "recto", "es": "recto", "nl": "rechtdoor", "en": "straight ahead", "sk": "rovno", "theme": "directions", "sentence": "Siga recto hasta la plaza.", "distractors": ["ayuda", "el teléfono", "la alergia", "los zapatos"]}, {"id": "cerca", "es": "cerca", "nl": "dichtbij", "en": "nearby", "sk": "blízko", "theme": "directions", "sentence": "El museo está cerca.", "distractors": ["perdido", "los documentos", "la medicina", "pagar"]}, {"id": "lejos", "es": "lejos", "nl": "ver", "en": "far", "sk": "ďaleko", "theme": "directions", "sentence": "El aeropuerto está lejos.", "distractors": ["el hospital", "la emergencia", "el seguro", "la tarjeta"]}, {"id": "plaza", "es": "la plaza", "nl": "het plein", "en": "the square", "sk": "námestie", "theme": "directions", "sentence": "Nos vemos en la plaza.", "distractors": ["la farmacia", "el médico", "cansado", "el efectivo"]}, {"id": "museo", "es": "el museo", "nl": "het museum", "en": "the museum", "sk": "múzeum", "theme": "directions", "sentence": "El museo abre a las diez.", "distractors": ["la policía", "el dolor", "la tienda", "el recibo"]}, {"id": "entrada", "es": "la entrada", "nl": "de ingang / toegang", "en": "the entrance / ticket", "sk": "vchod / vstupenka", "theme": "directions", "sentence": "La entrada está allí.", "distractors": ["abierto", "la cabeza", "la camiseta", "hoy"]}, {"id": "salida2", "es": "la salida", "nl": "de uitgang", "en": "the exit", "sk": "východ", "theme": "directions", "sentence": "Busco la salida.", "distractors": ["cerrado", "el estómago", "la talla", "mañana"]}, {"id": "ayuda", "es": "ayuda", "nl": "hulp", "en": "help", "sk": "pomoc", "theme": "help", "sentence": "Necesito ayuda, por favor.", "distractors": ["el teléfono", "la alergia", "los zapatos", "ayer"]}, {"id": "perdido", "es": "perdido", "nl": "verdwaald", "en": "lost", "sk": "stratený", "theme": "help", "sentence": "Estoy perdido en esta calle.", "distractors": ["los documentos", "la medicina", "pagar", "la hora"]}, {"id": "hospital", "es": "el hospital", "nl": "het ziekenhuis", "en": "the hospital", "sk": "nemocnica", "theme": "help", "sentence": "¿Dónde está el hospital más cercano?", "distractors": ["la emergencia", "el seguro", "la tarjeta", "el minuto"]}, {"id": "farmacia", "es": "la farmacia", "nl": "de apotheek", "en": "the pharmacy", "sk": "lekáreň", "theme": "help", "sentence": "Busco la farmacia porque me duele la cabeza.", "distractors": ["el médico", "cansado", "el efectivo", "lunes"]}, {"id": "policia", "es": "la policía", "nl": "de politie", "en": "the police", "sk": "polícia", "theme": "help", "sentence": "Tengo que llamar a la policía.", "distractors": ["el dolor", "la tienda", "el recibo", "domingo"]}, {"id": "abierto", "es": "abierto", "nl": "open", "en": "open", "sk": "otvorený", "theme": "help", "sentence": "¿Está abierto el museo?", "distractors": ["la cabeza", "la camiseta", "hoy", "temprano"]}, {"id": "cerrado", "es": "cerrado", "nl": "gesloten", "en": "closed", "sk": "zatvorený", "theme": "help", "sentence": "El mercado está cerrado.", "distractors": ["el estómago", "la talla", "mañana", "la playa"]}, {"id": "telefono", "es": "el teléfono", "nl": "de telefoon", "en": "the phone", "sk": "telefón", "theme": "help", "sentence": "Mi teléfono no funciona.", "distractors": ["la alergia", "los zapatos", "ayer", "el puerto"]}, {"id": "documentos", "es": "los documentos", "nl": "de documenten", "en": "the documents", "sk": "doklady", "theme": "help", "sentence": "He perdido mis documentos.", "distractors": ["la medicina", "pagar", "la hora", "la iglesia"]}, {"id": "emergencia", "es": "la emergencia", "nl": "het noodgeval", "en": "the emergency", "sk": "núdzová situácia", "theme": "help", "sentence": "Es una emergencia.", "distractors": ["el seguro", "la tarjeta", "el minuto", "el parque"]}, {"id": "medico", "es": "el médico", "nl": "de dokter", "en": "the doctor", "sk": "lekár", "theme": "health", "sentence": "Necesito ver a un médico.", "distractors": ["cansado", "el efectivo", "lunes", "el sol"]}, {"id": "dolor", "es": "el dolor", "nl": "de pijn", "en": "the pain", "sk": "bolesť", "theme": "health", "sentence": "Tengo dolor de cabeza.", "distractors": ["la tienda", "el recibo", "domingo", "la lluvia"]}, {"id": "cabeza", "es": "la cabeza", "nl": "het hoofd", "en": "the head", "sk": "hlava", "theme": "health", "sentence": "Me duele la cabeza.", "distractors": ["la camiseta", "hoy", "temprano", "el calor"]}, {"id": "estomago", "es": "el estómago", "nl": "de maag", "en": "the stomach", "sk": "žalúdok", "theme": "health", "sentence": "Me duele el estómago.", "distractors": ["la talla", "mañana", "la playa", "el frío"]}, {"id": "alergia", "es": "la alergia", "nl": "de allergie", "en": "the allergy", "sk": "alergia", "theme": "health", "sentence": "Tengo alergia a los frutos secos.", "distractors": ["los zapatos", "ayer", "el puerto", "hola"]}, {"id": "medicina", "es": "la medicina", "nl": "het medicijn", "en": "the medicine", "sk": "liek", "theme": "health", "sentence": "Necesito esta medicina.", "distractors": ["pagar", "la hora", "la iglesia", "adiós"]}, {"id": "seguro", "es": "el seguro", "nl": "de verzekering", "en": "the insurance", "sk": "poistenie", "theme": "health", "sentence": "Tengo seguro de viaje.", "distractors": ["la tarjeta", "el minuto", "el parque", "por favor"]}, {"id": "cansado", "es": "cansado", "nl": "moe", "en": "tired", "sk": "unavený", "theme": "health", "sentence": "Estoy cansado después del viaje.", "distractors": ["el efectivo", "lunes", "el sol", "gracias"]}, {"id": "tienda", "es": "la tienda", "nl": "de winkel", "en": "the shop", "sk": "obchod", "theme": "shopping", "sentence": "La tienda abre a las nueve.", "distractors": ["el recibo", "domingo", "la lluvia", "perdón"]}, {"id": "camiseta", "es": "la camiseta", "nl": "het T-shirt", "en": "the T-shirt", "sk": "tričko", "theme": "shopping", "sentence": "Busco una camiseta blanca.", "distractors": ["hoy", "temprano", "el calor", "sí"]}, {"id": "talla", "es": "la talla", "nl": "de maat", "en": "the size", "sk": "veľkosť", "theme": "shopping", "sentence": "¿Tiene una talla más grande?", "distractors": ["mañana", "la playa", "el frío", "no"]}, {"id": "zapatos", "es": "los zapatos", "nl": "de schoenen", "en": "the shoes", "sk": "topánky", "theme": "shopping", "sentence": "Estos zapatos son cómodos.", "distractors": ["ayer", "el puerto", "hola", "buenos días"]}, {"id": "pagar", "es": "pagar", "nl": "betalen", "en": "to pay", "sk": "platiť", "theme": "shopping", "sentence": "Quiero pagar con tarjeta.", "distractors": ["la hora", "la iglesia", "adiós", "buenas tardes"]}, {"id": "tarjeta", "es": "la tarjeta", "nl": "de kaart", "en": "the card", "sk": "karta", "theme": "shopping", "sentence": "¿Puedo pagar con tarjeta?", "distractors": ["el minuto", "el parque", "por favor", "no entiendo"]}, {"id": "efectivo", "es": "el efectivo", "nl": "cash", "en": "cash", "sk": "hotovosť", "theme": "shopping", "sentence": "Solo tengo efectivo.", "distractors": ["lunes", "el sol", "gracias", "la habitación"]}, {"id": "recibo", "es": "el recibo", "nl": "het kasticket", "en": "the receipt", "sk": "účtenka", "theme": "shopping", "sentence": "Necesito un recibo.", "distractors": ["domingo", "la lluvia", "perdón", "la llave"]}, {"id": "hoy", "es": "hoy", "nl": "vandaag", "en": "today", "sk": "dnes", "theme": "time", "sentence": "Hoy visitamos el museo.", "distractors": ["temprano", "el calor", "sí", "el pasaporte"]}, {"id": "manana", "es": "mañana", "nl": "morgen", "en": "tomorrow", "sk": "zajtra", "theme": "time", "sentence": "Mañana vamos a la playa.", "distractors": ["la playa", "el frío", "no", "la reserva"]}, {"id": "ayer", "es": "ayer", "nl": "gisteren", "en": "yesterday", "sk": "včera", "theme": "time", "sentence": "Ayer llegamos a la ciudad.", "distractors": ["el puerto", "hola", "buenos días", "el ascensor"]}, {"id": "hora", "es": "la hora", "nl": "het uur / de tijd", "en": "the time / hour", "sk": "hodina / čas", "theme": "time", "sentence": "¿Qué hora es?", "distractors": ["la iglesia", "adiós", "buenas tardes", "la recepción"]}, {"id": "minuto", "es": "el minuto", "nl": "de minuut", "en": "the minute", "sk": "minúta", "theme": "time", "sentence": "El tren sale en cinco minutos.", "distractors": ["el parque", "por favor", "no entiendo", "el hotel"]}, {"id": "lunes", "es": "lunes", "nl": "maandag", "en": "Monday", "sk": "pondelok", "theme": "time", "sentence": "El lunes está cerrado.", "distractors": ["el sol", "gracias", "la habitación", "la cama"]}, {"id": "domingo", "es": "domingo", "nl": "zondag", "en": "Sunday", "sk": "nedeľa", "theme": "time", "sentence": "El domingo vamos al mercado.", "distractors": ["la lluvia", "perdón", "la llave", "la ducha"]}, {"id": "temprano", "es": "temprano", "nl": "vroeg", "en": "early", "sk": "skoro", "theme": "time", "sentence": "Salimos temprano mañana.", "distractors": ["el calor", "sí", "el pasaporte", "el wifi"]}, {"id": "playa", "es": "la playa", "nl": "het strand", "en": "the beach", "sk": "pláž", "theme": "city", "sentence": "La playa está cerca del hotel.", "distractors": ["el frío", "no", "la reserva", "la maleta"]}, {"id": "puerto", "es": "el puerto", "nl": "de haven", "en": "the port", "sk": "prístav", "theme": "city", "sentence": "El puerto es bonito.", "distractors": ["hola", "buenos días", "el ascensor", "la noche"]}, {"id": "iglesia", "es": "la iglesia", "nl": "de kerk", "en": "the church", "sk": "kostol", "theme": "city", "sentence": "La iglesia está en la plaza.", "distractors": ["adiós", "buenas tardes", "la recepción", "el tren"]}, {"id": "parque", "es": "el parque", "nl": "het park", "en": "the park", "sk": "park", "theme": "city", "sentence": "Descansamos en el parque.", "distractors": ["por favor", "no entiendo", "el hotel", "el billete"]}, {"id": "sol", "es": "el sol", "nl": "de zon", "en": "the sun", "sk": "slnko", "theme": "weather", "sentence": "Hace sol hoy.", "distractors": ["gracias", "la habitación", "la cama", "la estación"]}, {"id": "lluvia", "es": "la lluvia", "nl": "de regen", "en": "the rain", "sk": "dážď", "theme": "weather", "sentence": "La lluvia empieza por la tarde.", "distractors": ["perdón", "la llave", "la ducha", "la salida"]}, {"id": "calor", "es": "el calor", "nl": "de warmte", "en": "the heat", "sk": "teplo", "theme": "weather", "sentence": "Hace mucho calor.", "distractors": ["sí", "el pasaporte", "el wifi", "el mapa"]}, {"id": "frio", "es": "el frío", "nl": "de kou", "en": "the cold", "sk": "chlad", "theme": "weather", "sentence": "Tengo frío por la noche.", "distractors": ["no", "la reserva", "la maleta", "el autobús"]}]</script>
+<script id="country-data" type="application/json">{"mexico": {"name": {"nl": "Mexico", "en": "Mexico", "sk": "Mexiko"}, "emoji": "🇲🇽", "cost": 120, "color": "#166534", "themes": ["basics", "hotel", "market"], "souvenir": "gracias"}, "spain": {"name": {"nl": "Spanje", "en": "Spain", "sk": "Španielsko"}, "emoji": "🇪🇸", "cost": 150, "color": "#991b1b", "themes": ["transport", "restaurant", "directions"], "souvenir": "cafe"}, "argentina": {"name": {"nl": "Argentinië", "en": "Argentina", "sk": "Argentína"}, "emoji": "🇦🇷", "cost": 180, "color": "#075985", "themes": ["help", "health", "shopping"], "souvenir": "tarjeta"}, "peru": {"name": {"nl": "Peru", "en": "Peru", "sk": "Peru"}, "emoji": "🇵🇪", "cost": 160, "color": "#7c2d12", "themes": ["time", "city", "weather"], "souvenir": "sol"}}</script>
+<script id="theme-data" type="application/json">{"basics": {"nl": "basiszinnen", "en": "basics", "sk": "základy"}, "hotel": {"nl": "hotel", "en": "hotel", "sk": "hotel"}, "transport": {"nl": "vervoer", "en": "transport", "sk": "doprava"}, "restaurant": {"nl": "restaurant", "en": "restaurant", "sk": "reštaurácia"}, "market": {"nl": "markt", "en": "market", "sk": "trh"}, "directions": {"nl": "de weg vragen", "en": "directions", "sk": "orientácia"}, "help": {"nl": "hulp vragen", "en": "asking for help", "sk": "žiadosť o pomoc"}, "health": {"nl": "gezondheid", "en": "health", "sk": "zdravie"}, "shopping": {"nl": "winkelen", "en": "shopping", "sk": "nakupovanie"}, "time": {"nl": "tijd", "en": "time", "sk": "čas"}, "city": {"nl": "stad", "en": "city", "sk": "mesto"}, "weather": {"nl": "weer", "en": "weather", "sk": "počasie"}}</script>
+<script id="i18n-data" type="application/json">{"nl": {"htmlLang": "nl", "appTitle": "Pasaporte A1", "tagline": "Spaanse reiswoordenschat voor echte reissituaties.", "version": "v6 PWA", "langNl": "Nederlands", "langEn": "English", "langSk": "Slovenčina", "interfaceLanguage": "Interface", "learningLanguage": "Ik leer Spaans via", "settings": "Instellingen", "close": "Sluiten", "save": "Opslaan", "startTitle": "Leer Spaans alsof je al onderweg bent.", "startText": "Korte mobiele sessies, audio, echte herhaling en een persoonlijk paspoort. Ideaal voor reizigers en A1-cursisten.", "startButton": "Start mijn reis", "continueButton": "Verdergaan", "install": "Installeer app", "installHelp": "Installeerbaar zodra je browser dit aanbiedt. Werkt ook gewoon via GitHub Pages.", "offlineReady": "Offline klaar", "online": "Online", "offline": "Offline", "onboard1Title": "1. Kies een bestemming", "onboard1Text": "Elke bestemming heeft eigen thema’s, zoals hotel, restaurant, vervoer of hulp vragen.", "onboard2Title": "2. Leer actief", "onboard2Text": "Meerkeuze is veilig. Typen levert meer geld op en traint actieve herinnering.", "onboard3Title": "3. Herhaal slim", "onboard3Text": "Foute woorden komen snel terug. Gekende woorden schuiven automatisch naar een later herhaalmoment.", "home": "Reisoverzicht", "mapIntro": "Je start met €500. Bezoek bestemmingen, verzamel stempels en werk aan je dagdoel.", "dailyGoal": "Dagdoel", "dailyDone": "{done}/{goal} vragen vandaag", "streak": "Streak", "days": "dagen", "knownWords": "Gekende woorden", "reviewDue": "Vandaag te herhalen", "money": "Saldo", "combo": "Combo", "stamps": "Stempels", "queue": "Herhaling", "travelCost": "Reiskost", "theme": "Thema", "visited": "Bezocht", "travelTo": "Reis naar", "resumeTrip": "Reis hervatten", "notEnough": "Je hebt niet genoeg geld voor {name}. Nodig: {cost}. Je hebt: {money}.", "reset": "Reset voortgang", "resetConfirm": "Weet je zeker dat je alle voortgang wilt wissen?", "howTitle": "Hoe werkt het?", "howText": "Beantwoord 5 reissituaties, speel een korte snelronde en krijg een stempel. Foute woorden worden gepland voor herhaling.", "reviewTitle": "Herhalingen", "reviewEmpty": "Geen woorden te herhalen.", "reviewItem": "Box {box} · opnieuw op {date}", "question": "Vraag", "questionOf": "Vraag {current}/5", "reviewMode": "Herhaling", "prompt": "Welk Spaans woord betekent", "chooseMc": "Meerkeuze · €10", "chooseType": "Typen · €25", "mcInstruction": "Kies het juiste Spaanse woord.", "typeInstruction": "Typ het Spaanse woord. Accenten en lidwoorden tellen soepel mee.", "typePlaceholder": "Typ Spaans...", "check": "Controleer", "next": "Volgende", "listenWord": "Luister woord", "listenSentence": "Luister zin", "audioUnavailable": "Audio is niet beschikbaar in deze browser.", "correct": "Juist", "wrong": "Niet juist", "youEarn": "Je verdient {reward}.", "correctAnswer": "Het juiste antwoord is", "scheduled": "Gepland voor herhaling: {when}.", "mastered": "Bijna verankerd in je geheugen.", "wrongQueue": "Lola zet dit woord snel terug in je herhaling.", "speedTitle": "Snelronde", "speedIntro": "30 seconden. Kies snel. Elk juist antwoord levert €8 × combo op.", "startSpeed": "Start snelronde", "speedReady": "Klaar voor 30 seconden?", "speedHelp": "Fouten in de snelronde worden ook herhaald.", "speedDone": "Snelronde klaar: {score} juist.", "speedToReview": "Je hebt nog {count} directe herhaling(en) voor je stempel.", "speedToStamp": "Je krijgt nu je paspoortstempel.", "stampTitle": "Stempel voor {country}", "stampText": "Je voltooide deze bestemming. Je paspoort groeit, en je woorden ook.", "souvenir": "Souvenirwoord", "finish": "Eindscherm", "continueTrip": "Verder reizen", "endTitle": "Einde van je reis", "endIntro": "Je persoonlijke resultaat, route en woorden voor later.", "route": "Route", "souvenirs": "Souvenirs", "todayAdvice": "Volgende stap", "adviceText": "Herhaal morgen vooral de woorden die in box 1 of 2 staan. Korte sessies werken beter dan één lange marathon.", "export": "Exporteer voortgang", "playAgain": "Opnieuw spelen", "teacherMode": "Docentmodus", "progressCopied": "Voortgang gekopieerd naar het klembord.", "scene_basics_title": "Eerste contact", "scene_basics_setup": "Je komt aan. Lola oefent haar vriendelijkste glimlach, voor zover een papegaai dat kan.", "scene_hotel_title": "Aan de balie", "scene_hotel_setup": "Je staat aan de receptie. Alles lukt beter als je het juiste woord vindt.", "scene_transport_title": "Vervoer", "scene_transport_setup": "Je zoekt trein, bus of uitgang. Lola leest de kaart ondersteboven.", "scene_restaurant_title": "Restaurant", "scene_restaurant_setup": "Je zit aan tafel. Lola heeft al brood besteld in papegaaienaccent.", "scene_market_title": "Op de markt", "scene_market_setup": "De markt ruikt naar fruit. Lola onderhandelt luid.", "scene_directions_title": "De weg vragen", "scene_directions_setup": "Je zoekt de juiste straat. Eén woord kan het verschil maken.", "scene_help_title": "Hulp vragen", "scene_help_setup": "Je bent wat onzeker. Rustig blijven, woord zoeken, doorgaan.", "scene_health_title": "Gezondheid", "scene_health_setup": "Je moet duidelijk kunnen zeggen wat je nodig hebt.", "scene_shopping_title": "Winkelen", "scene_shopping_setup": "Je zoekt de juiste maat, prijs of betaalwijze.", "scene_time_title": "Tijd en planning", "scene_time_setup": "Je plant je dag. Spaans helpt om niet te laat te komen.", "scene_city_title": "In de stad", "scene_city_setup": "Je wandelt rond en benoemt wat je nodig hebt.", "scene_weather_title": "Weer", "scene_weather_setup": "Het weer bepaalt je route. Lola doet alsof regen haar idee was.", "newWord": "Nieuw woord"}, "en": {"htmlLang": "en", "appTitle": "Pasaporte A1", "tagline": "Spanish travel vocabulary for real travel situations.", "version": "v6 PWA", "langNl": "Nederlands", "langEn": "English", "langSk": "Slovenčina", "interfaceLanguage": "Interface", "learningLanguage": "I learn Spanish through", "settings": "Settings", "close": "Close", "save": "Save", "startTitle": "Learn Spanish as if you are already travelling.", "startText": "Short mobile sessions, audio, real review scheduling and a personal passport. Built for travellers and A1 learners.", "startButton": "Start my trip", "continueButton": "Continue", "install": "Install app", "installHelp": "Installable when your browser offers it. It also works normally through GitHub Pages.", "offlineReady": "Offline ready", "online": "Online", "offline": "Offline", "onboard1Title": "1. Choose a destination", "onboard1Text": "Each destination has themes such as hotel, restaurant, transport or asking for help.", "onboard2Title": "2. Learn actively", "onboard2Text": "Multiple choice is safe. Typing earns more money and trains active recall.", "onboard3Title": "3. Review smartly", "onboard3Text": "Wrong words return soon. Known words automatically move to a later review moment.", "home": "Travel overview", "mapIntro": "You start with €500. Visit destinations, collect stamps and work on your daily goal.", "dailyGoal": "Daily goal", "dailyDone": "{done}/{goal} questions today", "streak": "Streak", "days": "days", "knownWords": "Known words", "reviewDue": "Due today", "money": "Balance", "combo": "Combo", "stamps": "Stamps", "queue": "Review", "travelCost": "Travel cost", "theme": "Theme", "visited": "Visited", "travelTo": "Travel to", "resumeTrip": "Resume trip", "notEnough": "You do not have enough money for {name}. Needed: {cost}. You have: {money}.", "reset": "Reset progress", "resetConfirm": "Are you sure you want to erase all progress?", "howTitle": "How it works", "howText": "Answer 5 travel situations, play a short speed round and earn a stamp. Wrong words are scheduled for review.", "reviewTitle": "Reviews", "reviewEmpty": "No words due for review.", "reviewItem": "Box {box} · due {date}", "question": "Question", "questionOf": "Question {current}/5", "reviewMode": "Review", "prompt": "Which Spanish word means", "chooseMc": "Multiple choice · €10", "chooseType": "Type · €25", "mcInstruction": "Choose the right Spanish word.", "typeInstruction": "Type the Spanish word. Accents and articles are judged flexibly.", "typePlaceholder": "Type Spanish...", "check": "Check", "next": "Next", "listenWord": "Listen word", "listenSentence": "Listen sentence", "audioUnavailable": "Audio is not available in this browser.", "correct": "Correct", "wrong": "Not correct", "youEarn": "You earn {reward}.", "correctAnswer": "The correct answer is", "scheduled": "Scheduled for review: {when}.", "mastered": "Almost anchored in memory.", "wrongQueue": "Lola puts this word back into review soon.", "speedTitle": "Speed round", "speedIntro": "30 seconds. Choose quickly. Each correct answer earns €8 × combo.", "startSpeed": "Start speed round", "speedReady": "Ready for 30 seconds?", "speedHelp": "Mistakes in the speed round are reviewed too.", "speedDone": "Speed round finished: {score} correct.", "speedToReview": "You still have {count} immediate review item(s) before your stamp.", "speedToStamp": "You now get your passport stamp.", "stampTitle": "Stamp for {country}", "stampText": "You completed this destination. Your passport grows, and so do your words.", "souvenir": "Souvenir word", "finish": "End screen", "continueTrip": "Keep travelling", "endTitle": "End of your trip", "endIntro": "Your personal result, route and words for later.", "route": "Route", "souvenirs": "Souvenirs", "todayAdvice": "Next step", "adviceText": "Tomorrow, review especially words in box 1 or 2. Short sessions work better than one long marathon.", "export": "Export progress", "playAgain": "Play again", "teacherMode": "Teacher mode", "progressCopied": "Progress copied to clipboard.", "scene_basics_title": "First contact", "scene_basics_setup": "You arrive. Lola practises her friendliest smile, as far as a parrot can.", "scene_hotel_title": "At reception", "scene_hotel_setup": "You are standing at reception. Everything is easier with the right word.", "scene_transport_title": "Transport", "scene_transport_setup": "You look for a train, bus or exit. Lola reads the map upside down.", "scene_restaurant_title": "Restaurant", "scene_restaurant_setup": "You are at a table. Lola has already ordered bread in parrot accent.", "scene_market_title": "At the market", "scene_market_setup": "The market smells like fruit. Lola negotiates loudly.", "scene_directions_title": "Asking directions", "scene_directions_setup": "You are looking for the right street. One word can make the difference.", "scene_help_title": "Asking for help", "scene_help_setup": "You feel unsure. Stay calm, find the word, continue.", "scene_health_title": "Health", "scene_health_setup": "You need to say clearly what you need.", "scene_shopping_title": "Shopping", "scene_shopping_setup": "You look for the right size, price or payment method.", "scene_time_title": "Time and planning", "scene_time_setup": "You plan your day. Spanish helps you avoid being late.", "scene_city_title": "In the city", "scene_city_setup": "You walk around and name what you need.", "scene_weather_title": "Weather", "scene_weather_setup": "The weather shapes your route. Lola pretends rain was her idea.", "newWord": "New word"}, "sk": {"htmlLang": "sk", "appTitle": "Pasaporte A1", "tagline": "Španielska cestovná slovná zásoba pre skutočné cestovné situácie.", "version": "v6 PWA", "langNl": "Nederlands", "langEn": "English", "langSk": "Slovenčina", "interfaceLanguage": "Rozhranie", "learningLanguage": "Učím sa španielčinu cez", "settings": "Nastavenia", "close": "Zavrieť", "save": "Uložiť", "startTitle": "Uč sa španielčinu, akoby si už bol/a na ceste.", "startText": "Krátke mobilné lekcie, audio, skutočné plánovanie opakovania a osobný pas. Pre cestovateľov a študentov A1.", "startButton": "Začať cestu", "continueButton": "Pokračovať", "install": "Nainštalovať appku", "installHelp": "Inštalácia je dostupná, keď ju ponúkne prehliadač. Funguje aj cez GitHub Pages.", "offlineReady": "Pripravené offline", "online": "Online", "offline": "Offline", "onboard1Title": "1. Vyber si destináciu", "onboard1Text": "Každá destinácia má témy ako hotel, reštaurácia, doprava alebo prosba o pomoc.", "onboard2Title": "2. Uč sa aktívne", "onboard2Text": "Výber z možností je bezpečný. Písanie dá viac peňazí a trénuje aktívne vybavenie.", "onboard3Title": "3. Opakuj rozumne", "onboard3Text": "Chybné slová sa vrátia skoro. Známe slová sa automaticky posunú na neskoršie opakovanie.", "home": "Prehľad cesty", "mapIntro": "Začínaš s 500 €. Navštív destinácie, zbieraj pečiatky a pracuj na dennom cieli.", "dailyGoal": "Denný cieľ", "dailyDone": "{done}/{goal} otázok dnes", "streak": "Séria", "days": "dní", "knownWords": "Známe slová", "reviewDue": "Na dnes", "money": "Zostatok", "combo": "Combo", "stamps": "Pečiatky", "queue": "Opakovanie", "travelCost": "Cena cesty", "theme": "Téma", "visited": "Navštívené", "travelTo": "Cestovať do", "resumeTrip": "Pokračovať v ceste", "notEnough": "Nemáš dosť peňazí na {name}. Potrebuješ: {cost}. Máš: {money}.", "reset": "Resetovať pokrok", "resetConfirm": "Naozaj chceš vymazať celý pokrok?", "howTitle": "Ako to funguje", "howText": "Odpovedz na 5 cestovných situácií, zahraj krátke rýchle kolo a získaj pečiatku. Chybné slová sa naplánujú na opakovanie.", "reviewTitle": "Opakovania", "reviewEmpty": "Žiadne slová na opakovanie.", "reviewItem": "Box {box} · znova {date}", "question": "Otázka", "questionOf": "Otázka {current}/5", "reviewMode": "Opakovanie", "prompt": "Ktoré španielske slovo znamená", "chooseMc": "Výber · 10 €", "chooseType": "Písať · 25 €", "mcInstruction": "Vyber správne španielske slovo.", "typeInstruction": "Napíš španielske slovo. Diakritika a členy sa hodnotia tolerantne.", "typePlaceholder": "Napíš po španielsky...", "check": "Skontrolovať", "next": "Ďalej", "listenWord": "Počúvaj slovo", "listenSentence": "Počúvaj vetu", "audioUnavailable": "Audio nie je v tomto prehliadači dostupné.", "correct": "Správne", "wrong": "Nesprávne", "youEarn": "Získavaš {reward}.", "correctAnswer": "Správna odpoveď je", "scheduled": "Naplánované na opakovanie: {when}.", "mastered": "Takmer uložené v pamäti.", "wrongQueue": "Lola dá toto slovo skoro späť do opakovania.", "speedTitle": "Rýchle kolo", "speedIntro": "30 sekúnd. Vyberaj rýchlo. Každá správna odpoveď dá 8 € × combo.", "startSpeed": "Spustiť rýchle kolo", "speedReady": "Pripravený/á na 30 sekúnd?", "speedHelp": "Chyby v rýchlom kole sa tiež opakujú.", "speedDone": "Rýchle kolo skončilo: {score} správne.", "speedToReview": "Ešte máš {count} okamžitých opakovaní pred pečiatkou.", "speedToStamp": "Teraz dostaneš pečiatku do pasu.", "stampTitle": "Pečiatka za {country}", "stampText": "Dokončil/a si destináciu. Tvoj pas rastie a tvoje slová tiež.", "souvenir": "Suvenírové slovo", "finish": "Koniec", "continueTrip": "Pokračovať", "endTitle": "Koniec cesty", "endIntro": "Tvoj výsledok, trasa a slová na neskôr.", "route": "Trasa", "souvenirs": "Suveníry", "todayAdvice": "Ďalší krok", "adviceText": "Zajtra zopakuj najmä slová v boxe 1 alebo 2. Krátke lekcie fungujú lepšie než jeden dlhý maratón.", "export": "Exportovať pokrok", "playAgain": "Hrať znova", "teacherMode": "Režim učiteľa", "progressCopied": "Pokrok bol skopírovaný do schránky.", "scene_basics_title": "Prvý kontakt", "scene_basics_setup": "Prichádzaš. Lola trénuje svoj najpriateľskejší úsmev, ako len papagáj vie.", "scene_hotel_title": "Na recepcii", "scene_hotel_setup": "Stojíš na recepcii. Všetko ide ľahšie so správnym slovom.", "scene_transport_title": "Doprava", "scene_transport_setup": "Hľadáš vlak, autobus alebo východ. Lola číta mapu hore nohami.", "scene_restaurant_title": "Reštaurácia", "scene_restaurant_setup": "Sedíš pri stole. Lola si už objednala chlieb s papagájím prízvukom.", "scene_market_title": "Na trhu", "scene_market_setup": "Trh vonia ovocím. Lola hlasno vyjednáva.", "scene_directions_title": "Pýtať sa na cestu", "scene_directions_setup": "Hľadáš správnu ulicu. Jedno slovo môže rozhodnúť.", "scene_help_title": "Prosba o pomoc", "scene_help_setup": "Si trochu neistý/á. Zostaň pokojný/á, nájdi slovo, pokračuj.", "scene_health_title": "Zdravie", "scene_health_setup": "Musíš jasne povedať, čo potrebuješ.", "scene_shopping_title": "Nakupovanie", "scene_shopping_setup": "Hľadáš správnu veľkosť, cenu alebo spôsob platby.", "scene_time_title": "Čas a plánovanie", "scene_time_setup": "Plánuješ deň. Španielčina pomôže nezmeškať.", "scene_city_title": "V meste", "scene_city_setup": "Prechádzaš sa a pomenúvaš, čo potrebuješ.", "scene_weather_title": "Počasie", "scene_weather_setup": "Počasie určuje trasu. Lola predstiera, že dážď bol jej nápad.", "newWord": "Nové slovo"}}</script>
+<script>
+(()=>{
+'use strict';
+const $ = id => document.getElementById(id);
+const WORDS = JSON.parse($('word-data').textContent);
+const COUNTRIES = JSON.parse($('country-data').textContent);
+const THEMES = JSON.parse($('theme-data').textContent);
+const I18N = JSON.parse($('i18n-data').textContent);
+const COUNTRY_IDS = Object.keys(COUNTRIES);
+const WORD_BY_ID = Object.fromEntries(WORDS.map(w=>[w.id,w]));
+const STORAGE_KEY = 'pasaporteA1PwaStateV6';
+const DAY = 24*60*60*1000;
+const intervals = [0, 0, 4*60*60*1000, DAY, 3*DAY, 7*DAY, 14*DAY];
+let deferredInstallPrompt = null;
+const todayKey = () => new Date().toISOString().slice(0,10);
+const safe = s => String(s ?? '').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+const euro = n => `€${Math.round(Number(n)||0)}`;
+const norm = s => String(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[¿?¡!.,;:]/g,'').replace(/^(el|la|los|las|un|una)\s+/i,'').trim();
+const sample = arr => arr[Math.floor(Math.random()*arr.length)];
+const shuffle = arr => arr.map(v=>[Math.random(),v]).sort((a,b)=>a[0]-b[0]).map(v=>v[1]);
+function detectLang(){ const n=(navigator.language||'').toLowerCase(); if(n.startsWith('sk')) return 'sk'; if(n.startsWith('en')) return 'en'; return 'nl'; }
+function defaultState(){ return {settings:{uiLang:detectLang(),learnLang:detectLang(),audio:true},money:500,combo:1,bestCombo:1,stamps:{},souvenirs:[],route:[],stats:{},trip:null,current:null,speed:null,daily:{date:todayKey(),goal:10,done:0,streak:0,lastActive:null},onboarded:false}; }
+let state = loadState();
+function loadState(){ try{ const raw=localStorage.getItem(STORAGE_KEY); if(!raw) return defaultState(); const loaded=JSON.parse(raw); return mergeDefaults(defaultState(), loaded); }catch(e){ return defaultState(); } }
+function mergeDefaults(base, loaded){ for(const k of Object.keys(loaded||{})){ if(loaded[k] && typeof loaded[k]==='object' && !Array.isArray(loaded[k]) && base[k] && typeof base[k]==='object' && !Array.isArray(base[k])) base[k]=mergeDefaults(base[k], loaded[k]); else base[k]=loaded[k]; } return base; }
+function save(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+function tr(key, vars={}){ const lang = state.settings.uiLang; let s = (I18N[lang]&&I18N[lang][key]) || (I18N.en&&I18N.en[key]) || key; return String(s).replace(/\{(\w+)\}/g, (_,k)=> vars[k] ?? ''); }
+function wordMeaning(w){ return w[state.settings.learnLang] || w.en || w.nl; }
+function themeName(theme){ return (THEMES[theme] && (THEMES[theme][state.settings.uiLang] || THEMES[theme].en)) || theme; }
+function countryName(id){ const c=COUNTRIES[id]; return c.name[state.settings.uiLang] || c.name.en; }
+function dueDateLabel(ms){ const d=new Date(ms); const now=new Date(); if(ms <= Date.now()+60000) return state.settings.uiLang==='en'?'now':state.settings.uiLang==='sk'?'teraz':'nu'; return d.toLocaleDateString(state.settings.uiLang==='sk'?'sk-SK':state.settings.uiLang==='en'?'en-GB':'nl-BE', {day:'2-digit',month:'2-digit'}); }
+function ensureDaily(){ const today=todayKey(); if(state.daily.date !== today){ const yesterday = new Date(Date.now()-DAY).toISOString().slice(0,10); state.daily.streak = state.daily.done >= state.daily.goal && state.daily.date === yesterday ? (state.daily.streak||0)+1 : 0; state.daily.date=today; state.daily.done=0; } }
+function markDaily(){ ensureDaily(); state.daily.done += 1; state.daily.lastActive=todayKey(); }
+function statFor(id){ if(!state.stats[id]) state.stats[id]={box:0,dueAt:0,correct:0,wrong:0,seen:0,last:0}; return state.stats[id]; }
+function knownCount(){ return WORDS.filter(w => (state.stats[w.id]?.box || 0) >= 4).length; }
+function dueWords(){ const now=Date.now(); return WORDS.filter(w => { const s=state.stats[w.id]; return s && s.box>0 && s.box<5 && s.dueAt<=now; }); }
+function immediateDueWordsForTrip(){ if(!state.trip) return dueWords(); const themes=COUNTRIES[state.trip.countryId].themes; return dueWords().filter(w=>themes.includes(w.theme)); }
+function updateWord(correct, w){ const s=statFor(w.id); s.seen++; s.last=Date.now(); if(correct){ s.correct++; s.box=Math.min(5, Math.max(1,s.box)+1); s.dueAt=Date.now()+intervals[s.box]; } else { s.wrong++; s.box=1; s.dueAt=Date.now(); } }
+function setScreen(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('active',s.id===id)); window.scrollTo({top:0,behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'}); }
+function applyText(){ document.documentElement.lang = tr('htmlLang'); document.title = `${tr('appTitle')} — PWA`; $('appTitle').textContent=tr('appTitle'); $('tagline').textContent=tr('tagline'); $('version').textContent=tr('version'); $('installBtn').textContent=tr('install'); $('settingsBtn').textContent=tr('settings'); $('audioToggle').textContent=state.settings.audio?'🔊':'🔇';
+['startTitle','startText','onboard1Title','onboard1Text','onboard2Title','onboard2Text','onboard3Title','onboard3Text','installHelp','homeTitle','mapIntro','howTitle','howText','reviewTitle','speedTitle','speedIntro','speedHelp','stampText','endTitle','endIntro','adviceText'].forEach(id=>{ if($(id)) $(id).textContent=tr(id==='homeTitle'?'home':id); });
+$('startGame').textContent = state.onboarded ? tr('continueButton') : tr('startButton'); $('startSettings').textContent=tr('settings'); $('offlineReady').textContent=tr('offlineReady'); $('dailyGoalStart').textContent=tr('dailyGoal'); $('dailyGoalLabel').textContent=tr('dailyGoal'); $('streakLabel').textContent=tr('streak'); $('knownLabel').textContent=tr('knownWords'); $('dueLabel').textContent=tr('reviewDue'); $('finishBtn').textContent=tr('finish'); $('exportBtn').textContent=tr('export'); $('resetBtn').textContent=tr('reset'); $('chooseMc').textContent=tr('chooseMc'); $('chooseType').textContent=tr('chooseType'); $('speakWord').textContent='🔊 '+tr('listenWord'); $('speakSentence').textContent='🔊 '+tr('listenSentence'); $('nextQuestion').textContent=tr('next'); $('startSpeed').textContent=tr('startSpeed'); $('souvenirLabel').textContent=tr('souvenir'); $('moneyLabelStamp').textContent=tr('money'); $('continueTrip').textContent=tr('continueTrip'); $('finishTrip').textContent=tr('finish'); $('endMoneyLabel').textContent=tr('money'); $('endStampLabel').textContent=tr('stamps'); $('endKnownLabel').textContent=tr('knownWords'); $('endDueLabel').textContent=tr('reviewDue'); $('routeTitle').textContent=tr('route'); $('souvenirsTitle').textContent=tr('souvenirs'); $('adviceTitle').textContent=tr('todayAdvice'); $('homeAgain').textContent=tr('home'); $('restartBtn').textContent=tr('reset'); $('settingsTitle').textContent=tr('settings'); $('interfaceLabel').textContent=tr('interfaceLanguage'); $('learnLabel').textContent=tr('learningLanguage'); $('saveSettings').textContent=tr('save'); $('closeSettings').textContent=tr('close');
+$('uiLang').value=state.settings.uiLang; $('learnLang').value=state.settings.learnLang; updateNetworkStatus(); updateHud(); }
+function updateNetworkStatus(){ const online=navigator.onLine; $('netDot').classList.toggle('off',!online); $('netText').textContent=online?tr('online'):tr('offline'); }
+function updateHud(){ ensureDaily(); const due=dueWords().length; $('hudMoney').textContent=euro(state.money); $('hudCombo').textContent=`x${state.combo.toFixed(2)}`; $('hudStamps').textContent=`${Object.keys(state.stamps).length}/${COUNTRY_IDS.length}`; $('hudDue').textContent=String(due); const pct=Math.min(100, Math.round(100*state.daily.done/state.daily.goal)); ['dailyBar','dailyStartBar','dailySideBar'].forEach(id=>$(id)&&($(id).style.width=pct+'%')); const dailyText=tr('dailyDone',{done:state.daily.done,goal:state.daily.goal}); ['dailyDone','dailyStartText','dailySide'].forEach(id=>$(id)&&($(id).textContent=dailyText)); $('streakValue').textContent=`${state.daily.streak} ${tr('days')}`; $('knownValue').textContent=`${knownCount()}/${WORDS.length}`; $('dueValue').textContent=String(due); }
+function renderHome(){ applyText(); updateHud(); const container=$('countries'); container.innerHTML=COUNTRY_IDS.map(id=>{ const c=COUNTRIES[id]; const done=!!state.stamps[id]; const active=state.trip && state.trip.countryId===id; const themeTxt=c.themes.map(themeName).join(' · '); const disabled=state.trip && !active; return `<button type="button" class="countryCard ${done?'done':''}" style="background:${c.color}" data-country="${id}" ${disabled?'disabled':''} aria-label="${safe(active?tr('resumeTrip'):tr('travelTo'))} ${safe(countryName(id))}"><span><span class="flag" aria-hidden="true">${c.emoji}</span><br><strong>${safe(countryName(id))}</strong></span><span class="meta">${safe(tr('travelCost'))}: ${euro(c.cost)}<br>${safe(tr('theme'))}: ${safe(themeTxt)}${done?'<br>✅ '+safe(tr('visited')):''}</span><span class="meta">${safe(active?tr('resumeTrip'):tr('travelTo'))}</span></button>`; }).join(''); container.querySelectorAll('[data-country]').forEach(btn=>btn.addEventListener('click',()=>startCountry(btn.dataset.country))); renderReviewList(); setScreen('home'); save(); }
+function renderReviewList(){ const due=dueWords(); const list=$('reviewList'); if(!due.length){ list.innerHTML=`<div class="item small">${safe(tr('reviewEmpty'))}</div>`; return; } list.innerHTML=due.slice(0,8).map(w=>{ const s=statFor(w.id); return `<div class="item"><strong>${safe(w.es)}</strong><br>${safe(wordMeaning(w))} · ${safe(tr('reviewItem',{box:s.box,date:dueDateLabel(s.dueAt)}))}</div>`; }).join(''); }
+function startCountry(id){ if(state.trip && state.trip.countryId===id){ return nextQuestionFlow(); } if(state.trip) return; const c=COUNTRIES[id]; if(state.money<c.cost){ alert(tr('notEnough',{name:countryName(id),cost:euro(c.cost),money:euro(state.money)})); return; } state.money-=c.cost; state.trip={countryId:id,answered:0,phase:'normal',earned:0,speedScore:0}; state.route.push({id,paid:c.cost,earned:0,speedScore:0,date:todayKey()}); save(); nextQuestionFlow(); }
+function selectQuestionWord(){ const due=immediateDueWordsForTrip(); if(due.length) return {word:sample(due),isReview:true}; const themes=COUNTRIES[state.trip.countryId].themes; const pool=WORDS.filter(w=>themes.includes(w.theme)); const sorted=shuffle(pool).sort((a,b)=>((state.stats[a.id]?.seen||0)-(state.stats[b.id]?.seen||0)) || ((state.stats[a.id]?.box||0)-(state.stats[b.id]?.box||0))); return {word:sorted[0]||sample(WORDS),isReview:false}; }
+function nextQuestionFlow(){ if(!state.trip) return renderHome(); if(state.trip.answered>=5) return renderSpeedIntro(); const q=selectQuestionWord(); state.current={wordId:q.word.id,isReview:q.isReview,mode:null,answered:false}; renderQuestion(); }
+function sceneTitle(theme){ return tr(`scene_${theme}_title`); } function sceneSetup(theme){ return tr(`scene_${theme}_setup`); }
+function renderQuestion(){ applyText(); const w=WORD_BY_ID[state.current.wordId]; const c=COUNTRIES[state.trip.countryId]; $('scenarioEmoji').textContent=c.emoji; $('scenarioTitle').textContent = (state.current.isReview ? tr('reviewMode')+' · ' : '') + sceneTitle(w.theme); $('scenarioSetup').textContent=sceneSetup(w.theme); $('questionMeta').textContent = `${c.emoji} ${countryName(state.trip.countryId)} · ${state.current.isReview?tr('reviewMode'):tr('questionOf',{current:state.trip.answered+1})}`; $('sentence').textContent=w.sentence; $('prompt').innerHTML=`${safe(tr('prompt'))} <span class="meaning">${safe(wordMeaning(w))}</span>?`; $('modeChooser').classList.remove('hidden'); $('answerArea').innerHTML=''; $('feedback').className='feedback'; $('feedback').innerHTML=''; $('nextBox').classList.add('hidden'); const s=statFor(w.id); $('wordBoxTitle').textContent=`🧠 Box ${s.box||0}`; $('wordBox').textContent=s.box?tr('reviewItem',{box:s.box,date:dueDateLabel(s.dueAt)}):tr('newWord'); setScreen('question'); save(); }
+function chooseMode(mode){ state.current.mode=mode; $('modeChooser').classList.add('hidden'); const w=WORD_BY_ID[state.current.wordId]; if(mode==='mc'){ const opts=shuffle([w.es,...w.distractors, ...shuffle(WORDS.filter(x=>x.id!==w.id).map(x=>x.es)).slice(0,3)]).filter((v,i,a)=>a.indexOf(v)===i).slice(0,4); $('answerArea').innerHTML=`<p class="small">${safe(tr('mcInstruction'))}</p><div class="answers">${opts.map(o=>`<button type="button" class="choice" data-answer="${safe(o)}">${safe(o)}</button>`).join('')}</div>`; $('answerArea').querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>evaluate(b.dataset.answer))); } else { $('answerArea').innerHTML=`<p class="small">${safe(tr('typeInstruction'))}</p><div class="typeRow"><input id="typedAnswer" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="${safe(tr('typePlaceholder'))}"><button id="checkTyped" type="button">${safe(tr('check'))}</button></div>`; $('checkTyped').addEventListener('click',()=>evaluate($('typedAnswer').value)); $('typedAnswer').addEventListener('keydown',e=>{ if(e.key==='Enter') evaluate($('typedAnswer').value); }); $('typedAnswer').focus(); } save(); }
+function evaluate(raw){ if(!state.current || state.current.answered) return; const w=WORD_BY_ID[state.current.wordId]; const correct=norm(raw)===norm(w.es); state.current.answered=true; markDaily(); let base=state.current.mode==='type'?25:10; if(correct){ state.combo=Math.min(3,state.combo+.15); state.bestCombo=Math.max(state.bestCombo,state.combo); const reward=Math.round(base*state.combo); state.money+=reward; if(state.trip) state.trip.earned+=reward; const last=state.route[state.route.length-1]; if(last) last.earned+=reward; updateWord(true,w); $('feedback').className='feedback show good'; $('feedback').innerHTML=`<strong>✅ ${safe(tr('correct'))}</strong><br>${safe(w.es)} = ${safe(wordMeaning(w))}. ${safe(tr('youEarn',{reward:euro(reward)}))}<br>${safe(tr(statFor(w.id).box>=5?'mastered':'scheduled',{when:dueDateLabel(statFor(w.id).dueAt)}))}`; } else { state.combo=1; updateWord(false,w); $('feedback').className='feedback show bad'; $('feedback').innerHTML=`<strong>❌ ${safe(tr('wrong'))}</strong><br>${safe(tr('correctAnswer'))} <strong>${safe(w.es)}</strong> = ${safe(wordMeaning(w))}.<br>${safe(tr('wrongQueue'))}`; } if(!state.current.isReview) state.trip.answered++; $('answerArea').querySelectorAll('button,input').forEach(el=>el.disabled=true); $('nextBox').classList.remove('hidden'); updateHud(); renderReviewList(); save(); }
+function afterQuestion(){ if(!state.trip) return renderHome(); const dueNow=immediateDueWordsForTrip(); if(dueNow.length) return nextQuestionFlow(); if(state.trip.answered>=5) return renderSpeedIntro(); nextQuestionFlow(); }
+function renderSpeedIntro(){ applyText(); $('timer').textContent='30'; $('speedQuestion').textContent=tr('speedReady'); $('speedAnswers').innerHTML=''; $('speedFeedback').className='feedback'; $('speedFeedback').innerHTML=''; $('startSpeed').classList.remove('hidden'); state.speed={left:30,score:0,timer:null,active:false,wordId:null}; setScreen('speed'); save(); }
+function speedPool(){ const themes=COUNTRIES[state.trip.countryId].themes; return WORDS.filter(w=>themes.includes(w.theme)); }
+function startSpeed(){ if(!state.speed) state.speed={left:30,score:0,timer:null,active:false}; state.speed.active=true; state.speed.left=30; state.speed.score=0; $('startSpeed').classList.add('hidden'); speedAsk(); if(state.speed.timer) clearInterval(state.speed.timer); state.speed.timer=setInterval(()=>{ state.speed.left--; $('timer').textContent=state.speed.left; if(state.speed.left<=0) finishSpeed(); },1000); }
+function speedAsk(){ const w=sample(speedPool()); state.speed.wordId=w.id; $('timer').textContent=state.speed.left; $('speedQuestion').innerHTML=`${safe(tr('prompt'))} <span class="meaning">${safe(wordMeaning(w))}</span>?`; const opts=shuffle([w.es,...w.distractors,...shuffle(WORDS.filter(x=>x.id!==w.id).map(x=>x.es)).slice(0,2)]).filter((v,i,a)=>a.indexOf(v)===i).slice(0,4); $('speedAnswers').innerHTML=opts.map(o=>`<button type="button" class="choice" data-answer="${safe(o)}">${safe(o)}</button>`).join(''); $('speedAnswers').querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>speedAnswer(b.dataset.answer))); }
+function speedAnswer(raw){ if(!state.speed?.active) return; const w=WORD_BY_ID[state.speed.wordId]; const ok=norm(raw)===norm(w.es); markDaily(); if(ok){ const reward=Math.round(8*state.combo); state.money+=reward; state.speed.score++; if(state.trip) state.trip.earned+=reward; const last=state.route[state.route.length-1]; if(last) last.earned+=reward; updateWord(true,w); $('speedFeedback').className='feedback show good'; $('speedFeedback').textContent=`+${euro(reward)} · ${w.es} = ${wordMeaning(w)}`; } else { state.combo=1; updateWord(false,w); $('speedFeedback').className='feedback show bad'; $('speedFeedback').textContent=`${w.es} = ${wordMeaning(w)}`; } updateHud(); save(); speedAsk(); }
+function finishSpeed(){ if(!state.speed) return; clearInterval(state.speed.timer); state.speed.active=false; const score=state.speed.score; if(state.trip) state.trip.speedScore=score; const last=state.route[state.route.length-1]; if(last) last.speedScore=score; $('speedAnswers').innerHTML=''; $('speedQuestion').textContent=tr('speedDone',{score}); const due=immediateDueWordsForTrip().length; $('speedHelp').textContent=due?tr('speedToReview',{count:due}):tr('speedToStamp'); $('speedFeedback').className='feedback'; $('startSpeed').classList.add('hidden'); save(); setTimeout(()=>{ due?nextQuestionFlow():awardStamp(); },900); }
+function awardStamp(){ const id=state.trip.countryId; const c=COUNTRIES[id]; state.stamps[id]=Date.now(); const souvenirId=c.souvenir; const word=WORD_BY_ID[souvenirId] || sample(WORDS); if(!state.souvenirs.some(s=>s.id===word.id)) state.souvenirs.push({id:word.id,country:id}); $('stampTitle').textContent=tr('stampTitle',{country:countryName(id)}); $('stampEmoji').textContent=c.emoji; $('souvenirWord').textContent=word.es; $('souvenirMeaning').textContent=wordMeaning(word); $('stampMoney').textContent=euro(state.money); state.trip=null; state.current=null; state.speed=null; updateHud(); save(); setScreen('stamp'); }
+function renderEnd(){ applyText(); $('endMoney').textContent=euro(state.money); $('endStamps').textContent=`${Object.keys(state.stamps).length}/${COUNTRY_IDS.length}`; $('endKnown').textContent=`${knownCount()}/${WORDS.length}`; $('endDue').textContent=String(dueWords().length); $('routeList').innerHTML=state.route.length?state.route.map((r,i)=>`<div class="item">${i+1}. ${COUNTRIES[r.id].emoji} <strong>${safe(countryName(r.id))}</strong><br>${safe(tr('travelCost'))}: ${euro(r.paid)} · +${euro(r.earned)} · ⚡ ${r.speedScore||0}</div>`).join(''):`<div class="item small">—</div>`; $('souvenirList').innerHTML=state.souvenirs.length?state.souvenirs.map(s=>{ const w=WORD_BY_ID[s.id]; return `<div class="item">${COUNTRIES[s.country]?.emoji||'🎁'} <strong>${safe(w.es)}</strong><br>${safe(wordMeaning(w))}</div>`; }).join(''):`<div class="item small">—</div>`; setScreen('end'); save(); }
+function restart(){ if(!confirm(tr('resetConfirm'))) return; localStorage.removeItem(STORAGE_KEY); state=defaultState(); applyText(); renderHome(); }
+function exportProgress(){ const report={exportedAt:new Date().toISOString(),known:knownCount(),due:dueWords().length,money:state.money,stamps:Object.keys(state.stamps).length,totalWords:WORDS.length,stats:state.stats}; const txt=JSON.stringify(report,null,2); if(navigator.clipboard) navigator.clipboard.writeText(txt).then(()=>alert(tr('progressCopied'))).catch(()=>downloadText(txt)); else downloadText(txt); }
+function downloadText(txt){ const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([txt],{type:'application/json'})); a.download='pasaporte-a1-progress.json'; a.click(); URL.revokeObjectURL(a.href); }
+function speak(text){ if(!state.settings.audio) return; if(!('speechSynthesis' in window)){ alert(tr('audioUnavailable')); return; } const u=new SpeechSynthesisUtterance(text); u.lang='es-ES'; u.rate=.86; const voices=speechSynthesis.getVoices(); const voice=voices.find(v=>/es[-_](ES|MX|AR)/i.test(v.lang)) || voices.find(v=>/^es/i.test(v.lang)); if(voice) u.voice=voice; speechSynthesis.cancel(); speechSynthesis.speak(u); }
+function openSettings(){ $('uiLang').value=state.settings.uiLang; $('learnLang').value=state.settings.learnLang; $('settingsDialog').showModal(); }
+function saveSettings(){ state.settings.uiLang=$('uiLang').value; state.settings.learnLang=$('learnLang').value; save(); applyText(); renderReviewList(); if($('home').classList.contains('active')) renderHome(); if($('question').classList.contains('active')) renderQuestion(); $('settingsDialog').close(); }
+function registerSW(){ if('serviceWorker' in navigator) navigator.serviceWorker.register('service-worker.js').catch(()=>{}); }
+window.addEventListener('beforeinstallprompt', e=>{ e.preventDefault(); deferredInstallPrompt=e; $('installBtn').disabled=false; });
+$('installBtn').addEventListener('click', async()=>{ if(deferredInstallPrompt){ deferredInstallPrompt.prompt(); await deferredInstallPrompt.userChoice; deferredInstallPrompt=null; } else alert(tr('installHelp')); });
+$('settingsBtn').addEventListener('click',openSettings); $('startSettings').addEventListener('click',openSettings); $('closeSettings').addEventListener('click',()=>$('settingsDialog').close()); $('saveSettings').addEventListener('click',saveSettings); $('audioToggle').addEventListener('click',()=>{ state.settings.audio=!state.settings.audio; if(!state.settings.audio && 'speechSynthesis' in window) speechSynthesis.cancel(); save(); applyText(); }); $('startGame').addEventListener('click',()=>{ state.onboarded=true; save(); renderHome(); }); $('chooseMc').addEventListener('click',()=>chooseMode('mc')); $('chooseType').addEventListener('click',()=>chooseMode('type')); $('nextQuestion').addEventListener('click',afterQuestion); $('startSpeed').addEventListener('click',startSpeed); $('continueTrip').addEventListener('click',renderHome); $('finishTrip').addEventListener('click',renderEnd); $('finishBtn').addEventListener('click',renderEnd); $('homeAgain').addEventListener('click',renderHome); $('restartBtn').addEventListener('click',restart); $('resetBtn').addEventListener('click',restart); $('exportBtn').addEventListener('click',exportProgress); $('speakWord').addEventListener('click',()=>{ if(state.current) speak(WORD_BY_ID[state.current.wordId].es); }); $('speakSentence').addEventListener('click',()=>{ if(state.current) speak(WORD_BY_ID[state.current.wordId].sentence); }); window.addEventListener('online',updateNetworkStatus); window.addEventListener('offline',updateNetworkStatus); window.addEventListener('error', e=>{ const box=$('fatal'); box.style.display='block'; box.innerHTML=`<strong>App startte niet volledig.</strong><br><span class="small">${safe(e.message)}</span>`; });
+window.PASAPORTE_TEST={getState:()=>state, words:WORDS, dueWords, renderHome, startCountry, chooseMode, evaluate};
+ensureDaily(); applyText(); registerSW(); if(state.onboarded) renderHome(); else setScreen('start');
+})();
+</script>
 </body>
 </html>
