@@ -20,3 +20,8 @@ Notes:
 ## Testrapport
 
 Open `test-report.html` via dezelfde GitHub Pages-site om de echte woorddata, PWA-bestanden en basislogica automatisch te controleren.
+
+
+## Game-first layout
+
+Deze versie zet de actieve spelinhoud bovenaan. Appkop, status, installatie en instellingen staan onder de spelzone, zodat mobiele spelers onmiddellijk bij de oefening of landenkaart komen.
