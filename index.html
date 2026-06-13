@@ -3,139 +3,294 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#7c3aed" />
+  <meta name="theme-color" content="#0e7a5f" />
   <meta name="color-scheme" content="light" />
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="apple-touch-icon" href="icons/icon-192.png" />
-  <title>Lola Español — Spaans met Lola · Spanish with Lola · Španielčina s Lolou</title>
+  <title>Lola Espanol</title>
   <style>
     :root{
-      --bg1:#fff7ed;--bg2:#f5f3ff;--ink:#1f2937;--muted:#6b7280;--card:#ffffff;
-      --primary:#7c3aed;--primary-dark:#5b21b6;--green:#15803d;--red:#b91c1c;--amber:#f59e0b;
-      --line:#e5e7eb;--shadow:0 14px 36px rgba(76,29,149,.14);--radius:22px;
+      --jungle:#0e7a5f; --jungle-deep:#0a5d48; --leaf:#34b27b;
+      --sun:#ffd23f; --sun-deep:#f5a623; --sky:#bfe9ff;
+      --scarlet:#e5484d; --berry:#b4235a; --grape:#7c3aed;
+      --cream:#fff8ec; --cream2:#fdf0db; --ink:#173a30; --muted:#5b7268;
+      --card:#ffffff; --line:#e7e0cf;
+      --ok:#15803d; --bad:#c0362c;
+      --shadow:0 18px 44px rgba(12,74,56,.18); --shadow-sm:0 8px 18px rgba(12,74,56,.12);
+      --radius:26px;
     }
     *{box-sizing:border-box} html,body{height:100%}
-    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink);background:linear-gradient(145deg,var(--bg1),var(--bg2));}
-    button,input,select{font:inherit} button{touch-action:manipulation}
-    .app{width:min(920px,100%);margin:0 auto;padding:10px 12px calc(20px + env(safe-area-inset-bottom));}
-    .game-first{display:grid;gap:12px;}
-    .play-card{background:rgba(255,255,255,.96);border:1px solid rgba(124,58,237,.16);border-radius:var(--radius);box-shadow:var(--shadow);padding:14px;position:relative;overflow:hidden;}
-    .top-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;}
-    .brand-mini{display:flex;align-items:center;gap:8px;font-weight:900;color:var(--primary-dark)}
-    .lola-face{font-size:34px;line-height:1;filter:drop-shadow(0 4px 3px rgba(0,0,0,.1));}
-    .pill{border:1px solid #ddd6fe;background:#f5f3ff;color:#5b21b6;border-radius:999px;padding:7px 10px;font-size:13px;font-weight:800;}
-    .progress{height:12px;background:#ede9fe;border-radius:999px;overflow:hidden;border:1px solid #ddd6fe}
-    .progress>span{display:block;height:100%;background:linear-gradient(90deg,#8b5cf6,#f59e0b);width:0%;transition:width .25s ease}
-    .mission-title{font-size:clamp(22px,6vw,38px);line-height:1.05;margin:6px 0 4px;font-weight:950;letter-spacing:-.03em;color:#3b0764;text-align:center}
-    .mission-sub{color:var(--muted);text-align:center;font-size:15px;margin:0 0 12px}
-    .big-word{background:linear-gradient(180deg,#f5f3ff,#fff);border:2px solid #ddd6fe;border-radius:24px;padding:16px;text-align:center;margin:8px 0 12px;}
-    .listen-label{font-size:13px;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px}
-    .spanish{font-size:clamp(34px,12vw,60px);font-weight:950;color:var(--primary-dark);letter-spacing:-.04em;margin:4px 0;}
-    .emoji-big{font-size:48px;margin-top:2px;}
-    .audio-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:10px 0}
-    .btn{border:0;border-radius:18px;padding:14px 16px;font-weight:900;cursor:pointer;min-height:50px;box-shadow:0 6px 15px rgba(0,0,0,.08);}
-    .btn:focus-visible{outline:4px solid #fbbf24;outline-offset:2px}
-    .btn-primary{background:linear-gradient(135deg,#7c3aed,#5b21b6);color:white}.btn-soft{background:#f5f3ff;color:#5b21b6;border:1px solid #ddd6fe}.btn-ghost{background:#fff;color:#374151;border:1px solid var(--line);box-shadow:none}.btn-green{background:#15803d;color:white}.btn-red{background:#b91c1c;color:white}.btn-amber{background:#f59e0b;color:#78350f}
-    .answers{display:grid;grid-template-columns:1fr;gap:10px;margin-top:10px}.answer{background:#fff;border:2px solid #e5e7eb;color:#1f2937;border-radius:20px;padding:16px 12px;min-height:64px;font-size:clamp(18px,5vw,24px);font-weight:900;box-shadow:0 8px 16px rgba(0,0,0,.06);}.answer .small{display:block;font-size:14px;color:#6b7280;font-weight:700;margin-top:3px}.answer.ok{border-color:#22c55e;background:#dcfce7;color:#14532d}.answer.bad{border-color:#ef4444;background:#fee2e2;color:#7f1d1d}
-    .feedback{min-height:64px;margin-top:12px;border-radius:20px;padding:12px 14px;text-align:center;font-weight:850;display:flex;align-items:center;justify-content:center;gap:8px;line-height:1.25}.feedback.info{background:#eff6ff;color:#1e3a8a}.feedback.ok{background:#dcfce7;color:#14532d}.feedback.bad{background:#fee2e2;color:#7f1d1d}
-    .stars{display:flex;justify-content:center;gap:4px;font-size:28px;letter-spacing:1px;margin:4px 0}.star-dim{filter:grayscale(1);opacity:.28}.hud{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.hud-card{background:rgba(255,255,255,.85);border:1px solid var(--line);border-radius:16px;padding:10px;text-align:center}.hud-card b{display:block;font-size:22px;color:#3b0764}.hud-card span{font-size:12px;color:var(--muted);font-weight:700}.secondary{background:rgba(255,255,255,.82);border:1px solid var(--line);border-radius:20px;padding:12px}.secondary details{border-top:1px solid var(--line);padding-top:10px;margin-top:10px}.secondary summary{cursor:pointer;font-weight:900;color:#4b5563}.lang-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}.lang-grid button{min-height:42px;border-radius:14px;border:1px solid #ddd6fe;background:#fff;font-weight:900}.lang-grid button.active{background:#7c3aed;color:#fff}.menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.mini-list{display:grid;gap:8px;margin-top:10px}.sticker{display:flex;align-items:center;gap:9px;background:#fffbeb;border:1px solid #fde68a;border-radius:16px;padding:10px;font-weight:850}.screen{display:none}.screen.active{display:block}.start-hero{text-align:center;padding:8px 0}.start-hero h1{font-size:clamp(36px,12vw,64px);margin:4px 0 8px;line-height:.95;letter-spacing:-.06em;color:#3b0764}.start-hero p{font-size:18px;color:#4b5563;margin:0 auto 14px;max-width:560px}.mission-grid{display:grid;grid-template-columns:1fr;gap:10px}.mission{background:#fff;border:2px solid #e9d5ff;border-radius:22px;padding:14px;display:flex;align-items:center;gap:12px;text-align:left;box-shadow:0 8px 18px rgba(76,29,149,.08)}.mission.locked{opacity:.55}.mission-emoji{font-size:42px}.mission-name{font-size:20px;font-weight:950;color:#3b0764}.mission-meta{font-size:14px;color:var(--muted);font-weight:750}.end-badge{text-align:center}.sticker-big{font-size:84px;margin:4px}.word-review{background:#f9fafb;border:1px solid var(--line);border-radius:14px;padding:9px;display:flex;justify-content:space-between;gap:8px;font-weight:750}.footer-note{font-size:12px;color:#6b7280;text-align:center;margin-top:10px}.hidden{display:none!important}
-    .answer-emoji{display:block;font-size:30px;margin-bottom:4px}.phrase-chip{display:inline-block;margin-top:8px;background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:999px;padding:6px 10px;font-size:13px;font-weight:900}.stickerbook-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:12px}.sticker-tile{border:2px solid #fde68a;background:#fffbeb;border-radius:18px;padding:14px;text-align:center;font-weight:900;min-height:104px}.sticker-tile .sticker-icon{font-size:40px;display:block}.sticker-tile.locked{border-color:#e5e7eb;background:#f9fafb;color:#9ca3af}.sticker-tile.locked .sticker-icon{filter:grayscale(1);opacity:.35}.debug-panel{font-size:12px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:16px;padding:10px;margin-top:10px;color:#475569}.secret{opacity:.55;filter:grayscale(1)}
-    .lola-pop{animation:lolaPop .45s ease}@keyframes lolaPop{0%{transform:scale(1)}45%{transform:scale(1.28) rotate(-5deg)}100%{transform:scale(1)}}
-    .sticker.locked{background:#f9fafb;border-color:#e5e7eb;color:#9ca3af}.sticker.locked span:first-child{filter:grayscale(1);opacity:.45}
-    @media (min-width:720px){.app{padding-top:18px}.play-card{padding:20px}.answers{grid-template-columns:repeat(3,1fr)}.mission-grid{grid-template-columns:repeat(2,1fr)}.secondary-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.hud{grid-template-columns:repeat(5,1fr)}}
-    @media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+    body{margin:0;color:var(--ink);font-family:"Baloo 2",system-ui,-apple-system,"Segoe UI Rounded",Segoe UI,Roboto,Arial,sans-serif;
+      background:
+        radial-gradient(120% 80% at 50% -10%, #d9f4e6 0%, rgba(217,244,230,0) 60%),
+        radial-gradient(90% 60% at 100% 0%, #fff2cf 0%, rgba(255,242,207,0) 55%),
+        linear-gradient(160deg,#fffaf0,#eafaf2 55%,#e3f6ee);
+      overflow-x:hidden;}
+    button,input,select{font:inherit} button{touch-action:manipulation;cursor:pointer}
+    .app{width:min(680px,100%);margin:0 auto;padding:10px 12px calc(20px + env(safe-area-inset-bottom));position:relative;z-index:1}
+
+    /* floating ambient leaves */
+    .sky-deco{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+    .sky-deco span{position:absolute;font-size:26px;opacity:.16;animation:drift 22s linear infinite}
+    @keyframes drift{0%{transform:translateY(-10vh) rotate(0)}100%{transform:translateY(110vh) rotate(360deg)}}
+
+    .card{background:rgba(255,255,255,.97);border:1px solid rgba(14,122,95,.14);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;position:relative;overflow:hidden}
+    .topbar{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
+    .brand{display:flex;align-items:center;gap:9px;font-weight:800;color:var(--jungle-deep)}
+    .brand .bird{font-size:30px;line-height:1}
+    .chip{border:0;border-radius:999px;padding:8px 12px;font-size:13px;font-weight:800;background:#eafaf2;color:var(--jungle-deep);border:1px solid #c7ecda}
+    .chip.alt{background:#fff3d6;color:#8a5a00;border-color:#ffe2a3}
+
+    .screen{display:none;animation:fade .32s ease}
+    .screen.active{display:block}
+    @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+    /* HERO / start */
+    .hero{text-align:center;padding:6px 4px 2px}
+    .hero .stage{position:relative;height:150px;margin-bottom:4px}
+    .hero .bird-big{font-size:96px;line-height:1;filter:drop-shadow(0 10px 10px rgba(0,0,0,.14));display:inline-block;animation:bob 3s ease-in-out infinite}
+    @keyframes bob{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-10px) rotate(2deg)}}
+    .hero h1{font-size:clamp(38px,12vw,60px);margin:2px 0 6px;line-height:.92;letter-spacing:-.03em;color:var(--jungle-deep)}
+    .hero .accent{color:var(--scarlet)}
+    .hero p{font-size:17px;color:var(--muted);margin:0 auto 16px;max-width:460px;line-height:1.4}
+    .cta{border:0;border-radius:20px;padding:16px 18px;font-weight:900;font-size:20px;color:#fff;
+      background:linear-gradient(135deg,var(--leaf),var(--jungle));box-shadow:0 12px 24px rgba(14,122,95,.34);min-height:64px;width:min(420px,100%)}
+    .cta:active{transform:translateY(2px)}
+    .cta.sun{background:linear-gradient(135deg,var(--sun),var(--sun-deep));color:#5b3d00;box-shadow:0 12px 24px rgba(245,166,35,.34)}
+    .resume-row{margin-top:12px}
+    .mini-stats{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:14px}
+    .mini-stats .s{background:#fff;border:1px solid var(--line);border-radius:14px;padding:8px 12px;font-weight:800;font-size:14px;color:var(--jungle-deep)}
+    .mini-stats .s b{font-size:18px}
+    .privacy{font-size:13px;color:var(--muted);margin:14px 0 2px}
+
+    /* JOURNEY MAP */
+    .map-head{text-align:center;margin-bottom:6px}
+    .map-title{font-size:clamp(24px,7vw,34px);margin:2px 0;color:var(--jungle-deep);letter-spacing:-.02em}
+    .map-sub{color:var(--muted);font-size:14px;margin:0 0 8px}
+    .trail{position:relative;display:flex;flex-direction:column;gap:14px;padding:6px 2px 4px}
+    .stop{display:flex;align-items:center;gap:14px;position:relative}
+    .stop:nth-child(even){flex-direction:row-reverse;text-align:right}
+    .node{width:74px;height:74px;border-radius:50%;display:grid;place-items:center;font-size:34px;flex:0 0 auto;
+      background:#fff;border:3px solid var(--leaf);box-shadow:var(--shadow-sm);position:relative}
+    .stop.locked .node{border-color:#d9d2c2;background:#f6f2e8;filter:grayscale(.5);opacity:.7}
+    .stop.done .node{border-color:var(--sun-deep);background:#fff7df}
+    .node .badge{position:absolute;right:-6px;bottom:-6px;font-size:20px;background:#fff;border-radius:50%;width:28px;height:28px;display:grid;place-items:center;box-shadow:var(--shadow-sm)}
+    .stop .meta{flex:1;min-width:0}
+    .stop .name{font-weight:900;font-size:19px;color:var(--jungle-deep);line-height:1.05}
+    .stop .tag{font-size:13px;color:var(--muted);font-weight:700}
+    .stop .go{margin-top:6px}
+    .go-btn{border:0;border-radius:14px;padding:10px 16px;font-weight:900;color:#fff;background:linear-gradient(135deg,var(--leaf),var(--jungle));box-shadow:var(--shadow-sm)}
+    .go-btn.locked{background:#e7e0cf;color:#9a917d;box-shadow:none}
+    .go-btn.done{background:#fff7df;color:#8a5a00;border:1px solid #ffe2a3}
+    .connector{position:absolute;left:37px;top:74px;width:0;height:14px;border-left:3px dashed #c7ecda}
+    .stop:nth-child(even) .connector{left:auto;right:37px}
+
+    /* QUESTION */
+    .q-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px}
+    .progress{height:14px;background:#eafaf2;border-radius:999px;overflow:hidden;border:1px solid #c7ecda;margin-bottom:12px}
+    .progress>span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--leaf),var(--sun));transition:width .35s cubic-bezier(.4,1.3,.5,1)}
+    .lola-bar{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+    .lola{font-size:46px;line-height:1;flex:0 0 auto}
+    .bubble{background:#fff;border:1px solid var(--line);border-radius:16px;border-bottom-left-radius:4px;padding:9px 12px;font-weight:800;color:var(--jungle-deep);font-size:15px;box-shadow:var(--shadow-sm);min-height:40px;display:flex;align-items:center}
+    .prompt{font-size:14px;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.05em;text-align:center;margin:4px 0 6px}
+    .stage-word{background:linear-gradient(180deg,#fffdf6,#fff);border:2px solid #ffe2a3;border-radius:24px;padding:18px 14px;text-align:center;margin:2px 0 12px}
+    .es{font-size:clamp(36px,12vw,58px);font-weight:900;color:var(--jungle-deep);letter-spacing:-.03em;margin:2px 0}
+    .es.small{font-size:clamp(26px,8vw,40px)}
+    .pic{font-size:64px;margin-top:4px}
+    .audio-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:10px 0 4px}
+    .pill-btn{border:0;border-radius:16px;padding:13px 16px;font-weight:900;min-height:50px;background:#eafaf2;color:var(--jungle-deep);border:1px solid #c7ecda;box-shadow:var(--shadow-sm)}
+    .pill-btn:active{transform:translateY(2px)}
+    .answers{display:grid;grid-template-columns:1fr;gap:10px;margin-top:8px}
+    .answers.pics{grid-template-columns:repeat(3,1fr)}
+    .answer{background:#fff;border:2px solid #e7e0cf;color:var(--ink);border-radius:18px;padding:15px 12px;min-height:62px;font-size:clamp(18px,5vw,23px);font-weight:900;box-shadow:var(--shadow-sm);display:flex;align-items:center;justify-content:center;gap:8px;text-align:center}
+    .answers.pics .answer{flex-direction:column;min-height:96px;font-size:48px;padding:12px 6px}
+    .answer .sub{display:block;font-size:13px;color:var(--muted);font-weight:800}
+    .answer:active{transform:translateY(2px)}
+    .answer.ok{border-color:#34d399;background:#dcfce7;color:#14532d;animation:pop .4s ease}
+    .answer.bad{border-color:#f87171;background:#fee2e2;color:#7f1d1d;animation:shake .4s ease}
+    @keyframes pop{45%{transform:scale(1.06)}}
+    @keyframes shake{20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+    .feedback{min-height:54px;margin-top:12px;border-radius:16px;padding:11px 14px;text-align:center;font-weight:900;display:flex;align-items:center;justify-content:center;gap:8px;line-height:1.25}
+    .feedback.info{background:#eef6ff;color:#1e3a8a}.feedback.ok{background:#dcfce7;color:#14532d}.feedback.bad{background:#fee2e2;color:#7f1d1d}
+    /* speak mode */
+    .speak-box{text-align:center}
+    .mic-btn{border:0;border-radius:20px;padding:16px;font-weight:900;font-size:18px;color:#fff;background:linear-gradient(135deg,var(--scarlet),var(--berry));box-shadow:0 12px 22px rgba(229,72,77,.3);min-height:64px;width:min(360px,100%)}
+    .mic-btn.listening{animation:micpulse 1s ease-in-out infinite}
+    @keyframes micpulse{0%,100%{box-shadow:0 0 0 0 rgba(229,72,77,.4)}50%{box-shadow:0 0 0 16px rgba(229,72,77,0)}}
+    .said-btn{margin-top:10px;border:0;border-radius:16px;padding:13px 16px;font-weight:900;background:#eafaf2;color:var(--jungle-deep);border:1px solid #c7ecda;min-height:52px;width:min(360px,100%)}
+
+    /* HUD */
+    .hud{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+    .hud .h{background:rgba(255,255,255,.9);border:1px solid var(--line);border-radius:16px;padding:10px;text-align:center}
+    .hud .h b{display:block;font-size:21px;color:var(--jungle-deep)}
+    .hud .h span{font-size:12px;color:var(--muted);font-weight:800}
+    .level-wrap{margin-top:10px;background:rgba(255,255,255,.9);border:1px solid var(--line);border-radius:16px;padding:10px 12px}
+    .level-wrap .lr{display:flex;justify-content:space-between;font-weight:900;color:var(--jungle-deep);font-size:14px;margin-bottom:6px}
+    .xpbar{height:10px;background:#eafaf2;border-radius:999px;overflow:hidden;border:1px solid #c7ecda}
+    .xpbar>span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--grape),var(--scarlet));transition:width .4s ease}
+
+    /* mission end */
+    .end{text-align:center}
+    .sticker-big{font-size:88px;margin:2px;animation:pop2 .6s ease}
+    @keyframes pop2{0%{transform:scale(.2) rotate(-30deg);opacity:0}60%{transform:scale(1.15) rotate(6deg)}100%{transform:scale(1) rotate(0)}}
+    .stars{display:flex;justify-content:center;gap:6px;font-size:34px;margin:6px 0}
+    .star-dim{filter:grayscale(1);opacity:.25}
+    .review{display:grid;gap:8px;margin:12px 0}
+    .review .r{background:#fbf7ee;border:1px solid var(--line);border-radius:14px;padding:10px;display:flex;justify-content:space-between;gap:8px;font-weight:800;align-items:center}
+    .review .r .l{display:flex;align-items:center;gap:8px}
+
+    /* sticker book */
+    .book{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+    .tile{border:2px solid #ffe2a3;background:#fffdf3;border-radius:18px;padding:14px 8px;text-align:center;font-weight:900;min-height:104px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+    .tile small{font-weight:700;color:var(--muted)}
+    .tile.locked{border-color:#e7e0cf;background:#f6f2e8;color:#a99}
+    .tile.locked .i{filter:grayscale(1);opacity:.35}
+    .tile .i{font-size:38px}
+
+    /* memory match */
+    .match-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
+    .mcard{aspect-ratio:3/4;border-radius:16px;border:2px solid #c7ecda;background:linear-gradient(135deg,var(--leaf),var(--jungle));color:#fff;display:grid;place-items:center;font-size:13px;font-weight:900;box-shadow:var(--shadow-sm);position:relative;padding:4px;text-align:center}
+    .mcard .face{font-size:30px}
+    .mcard.flipped{background:#fff;color:var(--jungle-deep);border-color:#ffe2a3}
+    .mcard.matched{background:#dcfce7;border-color:#34d399;color:#14532d;animation:pop .4s ease}
+    .mcard.back::after{content:"🦜";font-size:30px;opacity:.85}
+    .mcard.back .face,.mcard.back span{display:none}
+
+    /* menu */
+    .menu{background:rgba(255,255,255,.86);border:1px solid var(--line);border-radius:20px;padding:12px;margin-top:12px}
+    .menu strong{color:var(--jungle-deep)}
+    .lang-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
+    .lang-grid button{min-height:44px;border-radius:14px;border:1px solid #c7ecda;background:#fff;font-weight:900;color:var(--jungle-deep)}
+    .lang-grid button.active{background:var(--jungle);color:#fff;border-color:var(--jungle)}
+    .menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px}
+    .ghost{border:1px solid var(--line);background:#fff;color:#33473f;border-radius:14px;padding:12px;font-weight:800;min-height:48px}
+    .footnote{font-size:12px;color:var(--muted);text-align:center;margin-top:10px}
+
+    /* toast + confetti */
+    #toast{position:fixed;left:50%;top:18px;transform:transl(-50%,-30px);z-index:50;background:var(--jungle-deep);color:#fff;font-weight:900;padding:12px 18px;border-radius:16px;box-shadow:var(--shadow);opacity:0;transition:.35s;pointer-events:none}
+    #toast.show{opacity:1;transform:translate(-50%,0)}
+    #confetti{position:fixed;inset:0;z-index:40;pointer-events:none}
+
+    .debug{font-size:12px;background:#f1f5f4;border:1px solid #d8e6e0;border-radius:14px;padding:10px;margin-top:10px;color:#42615a}
+    .cheer{animation:cheer .5s ease}@keyframes cheer{30%{transform:scale(1.25) rotate(-10deg)}60%{transform:scale(1.1) rotate(8deg)}}
+    .oops{animation:shake .45s ease}
+    @media (min-width:640px){.answers.pics .answer{font-size:54px}.hud{grid-template-columns:repeat(5,1fr)}}
+    @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+    button:focus-visible{outline:4px solid var(--sun);outline-offset:2px}
   </style>
 </head>
+
 <body>
+<div class="sky-deco" id="skyDeco" aria-hidden="true"></div>
+<div id="toast" role="status" aria-live="polite"></div>
+<canvas id="confetti" aria-hidden="true"></canvas>
+
 <div class="app">
-  <main class="game-first">
-    <section class="play-card" aria-live="polite">
-      <div class="top-row">
-        <div class="brand-mini"><span class="lola-face">🦜</span><span id="miniTitle">Lola Español</span></div>
-        <button class="pill" id="audioToggle" type="button">🔊 Audio</button>
+  <section class="card" aria-live="polite">
+    <div class="topbar">
+      <div class="brand"><span class="bird">🦜</span><span id="brandName">Lola Español</span></div>
+      <div style="display:flex;gap:6px">
+        <button class="chip" id="sfxToggle" type="button">🎵</button>
+        <button class="chip alt" id="audioToggle" type="button">🔊</button>
       </div>
-      <div id="screenStart" class="screen active">
-        <div class="start-hero">
-          <div style="font-size:74px">🦜</div>
-          <h1 id="titleMain">Lola Español</h1>
-          <p id="tagline">Luister, kies en verzamel sterren terwijl Lola je eerste Spaanse woorden leert.</p>
-          <button class="btn btn-primary" id="startBtn" style="font-size:22px;width:min(440px,100%);min-height:66px">▶ Start avontuur</button>
-        </div>
-        <div class="stars"><span>⭐</span><span>⭐</span><span>⭐</span></div>
-        <p class="mission-sub" id="privacyOneLine">Geen account. Geen advertenties. Voortgang blijft op dit toestel.</p>
-      </div>
-      <div id="screenMissions" class="screen">
-        <h2 class="mission-title" id="chooseMissionTitle">Kies een missie</h2>
-        <p class="mission-sub" id="chooseMissionSub">Elke missie duurt ongeveer twee minuten.</p>
-        <div class="mission-grid" id="missionGrid"></div>
-      </div>
-      <div id="screenQuestion" class="screen">
-        <div class="top-row"><span class="pill" id="missionPill">Missie</span><span class="pill" id="qCounter">1/5</span></div>
-        <div class="progress" aria-label="voortgang"><span id="roundProgress"></span></div>
-        <div class="big-word">
-          <div class="listen-label" id="listenLabel">Luister naar Lola</div>
-          <div class="spanish" id="spanishWord">hola</div>
-          <div class="emoji-big" id="wordEmoji">👋</div>
-        </div>
-        <div class="audio-row">
-          <button class="btn btn-soft" id="listenBtn">🔊 Luister</button>
-          <button class="btn btn-soft" id="slowBtn">🐢 Langzaam</button>
-        </div>
-        <div class="mission-sub" id="questionText">Wat betekent dit?</div>
-        <div class="answers" id="answers"></div>
-        <div class="feedback info" id="feedback">Kies het juiste antwoord.</div>
-      </div>
-      <div id="screenMissionEnd" class="screen">
-        <div class="end-badge">
-          <div class="sticker-big" id="earnedSticker">🏖️</div>
-          <h2 class="mission-title" id="missionDoneTitle">Missie klaar!</h2>
-          <div class="stars" id="resultStars"></div>
-          <p class="mission-sub" id="missionDoneSub">Je hebt nieuwe Spaanse woorden geoefend.</p>
-          <div class="mini-list" id="learnedList"></div>
-          <button class="btn btn-primary" id="nextMissionBtn" style="margin-top:12px;width:min(420px,100%)">Volgende missie</button>
-        </div>
-      </div>
-      <div id="screenStickerBook" class="screen">
-        <h2 class="mission-title" id="stickerBookTitle">Stickerboek</h2>
-        <p class="mission-sub" id="stickerBookSub">Verzamel stickers door missies te spelen.</p>
-        <div class="stickerbook-grid" id="stickerBookGrid"></div>
-        <button class="btn btn-primary" id="backToMissionsBtn" style="margin-top:14px;width:min(420px,100%)">🗺️ Missies</button>
-      </div>
-    </section>
+    </div>
 
-    <section class="hud" aria-label="spelstatus">
-      <div class="hud-card"><b id="hudStars">0</b><span id="hudStarsLabel">Sterren</span></div>
-      <div class="hud-card"><b id="hudStickers">0</b><span id="hudStickersLabel">Stickers</span></div>
-      <div class="hud-card"><b id="hudKnown">0</b><span id="hudKnownLabel">Woorden</span></div>
-      <div class="hud-card"><b id="hudStreak">0</b><span id="hudStreakLabel">Dagen</span></div>
-      <div class="hud-card"><b id="hudDue">0</b><span id="hudDueLabel">Herhaal</span></div>
-    </section>
+    <!-- START -->
+    <div id="screenStart" class="screen active">
+      <div class="hero">
+        <div class="stage"><span class="bird-big" id="heroBird">🦜</span></div>
+        <h1><span id="heroTitle">Spaans met</span> <span class="accent">Lola</span></h1>
+        <p id="heroTag">Vlieg met Lola door de jungle en leer je eerste Spaanse woorden — luisteren, kiezen, naspreken en spelen.</p>
+        <button class="cta" id="startBtn">▶ <span id="startLabel">Start avontuur</span></button>
+        <div class="resume-row" id="resumeRow"></div>
+        <div class="mini-stats" id="startStats"></div>
+        <p class="privacy" id="privacy">Geen account. Geen reclame. Alles blijft op dit toestel.</p>
+      </div>
+    </div>
 
-    <section class="secondary secondary-grid">
-      <div>
-        <strong id="languageTitle">Taal</strong>
-        <div class="lang-grid" id="langGrid"></div>
-        <p class="footer-note" id="languageNote">De interface en antwoorden gebruiken dezelfde taal.</p>
+    <!-- MISSIONS / MAP -->
+    <div id="screenMissions" class="screen">
+      <div class="map-head">
+        <h2 class="map-title" id="mapTitle">Lola's reis</h2>
+        <p class="map-sub" id="mapSub">Kies een plek. Elke missie duurt ongeveer twee minuten.</p>
       </div>
-      <div>
-        <strong id="grownupTitle">Voor ouders en leerkrachten</strong>
-        <div class="menu-grid">
-          <button class="btn btn-ghost" id="teacherBtn">👨‍🏫 Info</button>
-          <button class="btn btn-ghost" id="installBtn">📲 Zet op beginscherm</button>
-          <button class="btn btn-ghost" id="resetBtn">🧹 Wis voortgang</button>
-          <button class="btn btn-ghost" id="missionsBtn">🗺️ Missies</button>
-          <button class="btn btn-ghost" id="stickerBookBtn">📒 Stickerboek</button>
-        </div>
+      <div class="trail" id="trail"></div>
+    </div>
+
+    <!-- QUESTION -->
+    <div id="screenQuestion" class="screen">
+      <div class="q-top"><span class="chip" id="qMission">Missie</span><span class="chip alt" id="qCounter">1/5</span></div>
+      <div class="progress"><span id="qProgress"></span></div>
+      <div class="lola-bar"><span class="lola" id="qLola">🦜</span><div class="bubble" id="qBubble">¡Hola! Klaar?</div></div>
+      <div class="prompt" id="qPrompt">Wat betekent dit?</div>
+      <div id="qBody"></div>
+      <div class="feedback info" id="feedback">Kies het juiste antwoord.</div>
+    </div>
+
+    <!-- MISSION END -->
+    <div id="screenEnd" class="screen">
+      <div class="end">
+        <div class="sticker-big" id="endSticker">🏖️</div>
+        <h2 class="map-title" id="endTitle">Missie klaar!</h2>
+        <div class="stars" id="endStars"></div>
+        <p class="map-sub" id="endSub">Je hebt nieuwe Spaanse woorden geoefend.</p>
+        <div class="review" id="endReview"></div>
+        <button class="cta sun" id="playMatchBtn" style="margin-bottom:8px">🃏 <span id="playMatchLabel">Speel het geheugenspel</span></button>
+        <button class="cta" id="nextBtn">➡ <span id="nextLabel">Volgende missie</span></button>
       </div>
-      <details style="grid-column:1/-1">
-        <summary id="detailsSummary">Wat zit erin?</summary>
-        <div class="mini-list" id="stickerList"></div>
-      </details>
-    </section>
-  </main>
+    </div>
+
+    <!-- MEMORY MATCH -->
+    <div id="screenMatch" class="screen">
+      <div class="map-head">
+        <h2 class="map-title" id="matchTitle">Geheugenspel</h2>
+        <p class="map-sub" id="matchSub">Vind het woord bij het plaatje.</p>
+      </div>
+      <div class="match-grid" id="matchGrid"></div>
+      <div class="feedback info" id="matchFeedback" style="margin-top:12px">Tik twee kaartjes.</div>
+      <button class="cta" id="matchBackBtn" style="margin-top:10px">🗺️ <span id="matchBackLabel">Terug naar de kaart</span></button>
+    </div>
+
+    <!-- STICKER BOOK -->
+    <div id="screenBook" class="screen">
+      <h2 class="map-title" id="bookTitle">Lola's stickerboek</h2>
+      <p class="map-sub" id="bookSub">Verzamel stickers door missies te spelen.</p>
+      <div class="book" id="bookGrid"></div>
+      <button class="cta" id="bookBackBtn" style="margin-top:14px">🗺️ <span id="bookBackLabel">Missies</span></button>
+    </div>
+  </section>
+
+  <!-- HUD -->
+  <section class="hud" aria-label="spelstatus">
+    <div class="h"><b id="hStars">0</b><span id="hStarsLbl">Sterren</span></div>
+    <div class="h"><b id="hStickers">0</b><span id="hStickersLbl">Stickers</span></div>
+    <div class="h"><b id="hWords">0</b><span id="hWordsLbl">Woorden</span></div>
+    <div class="h"><b id="hStreak">0</b><span id="hStreakLbl">Dagen</span></div>
+    <div class="h"><b id="hDue">0</b><span id="hDueLbl">Herhaal</span></div>
+  </section>
+
+  <section class="level-wrap" aria-label="niveau">
+    <div class="lr"><span id="levelLbl">Niveau 1</span><span id="xpLbl">0 / 100 XP</span></div>
+    <div class="xpbar"><span id="xpFill"></span></div>
+  </section>
+
+  <!-- MENU -->
+  <section class="menu">
+    <strong id="langTitle">Taal</strong>
+    <div class="lang-grid" id="langGrid"></div>
+    <strong id="grownTitle">Voor ouders en leerkrachten</strong>
+    <div class="menu-grid">
+      <button class="ghost" id="missionsBtn">🗺️ <span id="missionsLbl">Kaart</span></button>
+      <button class="ghost" id="bookBtn">📒 <span id="bookLbl">Stickerboek</span></button>
+      <button class="ghost" id="teacherBtn">👨‍🏫 <span id="teacherLbl">Info</span></button>
+      <button class="ghost" id="installBtn">📲 <span id="installLbl">Zet op beginscherm</span></button>
+      <button class="ghost" id="resetBtn" style="grid-column:1/-1">🧹 <span id="resetLbl">Wis voortgang</span></button>
+    </div>
+    <p class="footnote" id="foot"></p>
+  </section>
 </div>
+
 <script>
-const VERSION='kids-v1.3.0-agent';
 const LANGS={nl:'Nederlands',en:'English',sk:'Slovenčina'};
 const T={
  nl:{miniTitle:'Lola Español',titleMain:'Spaans met Lola',tagline:'Luister, kies en verzamel sterren terwijl Lola je eerste Spaanse woorden leert.',start:'▶ Start avontuur',privacy:'Geen account. Geen advertenties. Voortgang blijft op dit toestel.',chooseMissionTitle:'Kies een missie',chooseMissionSub:'Elke missie duurt ongeveer twee minuten.',listenLabel:'Luister naar Lola',questionText:'Wat betekent dit?',pick:'Kies het juiste antwoord.',listen:'🔊 Luister',slow:'🐢 Langzaam',correct:'Mooi! Lola heeft een ster gevonden.',wrong:'Bijna. Luister nog eens:',missionDoneTitle:'Missie klaar!',missionDoneSub:'Je hebt nieuwe Spaanse woorden geoefend.',nextMission:'Volgende missie',stars:'Sterren',stickers:'Stickers',words:'Woorden',days:'Dagen',due:'Herhaal',language:'Taal',languageNote:'De interface en antwoorden gebruiken dezelfde taal.',grownup:'Voor ouders en leerkrachten',teacher:'👨‍🏫 Info',install:'📲 Zet op beginscherm',reset:'🧹 Wis voortgang',missions:'🗺️ Missies',details:'Wat zit erin?',stickerBook:'📒 Stickerboek',stickerBookTitle:'Lola’s stickerboek',stickerBookSub:'Verzamel stickers door missies te spelen.',phraseQuestion:'Wat zegt Lola?',sayAfterMe:'Zeg maar na.',unlocked:'Gevonden',locked:'Nog gesloten',done:'Klaar',new:'Nieuw',repeat:'Herhaalwoord',installIos:'Op iPhone: tik op Delen en kies “Zet op beginscherm”.',installOther:'Gebruik de installatieknop van je browser of voeg deze pagina toe aan je beginscherm.',resetConfirm:'Voortgang wissen op dit toestel?',teacherUrl:'voor-leerkrachten.html',hiddenSticker:'Nog te vinden',stickerBookEmpty:'Speel missies en vul Lola’s stickerboek.'},
@@ -175,43 +330,333 @@ const CHUNKS=[
  {id:'ch_mi_casa',es:'Mi casa.',nl:'Mijn huis.',en:'My house.',sk:'Môj dom.',theme:'home',icon:'🏠'},
  {id:'ch_la_puerta_abierta',es:'La puerta está abierta.',nl:'De deur is open.',en:'The door is open.',sk:'Dvere sú otvorené.',theme:'home',icon:'🚪'}
 ];
-const stateDefault={lang:'nl',audio:true,stars:0,stickers:[],known:{},knownChunks:{},boxes:{},missionDone:{},streak:0,lastGoal:'',todayCount:0};
-let state=loadState(); let currentMission=null; let round=[]; let qIndex=0; let currentWord=null; let answered=false; let roundCorrect=0; let deferredPrompt=null;
+
+
+/* ============ EXTRA TRANSLATIONS (merged into T) ============ */
+const EXTRA={
+ nl:{heroTitle:'Spaans met',heroTag:'Vlieg met Lola door de jungle en leer je eerste Spaanse woorden — luisteren, kiezen, naspreken en spelen.',startLabel:'Start avontuur',privacy:'Geen account. Geen reclame. Alles blijft op dit toestel.',
+   mapTitle:"Lola's reis",mapSub:'Kies een plek. Elke missie duurt ongeveer twee minuten.',resumeLabel:'Ga verder',
+   pStars:'Sterren',pStickers:'Stickers',pWords:'Woorden',pStreak:'Dagen',pLevel:'Niveau',
+   qListen:'Wat betekent dit?',qPic2Word:'Hoe zeg je dit in het Spaans?',qWord2Pic:'Welk plaatje hoort hierbij?',qListen2Pic:'Tik op het juiste plaatje.',qSpeak:'Zeg het na Lola!',qChunk:'Wat zegt Lola?',
+   tapPick:'Kies het juiste antwoord.',tapPic:'Tik op het juiste plaatje.',
+   sayBtn:'🎤 Spreek na Lola',sayDone:'✅ Ik heb het gezegd',sayGood:'Goed gezegd! ⭐',sayListening:'Ik luister…',
+   correct:'¡Olé! Lola is trots.',correctAlt:'Knap gedaan!',wrong:'Bijna. Luister nog eens:',
+   levelUp:'Niveau {n}! ',newBird:'Nieuwe sticker!',
+   endTitle:'Missie klaar!',endSub:'Je hebt nieuwe Spaanse woorden geoefend.',nextLabel:'Volgende missie',playMatchLabel:'Speel het geheugenspel',
+   matchTitle:'Geheugenspel',matchSub:'Vind het woord bij het plaatje.',matchTap:'Tik twee kaartjes.',matchGood:'Paar gevonden! ⭐',matchNo:'Geen paar. Probeer opnieuw.',matchWin:'Alles gevonden! Bonus ⭐⭐',matchBackLabel:'Terug naar de kaart',
+   bookTitle:"Lola's stickerboek",bookSub:'Verzamel stickers door missies te spelen.',bookBackLabel:'Missies',hidden:'Nog te vinden',found:'Gevonden',
+   langTitle:'Taal',grownTitle:'Voor ouders en leerkrachten',missionsLbl:'Kaart',bookLbl:'Stickerboek',teacherLbl:'Info',installLbl:'Zet op beginscherm',resetLbl:'Wis voortgang',
+   foot:'Gemaakt om samen te spelen. Voortgang en herhaling werken offline.',
+   done:'Klaar',newM:'Nieuw',locked:'Op slot',words5:'5 woorden',
+   resetConfirm:'Voortgang wissen op dit toestel?',installIos:'Op iPhone: tik op Delen en kies "Zet op beginscherm".',installOther:'Gebruik de installatieknop van je browser of voeg deze pagina toe aan je beginscherm.',teacherUrl:'voor-leerkrachten.html',
+   chips:['¡Vamos!','Goed bezig!','Je kan dit!','Luister goed.','Nog eentje!','Súper!']},
+ en:{heroTitle:'Spanish with',heroTag:'Fly through the jungle with Lola and learn your first Spanish words — listen, choose, repeat and play.',startLabel:'Start adventure',privacy:'No account. No ads. Everything stays on this device.',
+   mapTitle:"Lola's journey",mapSub:'Pick a place. Each mission takes about two minutes.',resumeLabel:'Continue',
+   pStars:'Stars',pStickers:'Stickers',pWords:'Words',pStreak:'Days',pLevel:'Level',
+   qListen:'What does this mean?',qPic2Word:'How do you say this in Spanish?',qWord2Pic:'Which picture fits?',qListen2Pic:'Tap the right picture.',qSpeak:'Say it after Lola!',qChunk:'What is Lola saying?',
+   tapPick:'Choose the correct answer.',tapPic:'Tap the right picture.',
+   sayBtn:'🎤 Say it after Lola',sayDone:'✅ I said it',sayGood:'Well said! ⭐',sayListening:'Listening…',
+   correct:'¡Olé! Lola is proud.',correctAlt:'Nicely done!',wrong:'Almost. Listen again:',
+   levelUp:'Level {n}! ',newBird:'New sticker!',
+   endTitle:'Mission complete!',endSub:'You practised new Spanish words.',nextLabel:'Next mission',playMatchLabel:'Play the memory game',
+   matchTitle:'Memory game',matchSub:'Match the word to the picture.',matchTap:'Tap two cards.',matchGood:'Pair found! ⭐',matchNo:'No pair. Try again.',matchWin:'All found! Bonus ⭐⭐',matchBackLabel:'Back to the map',
+   bookTitle:"Lola's sticker book",bookSub:'Collect stickers by playing missions.',bookBackLabel:'Missions',hidden:'Still hidden',found:'Found',
+   langTitle:'Language',grownTitle:'For parents and teachers',missionsLbl:'Map',bookLbl:'Sticker book',teacherLbl:'Info',installLbl:'Add to home screen',resetLbl:'Clear progress',
+   foot:'Made to play together. Progress and review work offline.',
+   done:'Done',newM:'New',locked:'Locked',words5:'5 words',
+   resetConfirm:'Clear progress on this device?',installIos:'On iPhone: tap Share and choose "Add to Home Screen".',installOther:'Use your browser install button or add this page to your home screen.',teacherUrl:'voor-leerkrachten.html',
+   chips:['¡Vamos!','Great job!','You can do it!','Listen well.','One more!','Súper!']},
+ sk:{heroTitle:'Španielčina s',heroTag:'Leť s Lolou cez džungľu a uč sa prvé španielske slová — počúvaj, vyberaj, opakuj a hraj sa.',startLabel:'Začať dobrodružstvo',privacy:'Bez účtu. Bez reklám. Všetko zostáva v zariadení.',
+   mapTitle:'Lolina cesta',mapSub:'Vyber miesto. Každá misia trvá asi dve minúty.',resumeLabel:'Pokračovať',
+   pStars:'Hviezdy',pStickers:'Nálepky',pWords:'Slová',pStreak:'Dni',pLevel:'Úroveň',
+   qListen:'Čo to znamená?',qPic2Word:'Ako to povieš po španielsky?',qWord2Pic:'Ktorý obrázok sa hodí?',qListen2Pic:'Klepni na správny obrázok.',qSpeak:'Zopakuj po Lole!',qChunk:'Čo hovorí Lola?',
+   tapPick:'Vyber správnu odpoveď.',tapPic:'Klepni na správny obrázok.',
+   sayBtn:'🎤 Zopakuj po Lole',sayDone:'✅ Povedal/a som to',sayGood:'Pekne! ⭐',sayListening:'Počúvam…',
+   correct:'¡Olé! Lola je hrdá.',correctAlt:'Výborne!',wrong:'Skoro. Počúvaj ešte raz:',
+   levelUp:'Úroveň {n}! ',newBird:'Nová nálepka!',
+   endTitle:'Misia splnená!',endSub:'Precvičil/a si nové španielske slová.',nextLabel:'Ďalšia misia',playMatchLabel:'Hraj pamäťovú hru',
+   matchTitle:'Pamäťová hra',matchSub:'Priraď slovo k obrázku.',matchTap:'Klepni na dve karty.',matchGood:'Pár nájdený! ⭐',matchNo:'Žiadny pár. Skús znova.',matchWin:'Všetko nájdené! Bonus ⭐⭐',matchBackLabel:'Späť na mapu',
+   bookTitle:'Lolina kniha nálepiek',bookSub:'Zbieraj nálepky hraním misií.',bookBackLabel:'Misie',hidden:'Ešte skryté',found:'Nájdené',
+   langTitle:'Jazyk',grownTitle:'Pre rodičov a učiteľov',missionsLbl:'Mapa',bookLbl:'Kniha nálepiek',teacherLbl:'Info',installLbl:'Pridať na plochu',resetLbl:'Vymazať pokrok',
+   foot:'Na spoločné hranie. Pokrok a opakovanie fungujú offline.',
+   done:'Hotovo',newM:'Nové',locked:'Zamknuté',words5:'5 slov',
+   resetConfirm:'Vymazať pokrok v tomto zariadení?',installIos:'Na iPhone: klepni na Zdieľať a vyber „Pridať na plochu".',installOther:'Použi tlačidlo inštalácie v prehliadači alebo pridaj stránku na plochu.',teacherUrl:'voor-leerkrachten.html',
+   chips:['¡Vamos!','Skvelé!','Zvládneš to!','Dobre počúvaj.','Ešte jedno!','Súper!']}
+};
+Object.keys(EXTRA).forEach(l=>Object.assign(T[l], EXTRA[l]));
+
+/* ============ STATE ============ */
+const stateDefault={lang:'nl',audio:true,sfx:true,stars:0,xp:0,level:1,stickers:[],known:{},knownChunks:{},boxes:{},missionDone:{},streak:0,lastGoal:'',todayCount:0,lastMission:null,bestMatch:0};
+let state=loadState();
+let currentMission=null, round=[], qIndex=0, currentItem=null, currentMode='listen', answered=false, roundCorrect=0, deferredPrompt=null;
+const XP_STEP=100;
+
+/* ============ HELPERS ============ */
 function $(id){return document.getElementById(id)}
 function today(){return new Date().toISOString().slice(0,10)}
 function loadState(){try{return {...stateDefault,...JSON.parse(localStorage.getItem('lolaKidsState')||'{}')}}catch(e){return {...stateDefault}}}
-function save(){localStorage.setItem('lolaKidsState',JSON.stringify(state))}
-function tr(k){return (T[state.lang]||T.nl)[k]||T.nl[k]||k}
-function shuffle(a){return [...a].sort(()=>Math.random()-.5)}
-function normalize(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim()}
-function dueWords(){const now=Date.now(); return WORDS.filter(w=>state.boxes[w.id]?.dueAt && state.boxes[w.id].dueAt<=now)}
-function labelFor(w){return itemLabel(w)}
-function speak(text,slow=false){ if(!state.audio || !('speechSynthesis' in window)) return; try{speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(text); u.lang='es-ES'; u.rate=slow?.68:.9; u.pitch=1.05; speechSynthesis.speak(u);}catch(e){} }
-function show(screen){['screenStart','screenMissions','screenQuestion','screenMissionEnd','screenStickerBook'].forEach(id=>$(id).classList.toggle('active',id===screen)); window.scrollTo({top:0,behavior:'smooth'});}
-function updateTexts(){document.documentElement.lang=state.lang; document.title=tr('titleMain')+' — Lola Español'; Object.keys(T.nl).forEach(k=>{const el=$(k); if(el && !['start','listen','slow','teacher','install','reset','missions'].includes(k)) el.textContent=tr(k)}); $('miniTitle').textContent=tr('miniTitle');$('titleMain').textContent=tr('titleMain');$('tagline').textContent=tr('tagline');$('startBtn').textContent=tr('start');$('privacyOneLine').textContent=tr('privacy');$('chooseMissionTitle').textContent=tr('chooseMissionTitle');$('chooseMissionSub').textContent=tr('chooseMissionSub');$('listenLabel').textContent=tr('listenLabel');$('questionText').textContent=tr('questionText');$('listenBtn').textContent=tr('listen');$('slowBtn').textContent=tr('slow');$('missionDoneTitle').textContent=tr('missionDoneTitle');$('missionDoneSub').textContent=tr('missionDoneSub');$('nextMissionBtn').textContent=tr('nextMission');$('hudStarsLabel').textContent=tr('stars');$('hudStickersLabel').textContent=tr('stickers');$('hudKnownLabel').textContent=tr('words');$('hudStreakLabel').textContent=tr('days');$('hudDueLabel').textContent=tr('due');$('languageTitle').textContent=tr('language');$('languageNote').textContent=tr('languageNote');$('grownupTitle').textContent=tr('grownup');$('teacherBtn').textContent=tr('teacher');$('installBtn').textContent=tr('install');$('resetBtn').textContent=tr('reset');$('missionsBtn').textContent=tr('missions');$('stickerBookBtn').textContent=tr('stickerBook');$('stickerBookTitle').textContent=tr('stickerBookTitle');$('stickerBookSub').textContent=tr('stickerBookSub');$('backToMissionsBtn').textContent=tr('missions');$('detailsSummary').textContent=tr('details');$('audioToggle').textContent=state.audio?'🔊 Audio':'🔇 Audio'; renderLangs(); renderMissions(); updateHud(); renderStickers();}
-function renderLangs(){const grid=$('langGrid'); grid.innerHTML=''; Object.entries(LANGS).forEach(([code,name])=>{const b=document.createElement('button'); b.textContent=name; b.className=state.lang===code?'active':''; b.onclick=()=>{state.lang=code; save(); updateTexts(); if(currentWord) renderQuestion();}; grid.appendChild(b);});}
-function renderMissions(){const grid=$('missionGrid'); grid.innerHTML=''; const doneCount=Object.keys(state.missionDone||{}).length; MISSIONS.forEach((m,i)=>{const unlocked=i===0 || state.missionDone[MISSIONS[i-1].id]; const btn=document.createElement('button'); btn.className='mission'+(unlocked?'':' locked'); btn.disabled=!unlocked; btn.innerHTML=`<span class="mission-emoji">${m.emoji}</span><span><span class="mission-name">${m.names[state.lang]||m.names.nl}</span><br><span class="mission-meta">${state.missionDone[m.id]?tr('done'):(unlocked?tr('new'):tr('locked'))} · 5 ${tr('words').toLowerCase()}</span></span>`; btn.onclick=()=>startMission(m.id); grid.appendChild(btn);});}
-function updateHud(){ $('hudStars').textContent=state.stars||0; $('hudStickers').textContent=(state.stickers||[]).length; $('hudKnown').textContent=Object.keys(state.known||{}).length + Object.keys(state.knownChunks||{}).length; $('hudStreak').textContent=state.streak||0; $('hudDue').textContent=dueWords().length; }
-function renderStickers(){const list=$('stickerList'); const stickers=(state.stickers||[]); const found=new Map(stickers.map(s=>[s.id,s])); if(!stickers.length){list.innerHTML=`<div class="footer-note">${tr('stickerBookEmpty')}</div>`;} else {list.innerHTML='';} const grid=document.createElement('div'); grid.className='mini-list'; MISSIONS.forEach(m=>{const s=found.get(m.id); const row=document.createElement('div'); row.className='sticker'+(s?'':' locked'); const label=s ? s.name : tr('hiddenSticker'); row.innerHTML=`<span style="font-size:24px">${s?m.sticker:'⬜'}</span><span>${label}</span>`; grid.appendChild(row);}); list.appendChild(grid); renderStickerBook();}
-function renderStickerBook(){const grid=$('stickerBookGrid'); if(!grid)return; grid.innerHTML=''; const found=new Set((state.stickers||[]).map(s=>s.id)); MISSIONS.forEach((m,i)=>{const tile=document.createElement('div'); const ok=found.has(m.id); tile.className='sticker-tile'+(ok?'':' locked'); tile.innerHTML=`<span class="sticker-icon">${ok?m.sticker:'⬜'}</span><div>${m.names[state.lang]||m.names.nl}</div><small>${ok?tr('unlocked'):tr('hiddenSticker')}</small>`; grid.appendChild(tile);});}
-function itemLabel(item){return item[state.lang]||item.nl}
-function isChunk(item){return String(item.id||'').startsWith('ch_')}
-function startMission(id){currentMission=MISSIONS.find(m=>m.id===id)||MISSIONS[0]; const pool=WORDS.filter(w=>currentMission.themes.includes(w.theme)); const phrasePool=CHUNKS.filter(c=>currentMission.themes.includes(c.theme)); const due=dueWords().filter(w=>currentMission.themes.includes(w.theme)); const wordPart=shuffle([...due,...pool]).filter((w,i,a)=>a.findIndex(x=>x.id===w.id)===i).slice(0,4); const phrasePart=shuffle(phrasePool).slice(0,1); round=shuffle([...wordPart,...phrasePart]).slice(0,5); while(round.length<5) round.push(...shuffle(pool).slice(0,5-round.length)); qIndex=0; roundCorrect=0; showQuestion();}
-function makeOptions(w){const source=isChunk(w)?CHUNKS:WORDS; const all=source.filter(x=>x.id!==w.id); return shuffle([w,...shuffle(all).slice(0,2)]);}
-function showQuestion(){answered=false; currentWord=round[qIndex]; renderQuestion(); show('screenQuestion'); setTimeout(()=>speak(currentWord.es),350);}
-function renderQuestion(){const w=currentWord; if(!w)return; $('missionPill').textContent=(currentMission?.emoji||'🦜')+' '+(currentMission?.names[state.lang]||currentMission?.names.nl||'Missie'); $('qCounter').textContent=(qIndex+1)+'/5'; $('roundProgress').style.width=((qIndex)/5*100)+'%'; $('spanishWord').textContent=w.es; $('wordEmoji').textContent=w.icon; $('questionText').textContent=isChunk(w)?tr('phraseQuestion'):tr('questionText'); $('feedback').className='feedback info'; $('feedback').textContent=tr('pick'); const answers=$('answers'); answers.innerHTML=''; makeOptions(w).forEach(opt=>{const b=document.createElement('button'); b.className='answer'; b.innerHTML=`<span class="answer-emoji">${opt.icon}</span><span>${labelFor(opt)}</span>`; b.onclick=()=>answer(opt,b); answers.appendChild(b);});}
-function popLola(){document.querySelectorAll('.lola-face').forEach(el=>{el.classList.remove('lola-pop'); void el.offsetWidth; el.classList.add('lola-pop');});}
-function answer(opt,btn){if(answered)return; answered=true; const w=currentWord; const correct=opt.id===w.id; [...document.querySelectorAll('.answer')].forEach(b=>{if(b.textContent.includes(labelFor(w))) b.classList.add('ok')}); if(correct){roundCorrect++; popLola(); state.stars=(state.stars||0)+1; if(isChunk(w)){state.knownChunks[w.id]=(state.knownChunks[w.id]||0)+1;}else{state.known[w.id]=(state.known[w.id]||0)+1;}  const box=state.boxes[w.id]?.box||0; const newBox=Math.min(6,box+1); const intervals=[0,0,4*3600000,86400000,3*86400000,7*86400000,14*86400000]; state.boxes[w.id]={box:newBox,dueAt:Date.now()+intervals[newBox]}; $('feedback').className='feedback ok'; $('feedback').textContent=tr('correct')+' ⭐';}else{btn.classList.add('bad'); state.boxes[w.id]={box:1,dueAt:Date.now()}; $('feedback').className='feedback bad'; $('feedback').textContent=`${tr('wrong')} ${w.es} = ${labelFor(w)}`; speak(w.es,true);} updateDaily(correct); save(); updateHud(); setTimeout(()=>{qIndex++; if(qIndex>=5) endMission(); else showQuestion();}, correct?900:1800);}
-function updateDaily(correct){if(!correct)return; const d=today(); if(state.lastGoal!==d){const yesterday=new Date(Date.now()-86400000).toISOString().slice(0,10); state.streak=(state.lastGoal===yesterday)?(state.streak||0):0; state.lastGoal=d; state.todayCount=0;} state.todayCount=(state.todayCount||0)+1; if(state.todayCount===5) state.streak=(state.streak||0)+1;}
-function endMission(){const m=currentMission; if(!state.missionDone[m.id]){state.missionDone[m.id]=true; const item={id:m.id,sticker:m.sticker,name:m.names[state.lang]||m.names.nl}; state.stickers=[...(state.stickers||[]).filter(x=>x.id!==m.id),item];}
- save(); updateHud(); renderStickers(); $('earnedSticker').textContent=m.sticker; $('resultStars').innerHTML=Array.from({length:5},(_,i)=>`<span class="${i<roundCorrect?'':'star-dim'}">⭐</span>`).join(''); $('learnedList').innerHTML=round.map(w=>`<div class="word-review"><span>${w.icon} ${w.es}${isChunk(w)?' <em class=\"phrase-chip\">'+tr('sayAfterMe')+'</em>':''}</span><span>${labelFor(w)}</span></div>`).join(''); show('screenMissionEnd');}
-function nextMission(){const idx=MISSIONS.findIndex(m=>m.id===currentMission.id); const next=MISSIONS[idx+1]||MISSIONS[0]; if(state.missionDone[currentMission.id] && next) startMission(next.id); else show('screenMissions');}
-function installHelp(){const isiOS=/iphone|ipad|ipod/i.test(navigator.userAgent); if(deferredPrompt){deferredPrompt.prompt(); deferredPrompt.userChoice.finally(()=>deferredPrompt=null); return;} alert(isiOS?tr('installIos'):tr('installOther'));}
-window.addEventListener('beforeinstallprompt',e=>{e.preventDefault(); deferredPrompt=e;});
-$('startBtn').onclick=()=>show('screenMissions'); $('listenBtn').onclick=()=>speak(currentWord?.es||'hola'); $('slowBtn').onclick=()=>speak(currentWord?.es||'hola',true); $('audioToggle').onclick=()=>{state.audio=!state.audio; save(); updateTexts();}; $('nextMissionBtn').onclick=nextMission; $('missionsBtn').onclick=()=>show('screenMissions'); $('stickerBookBtn').onclick=()=>{renderStickerBook();show('screenStickerBook')}; $('backToMissionsBtn').onclick=()=>show('screenMissions'); $('teacherBtn').onclick=()=>location.href=tr('teacherUrl'); $('installBtn').onclick=installHelp; $('resetBtn').onclick=()=>{if(confirm(tr('resetConfirm'))){localStorage.removeItem('lolaKidsState'); state=loadState(); updateTexts(); show('screenStart');}};
-if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(()=>{}));}
-function runSelfCheck(){const missing=WORDS.filter(w=>!w.id||!w.es||!w.nl||!w.en||!w.sk||!w.icon); const missThemes=MISSIONS.filter(m=>!WORDS.some(w=>m.themes.includes(w.theme))); const dup=WORDS.length-new Set(WORDS.map(w=>w.id)).size; const chunkMissing=CHUNKS.filter(c=>!c.id||!c.es||!c.nl||!c.en||!c.sk); if(location.search.includes('test=1')){const box=document.createElement('div'); box.className='debug-panel'; box.innerHTML=`<strong>Zelfcheck v1.3</strong><br>Woorden: ${WORDS.length} · chunks: ${CHUNKS.length} · missies: ${MISSIONS.length}<br>Ontbrekend: ${missing.length} · dubbele IDs: ${dup} · chunkfouten: ${chunkMissing.length} · missiethemafouten: ${missThemes.length}<br>Audio: ${'speechSynthesis' in window?'beschikbaar':'niet beschikbaar'} · SW: ${'serviceWorker' in navigator?'beschikbaar':'niet beschikbaar'}`; document.querySelector('.secondary').appendChild(box);}}
-updateTexts(); runSelfCheck();
+function save(){try{localStorage.setItem('lolaKidsState',JSON.stringify(state))}catch(e){}}
+function tr(k){return (T[state.lang]||T.nl)[k] ?? T.nl[k] ?? k}
+function shuffle(a){const x=[...a];for(let i=x.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[x[i],x[j]]=[x[j],x[i]]}return x}
+function isChunk(it){return String(it.id||'').startsWith('ch_')}
+function labelFor(it){return it[state.lang]||it.nl}
+function dueWords(){const now=Date.now();return WORDS.filter(w=>state.boxes[w.id]?.dueAt && state.boxes[w.id].dueAt<=now)}
+function pick(arr,n){return shuffle(arr).slice(0,n)}
+function randChip(){const c=tr('chips');return c[Math.floor(Math.random()*c.length)]}
+
+/* ============ AUDIO: speech + web-audio sfx ============ */
+let esVoice=null;
+function loadVoices(){try{const vs=speechSynthesis.getVoices();esVoice=vs.find(v=>/es-ES/i.test(v.lang))||vs.find(v=>/^es/i.test(v.lang))||null;}catch(e){}}
+if('speechSynthesis' in window){loadVoices();speechSynthesis.onvoiceschanged=loadVoices;}
+function speak(text,slow){ if(!state.audio||!('speechSynthesis'in window))return; try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='es-ES';if(esVoice)u.voice=esVoice;u.rate=slow?0.62:0.92;u.pitch=1.06;speechSynthesis.speak(u);}catch(e){} }
+
+let actx=null;
+function audioCtx(){if(!actx){try{actx=new (window.AudioContext||window.webkitAudioContext)();}catch(e){}}if(actx&&actx.state==='suspended')actx.resume();return actx;}
+function tone(freq,start,dur,type,vol){const c=audioCtx();if(!c)return;const o=c.createOscillator(),g=c.createGain();o.type=type||'sine';o.frequency.value=freq;o.connect(g);g.connect(c.destination);const t=c.currentTime+start;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol||0.18,t+0.02);g.gain.exponentialRampToValueAtTime(0.0001,t+dur);o.start(t);o.stop(t+dur+0.02);}
+function sfx(name){ if(!state.sfx)return;
+  if(name==='correct'){tone(660,0,0.12,'triangle',0.2);tone(880,0.1,0.18,'triangle',0.2);}
+  else if(name==='wrong'){tone(200,0,0.18,'sine',0.16);tone(150,0.12,0.2,'sine',0.14);}
+  else if(name==='level'){[523,659,784,1047].forEach((f,i)=>tone(f,i*0.09,0.22,'triangle',0.2));}
+  else if(name==='sparkle'){[1047,1319,1568].forEach((f,i)=>tone(f,i*0.05,0.16,'sine',0.14));}
+  else if(name==='flip'){tone(420,0,0.06,'square',0.08);}
+  else if(name==='match'){tone(587,0,0.1,'triangle',0.18);tone(880,0.09,0.16,'triangle',0.18);}
+}
+function unlockAudio(){audioCtx();if('speechSynthesis'in window){try{const u=new SpeechSynthesisUtterance(' ');u.volume=0;speechSynthesis.speak(u);}catch(e){}}}
+document.addEventListener('pointerdown',function once(){unlockAudio();document.removeEventListener('pointerdown',once)},{once:true});
+
+/* ============ LOLA MOODS ============ */
+function lolaMood(el,mood){ if(!el)return; el.classList.remove('cheer','oops'); void el.offsetWidth; if(mood==='cheer')el.classList.add('cheer'); else if(mood==='oops')el.classList.add('oops'); }
+function bubble(text){const b=$('qBubble');if(b)b.textContent=text;}
+
+/* ============ SCREENS ============ */
+function show(id){['screenStart','screenMissions','screenQuestion','screenEnd','screenMatch','screenBook'].forEach(s=>$(s).classList.toggle('active',s===id));window.scrollTo({top:0,behavior:'smooth'});}
+
+/* ============ TEXTS ============ */
+function setText(id,k){const el=$(id);if(el)el.textContent=tr(k);}
+function updateTexts(){
+  document.documentElement.lang=state.lang; document.title=tr('titleMain')+' — Lola Español';
+  $('brandName').textContent='Lola Español';
+  setText('heroTitle','heroTitle'); $('heroTitle').textContent=tr('heroTitle');
+  setText('heroTag','heroTag'); setText('startLabel','startLabel'); setText('privacy','privacy');
+  setText('mapTitle','mapTitle'); setText('mapSub','mapSub');
+  setText('qPrompt','qListen');
+  setText('endTitle','endTitle'); setText('endSub','endSub'); setText('nextLabel','nextLabel'); setText('playMatchLabel','playMatchLabel');
+  setText('matchTitle','matchTitle'); setText('matchSub','matchSub'); setText('matchBackLabel','matchBackLabel');
+  setText('bookTitle','bookTitle'); setText('bookSub','bookSub'); setText('bookBackLabel','bookBackLabel');
+  setText('langTitle','langTitle'); setText('grownTitle','grownTitle');
+  setText('missionsLbl','missionsLbl'); setText('bookLbl','bookLbl'); setText('teacherLbl','teacherLbl'); setText('installLbl','installLbl'); setText('resetLbl','resetLbl');
+  setText('foot','foot');
+  setText('hStarsLbl','pStars'); setText('hStickersLbl','pStickers'); setText('hWordsLbl','pWords'); setText('hStreakLbl','pStreak');
+  $('hDueLbl').textContent=(state.lang==='nl'?'Herhaal':state.lang==='sk'?'Opakovať':'Review');
+  $('audioToggle').textContent=state.audio?'🔊':'🔇';
+  $('sfxToggle').textContent=state.sfx?'🎵':'🔕';
+  renderLangs(); renderResume(); renderStartStats(); renderTrail(); updateHud(); renderBook();
+}
+function renderLangs(){const g=$('langGrid');g.innerHTML='';Object.entries(LANGS).forEach(([code,name])=>{const b=document.createElement('button');b.textContent=name;b.className=state.lang===code?'active':'';b.onclick=()=>{state.lang=code;save();updateTexts();if(currentItem)renderQuestion();};g.appendChild(b);});}
+function renderResume(){const r=$('resumeRow');r.innerHTML='';const doneCount=Object.keys(state.missionDone||{}).length;if(doneCount>0||state.lastMission){const idx=MISSIONS.findIndex(m=>state.missionDone[m.id])>=0?MISSIONS.findIndex(m=>!state.missionDone[m.id]):0;const target=MISSIONS.find(m=>!state.missionDone[m.id])||MISSIONS[0];const b=document.createElement('button');b.className='cta sun';b.innerHTML='➡ '+tr('resumeLabel');b.onclick=()=>{show('screenMissions');};r.appendChild(b);}}
+function renderStartStats(){const s=$('startStats');s.innerHTML='';const items=[['⭐',state.stars||0,tr('pStars')],['🏅',(state.stickers||[]).length,tr('pStickers')],['🎯',Object.keys(state.known||{}).length+Object.keys(state.knownChunks||{}).length,tr('pWords')]];items.forEach(([i,v,l])=>{const d=document.createElement('div');d.className='s';d.innerHTML=`${i} <b>${v}</b> ${l}`;s.appendChild(d);});}
+
+/* ============ TRAIL / MAP ============ */
+function renderTrail(){const t=$('trail');t.innerHTML='';MISSIONS.forEach((m,i)=>{const unlocked=i===0||state.missionDone[MISSIONS[i-1].id];const done=!!state.missionDone[m.id];const row=document.createElement('div');row.className='stop'+(done?' done':'')+(unlocked?'':' locked');
+  const status=done?tr('done'):(unlocked?tr('newM'):tr('locked'));
+  row.innerHTML=`<div class="node">${m.emoji}${done?`<span class="badge">${m.sticker}</span>`:''}</div>
+    <div class="meta"><div class="name">${m.names[state.lang]||m.names.nl}</div><div class="tag">${status} · ${tr('words5')}</div>
+    <div class="go"><button class="go-btn ${done?'done':unlocked?'':'locked'}" ${unlocked?'':'disabled'}>${done?'↻ '+tr('done'):unlocked?'▶':'🔒'}</button></div></div>`;
+  if(i<MISSIONS.length-1){const c=document.createElement('div');c.className='connector';row.appendChild(c);}
+  if(unlocked){row.querySelector('.go-btn').onclick=()=>startMission(m.id);}
+  t.appendChild(row);});}
+
+/* ============ HUD / LEVEL ============ */
+function updateHud(){$('hStars').textContent=state.stars||0;$('hStickers').textContent=(state.stickers||[]).length;$('hWords').textContent=Object.keys(state.known||{}).length+Object.keys(state.knownChunks||{}).length;$('hStreak').textContent=state.streak||0;$('hDue').textContent=dueWords().length;
+  const lvl=state.level||1,inLvl=(state.xp||0)%XP_STEP;$('levelLbl').textContent=tr('pLevel')+' '+lvl;$('xpLbl').textContent=inLvl+' / '+XP_STEP+' XP';$('xpFill').style.width=(inLvl/XP_STEP*100)+'%';}
+function addXp(n){state.xp=(state.xp||0)+n;const newLevel=Math.floor(state.xp/XP_STEP)+1;if(newLevel>(state.level||1)){state.level=newLevel;sfx('level');confetti();toast(tr('levelUp').replace('{n}',newLevel)+'⭐');}save();updateHud();}
+
+/* ============ MISSION FLOW ============ */
+function modeForBox(it,box){ if(isChunk(it)) return Math.random()<0.5?'listen':'speak';
+  if(box<=0) return 'listen';
+  if(box===1) return Math.random()<0.5?'pic2word':'listen2pic';
+  if(box===2) return Math.random()<0.5?'word2pic':'pic2word';
+  return Math.random()<0.55?'speak':'word2pic'; }
+function startMission(id){currentMission=MISSIONS.find(m=>m.id===id)||MISSIONS[0];state.lastMission=currentMission.id;
+  const pool=WORDS.filter(w=>currentMission.themes.includes(w.theme));
+  const phrasePool=CHUNKS.filter(c=>currentMission.themes.includes(c.theme));
+  const due=dueWords().filter(w=>currentMission.themes.includes(w.theme));
+  let wordPart=shuffle([...due,...pool]).filter((w,i,a)=>a.findIndex(x=>x.id===w.id)===i).slice(0,4);
+  const phrasePart=pick(phrasePool,1);
+  round=shuffle([...wordPart,...phrasePart]).slice(0,5);
+  while(round.length<5)round.push(...pick(pool,5-round.length));
+  // assign modes with variety
+  let lastMode=null;
+  round=round.map(it=>{const box=state.boxes[it.id]?.box||0;let mode=modeForBox(it,box);if(mode===lastMode&&!isChunk(it)){mode=(mode==='listen')?'pic2word':(mode==='speak')?'word2pic':'listen';}lastMode=mode;return {it,mode};});
+  qIndex=0;roundCorrect=0;save();showQuestion();}
+
+function showQuestion(){answered=false;const cur=round[qIndex];currentItem=cur.it;currentMode=cur.mode;renderQuestion();show('screenQuestion');bubble(randChip());lolaMood($('qLola'),'idle');if(currentMode!=='pic2word'&&currentMode!=='word2pic'){setTimeout(()=>speak(currentItem.es),360);}}
+
+function makeOptions(it,n){const source=isChunk(it)?CHUNKS:WORDS;const distract=shuffle(source.filter(x=>x.id!==it.id&&x.icon!==it.icon)).slice(0,(n||3)-1);return shuffle([it,...distract]);}
+
+function renderQuestion(){const it=currentItem,mode=currentMode;
+  $('qMission').textContent=(currentMission?.emoji||'🦜')+' '+(currentMission?.names[state.lang]||currentMission?.names.nl||'');
+  $('qCounter').textContent=(qIndex+1)+'/5';
+  $('qProgress').style.width=(qIndex/5*100)+'%';
+  $('feedback').className='feedback info';$('feedback').textContent=tr(mode==='word2pic'||mode==='listen2pic'?'tapPic':'tapPick');
+  const body=$('qBody');body.innerHTML='';
+  const promptKey=isChunk(it)?'qChunk':({listen:'qListen',pic2word:'qPic2Word',word2pic:'qWord2Pic',listen2pic:'qListen2Pic',speak:'qSpeak'}[mode]||'qListen');
+  $('qPrompt').textContent=tr(promptKey);
+
+  if(mode==='listen'||mode==='pic2word'){
+    // show stimulus
+    const stage=document.createElement('div');stage.className='stage-word';
+    if(mode==='listen'){stage.innerHTML=`<div class="es ${isChunk(it)?'small':''}">${it.es}</div><div class="pic">${it.icon}</div>`;}
+    else{stage.innerHTML=`<div class="pic" style="font-size:84px">${it.icon}</div>`;}
+    body.appendChild(stage);
+    body.appendChild(audioRow());
+    const ans=document.createElement('div');ans.className='answers';
+    makeOptions(it).forEach(opt=>{const b=document.createElement('button');b.className='answer';
+      if(mode==='listen'){b.innerHTML=`<span>${opt.icon}</span><span>${labelFor(opt)}</span>`;}
+      else{b.innerHTML=`<span>${opt.es}</span>`;}
+      b.onclick=()=>answer(opt,b);ans.appendChild(b);});
+    body.appendChild(ans);
+  }
+  else if(mode==='word2pic'||mode==='listen2pic'){
+    const stage=document.createElement('div');stage.className='stage-word';
+    if(mode==='word2pic'){stage.innerHTML=`<div class="es ${isChunk(it)?'small':''}">${it.es}</div>`;}
+    else{stage.innerHTML=`<div class="prompt">${tr('qListen2Pic')}</div>`;}
+    body.appendChild(stage);
+    body.appendChild(audioRow());
+    const ans=document.createElement('div');ans.className='answers pics';
+    makeOptions(it).forEach(opt=>{const b=document.createElement('button');b.className='answer';b.innerHTML=`<span class="face">${opt.icon}</span>`;b.setAttribute('aria-label',labelFor(opt));b.onclick=()=>answer(opt,b);ans.appendChild(b);});
+    body.appendChild(ans);
+  }
+  else if(mode==='speak'){
+    const box=document.createElement('div');box.className='speak-box';
+    box.innerHTML=`<div class="stage-word"><div class="es ${isChunk(it)?'small':''}">${it.es}</div><div class="pic">${it.icon}</div></div>`;
+    const ar=audioRow();box.appendChild(ar);
+    const mic=document.createElement('button');mic.className='mic-btn';mic.textContent=tr('sayBtn');mic.onclick=()=>doSpeak(mic);box.appendChild(mic);
+    const said=document.createElement('button');said.className='said-btn';said.textContent=tr('sayDone');said.onclick=()=>answerSpeak(true);box.appendChild(said);
+    body.appendChild(box);
+  }
+}
+function audioRow(){const r=document.createElement('div');r.className='audio-row';
+  const b1=document.createElement('button');b1.className='pill-btn';b1.textContent='🔊';b1.setAttribute('aria-label','Luister');b1.onclick=()=>speak(currentItem.es);
+  const b2=document.createElement('button');b2.className='pill-btn';b2.textContent='🐢';b2.setAttribute('aria-label','Langzaam');b2.onclick=()=>speak(currentItem.es,true);
+  r.appendChild(b1);r.appendChild(b2);return r;}
+
+/* speech recognition (optional, graceful) */
+function doSpeak(btn){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;speak(currentItem.es);
+  if(!SR){bubble(tr('sayListening'));setTimeout(()=>answerSpeak(true),1200);return;}
+  try{const rec=new SR();rec.lang='es-ES';rec.maxAlternatives=3;btn.classList.add('listening');bubble(tr('sayListening'));
+    rec.onresult=e=>{const said=normalize([...e.results[0]].map(r=>r.transcript).join(' '));const target=normalize(currentItem.es);btn.classList.remove('listening');answerSpeak(said.includes(target)||target.includes(said)||said.length>0);};
+    rec.onerror=()=>{btn.classList.remove('listening');answerSpeak(true);};
+    rec.onend=()=>{btn.classList.remove('listening');};
+    setTimeout(()=>{try{rec.start();}catch(e){answerSpeak(true);}},700);
+  }catch(e){setTimeout(()=>answerSpeak(true),1200);}
+}
+function normalize(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[.,!?¡¿]/g,'').trim();}
+function answerSpeak(ok){if(answered)return;answered=true;const it=currentItem;
+  roundCorrect++;sfx('correct');lolaMood($('qLola'),'cheer');addStar(it,true);
+  $('feedback').className='feedback ok';$('feedback').textContent=tr('sayGood');bubble(tr('correctAlt'));
+  setTimeout(nextQuestion,1000);}
+
+function answer(opt,btn){if(answered)return;answered=true;const it=currentItem;const correct=opt.id===it.id;
+  [...$('qBody').querySelectorAll('.answer')].forEach(b=>{const lbl=currentMode==='pic2word'?it.es:currentMode==='word2pic'||currentMode==='listen2pic'?null:labelFor(it);});
+  // mark correct + chosen
+  const buttons=[...$('qBody').querySelectorAll('.answer')];
+  if(correct){btn.classList.add('ok');sfx('correct');lolaMood($('qLola'),'cheer');addStar(it,true);roundCorrect++;
+    $('feedback').className='feedback ok';$('feedback').textContent=Math.random()<0.5?tr('correct'):tr('correctAlt')+' ⭐';bubble('¡'+tr('correctAlt')+'!');}
+  else{btn.classList.add('bad');sfx('wrong');lolaMood($('qLola'),'oops');addStar(it,false);
+    // reveal correct one
+    buttons.forEach(b=>{const t=b.textContent||'';if(currentMode==='word2pic'||currentMode==='listen2pic'){if(b.getAttribute('aria-label')===labelFor(it))b.classList.add('ok');}else if(currentMode==='pic2word'){if(t.trim()===it.es)b.classList.add('ok');}else{if(t.includes(labelFor(it)))b.classList.add('ok');}});
+    $('feedback').className='feedback bad';$('feedback').textContent=`${tr('wrong')} ${it.es} = ${labelFor(it)}`;speak(it.es,true);}
+  updateDaily(correct);save();updateHud();
+  setTimeout(nextQuestion, correct?950:1900);}
+
+function addStar(it,correct){ if(correct){state.stars=(state.stars||0)+1;
+    if(isChunk(it))state.knownChunks[it.id]=(state.knownChunks[it.id]||0)+1;else state.known[it.id]=(state.known[it.id]||0)+1;
+    const box=state.boxes[it.id]?.box||0;const nb=Math.min(6,box+1);const intervals=[0,0,4*3600000,86400000,3*86400000,7*86400000,14*86400000];state.boxes[it.id]={box:nb,dueAt:Date.now()+intervals[nb]};
+    addXp(currentMode==='speak'?15:10);
+  } else { state.boxes[it.id]={box:1,dueAt:Date.now()}; } }
+
+function nextQuestion(){qIndex++;if(qIndex>=5)endMission();else showQuestion();}
+function updateDaily(correct){if(!correct)return;const d=today();if(state.lastGoal!==d){const y=new Date(Date.now()-86400000).toISOString().slice(0,10);state.streak=(state.lastGoal===y)?(state.streak||0):0;state.lastGoal=d;state.todayCount=0;}state.todayCount=(state.todayCount||0)+1;if(state.todayCount===5)state.streak=(state.streak||0)+1;}
+
+function endMission(){const m=currentMission;let fresh=false;
+  if(!state.missionDone[m.id]){state.missionDone[m.id]=true;fresh=true;const item={id:m.id,sticker:m.sticker,name:m.names[state.lang]||m.names.nl};state.stickers=[...(state.stickers||[]).filter(x=>x.id!==m.id),item];}
+  save();updateHud();renderTrail();renderBook();renderStartStats();
+  $('endSticker').textContent=m.sticker;
+  $('endStars').innerHTML=Array.from({length:5},(_,i)=>`<span class="${i<roundCorrect?'':'star-dim'}">⭐</span>`).join('');
+  $('endReview').innerHTML=round.map(({it})=>`<div class="r"><div class="l"><span>${it.icon}</span><b>${it.es}</b></div><span>${labelFor(it)}</span></div>`).join('');
+  show('screenEnd');sfx('sparkle');if(fresh){confetti();toast(tr('newBird')+' '+m.sticker);}
+}
+function nextMission(){const idx=MISSIONS.findIndex(m=>m.id===currentMission.id);const next=MISSIONS[idx+1];if(next&&(state.missionDone[currentMission.id]))startMission(next.id);else show('screenMissions');}
+
+/* ============ MEMORY MATCH ============ */
+let mFirst=null,mLock=false,mPairs=0,mTotal=0;
+function startMatch(words){const pool=(words&&words.length>=4)?words:WORDS.filter(w=>currentMission&&currentMission.themes.includes(w.theme));const four=pick(pool.filter(w=>!isChunk(w)),4);if(four.length<4){four.push(...pick(WORDS,4-four.length));}
+  mTotal=four.length;mPairs=0;mFirst=null;mLock=false;
+  let cards=[];four.forEach(w=>{cards.push({key:w.id,kind:'es',label:w.es});cards.push({key:w.id,kind:'pic',label:w.icon});});
+  cards=shuffle(cards);
+  const g=$('matchGrid');g.innerHTML='';
+  cards.forEach((c,i)=>{const el=document.createElement('button');el.className='mcard back';el.dataset.key=c.key;el.dataset.kind=c.kind;el.innerHTML=`<span class="face">${c.label}</span>`;el.onclick=()=>flip(el,c);g.appendChild(el);});
+  $('matchFeedback').className='feedback info';$('matchFeedback').textContent=tr('matchTap');
+  show('screenMatch');
+}
+function flip(el,c){if(mLock||el.classList.contains('matched')||el===mFirst)return;sfx('flip');el.classList.remove('back');el.classList.add('flipped');
+  if(c.kind==='es')speak(c.label);
+  if(!mFirst){mFirst={el,c};return;}
+  mLock=true;
+  if(mFirst.c.key===c.key){setTimeout(()=>{mFirst.el.classList.add('matched');el.classList.add('matched');mFirst.el.classList.remove('flipped');el.classList.remove('flipped');sfx('match');mPairs++;state.stars=(state.stars||0)+1;addXp(8);save();updateHud();$('matchFeedback').className='feedback ok';$('matchFeedback').textContent=tr('matchGood');mFirst=null;mLock=false;
+    if(mPairs===mTotal){state.stars=(state.stars||0)+2;state.bestMatch=Math.max(state.bestMatch||0,mTotal);save();updateHud();renderStartStats();$('matchFeedback').textContent=tr('matchWin');confetti();sfx('level');}
+  },420);}
+  else{setTimeout(()=>{mFirst.el.classList.add('back');mFirst.el.classList.remove('flipped');el.classList.add('back');el.classList.remove('flipped');$('matchFeedback').className='feedback bad';$('matchFeedback').textContent=tr('matchNo');mFirst=null;mLock=false;},900);}
+}
+
+/* ============ STICKER BOOK ============ */
+function renderBook(){const g=$('bookGrid');if(!g)return;g.innerHTML='';const found=new Set((state.stickers||[]).map(s=>s.id));MISSIONS.forEach(m=>{const ok=found.has(m.id);const t=document.createElement('div');t.className='tile'+(ok?'':' locked');t.innerHTML=`<span class="i">${ok?m.sticker:'⬜'}</span><div>${m.names[state.lang]||m.names.nl}</div><small>${ok?tr('found'):tr('hidden')}</small>`;g.appendChild(t);});}
+
+/* ============ TOAST + CONFETTI ============ */
+let toastT=null;
+function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2200);}
+function confetti(){const c=$('confetti');if(!c)return;const ctx=c.getContext('2d');c.width=innerWidth;c.height=innerHeight;const colors=['#e5484d','#ffd23f','#34b27b','#7c3aed','#f5a623','#2bb3ff'];const N=window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches?0:90;let parts=Array.from({length:N},()=>({x:Math.random()*c.width,y:-20-Math.random()*c.height*0.3,r:5+Math.random()*7,c:colors[Math.floor(Math.random()*colors.length)],vy:2+Math.random()*3.5,vx:-1.5+Math.random()*3,rot:Math.random()*6,vr:-.2+Math.random()*.4}));let frames=0;function loop(){frames++;ctx.clearRect(0,0,c.width,c.height);parts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.rot+=p.vr;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot);ctx.fillStyle=p.c;ctx.fillRect(-p.r/2,-p.r/2,p.r,p.r*0.6);ctx.restore();});if(frames<140)requestAnimationFrame(loop);else ctx.clearRect(0,0,c.width,c.height);}if(N)loop();}
+
+/* ============ AMBIENT LEAVES ============ */
+function ambient(){const d=$('skyDeco');if(!d)return;const icons=['🌿','🍃','🌴','⭐','🌺'];for(let i=0;i<8;i++){const s=document.createElement('span');s.textContent=icons[i%icons.length];s.style.left=(5+Math.random()*90)+'%';s.style.animationDelay=(-Math.random()*22)+'s';s.style.animationDuration=(16+Math.random()*12)+'s';d.appendChild(s);}}
+
+/* ============ INSTALL ============ */
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;});
+function installHelp(){const isiOS=/iphone|ipad|ipod/i.test(navigator.userAgent);if(deferredPrompt){deferredPrompt.prompt();deferredPrompt.userChoice.finally(()=>deferredPrompt=null);return;}alert(isiOS?tr('installIos'):tr('installOther'));}
+
+/* ============ EVENTS ============ */
+$('startBtn').onclick=()=>{unlockAudio();show('screenMissions');};
+$('audioToggle').onclick=()=>{state.audio=!state.audio;save();updateTexts();};
+$('sfxToggle').onclick=()=>{state.sfx=!state.sfx;save();updateTexts();if(state.sfx)sfx('sparkle');};
+$('nextBtn').onclick=nextMission;
+$('playMatchBtn').onclick=()=>startMatch(round.map(r=>r.it));
+$('matchBackBtn').onclick=()=>show('screenMissions');
+$('missionsBtn').onclick=()=>show('screenMissions');
+$('bookBtn').onclick=()=>{renderBook();show('screenBook');};
+$('bookBackBtn').onclick=()=>show('screenMissions');
+$('teacherBtn').onclick=()=>location.href=tr('teacherUrl');
+$('installBtn').onclick=installHelp;
+$('resetBtn').onclick=()=>{if(confirm(tr('resetConfirm'))){localStorage.removeItem('lolaKidsState');state=loadState();updateTexts();show('screenStart');}};
+
+/* ============ SERVICE WORKER ============ */
+if('serviceWorker'in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(()=>{}));}
+
+/* ============ SELF CHECK ============ */
+function runSelfCheck(){if(!location.search.includes('test=1'))return;
+  const missing=WORDS.filter(w=>!w.id||!w.es||!w.nl||!w.en||!w.sk||!w.icon);
+  const dup=WORDS.length-new Set(WORDS.map(w=>w.id)).size;
+  const chunkBad=CHUNKS.filter(c=>!c.id||!c.es||!c.nl||!c.en||!c.sk);
+  const missThemes=MISSIONS.filter(m=>!WORDS.some(w=>m.themes.includes(w.theme)));
+  const langKeys=Object.keys(T.nl);const missLang=['en','sk'].flatMap(l=>langKeys.filter(k=>!(k in T[l])).map(k=>l+':'+k));
+  const box=document.createElement('div');box.className='debug';
+  box.innerHTML=`<b>Zelfcheck v2.0</b><br>Woorden:${WORDS.length} · chunks:${CHUNKS.length} · missies:${MISSIONS.length}<br>Ontbrekend:${missing.length} · dubbele id:${dup} · chunkfouten:${chunkBad.length} · missiethema:${missThemes.length}<br>Vertaalgaten:${missLang.length}${missLang.length?' ('+missLang.slice(0,6).join(', ')+')':''}<br>Modes:listen,pic2word,word2pic,listen2pic,speak,match<br>Audio:${'speechSynthesis'in window?'ja':'nee'} · SpeechRec:${(window.SpeechRecognition||window.webkitSpeechRecognition)?'ja':'nee'} · WebAudio:${(window.AudioContext||window.webkitAudioContext)?'ja':'nee'} · SW:${'serviceWorker'in navigator?'ja':'nee'}`;
+  document.querySelector('.menu').appendChild(box);
+}
+
+/* ============ BOOT ============ */
+ambient(); updateTexts(); runSelfCheck();
+
 </script>
 </body>
 </html>

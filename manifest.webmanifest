@@ -1,50 +1,20 @@
 {
   "name": "Lola Español — Spanish with Lola",
   "short_name": "Lola Español",
-  "description": "A child-friendly Spanish vocabulary game with Dutch, English and Slovak support. No account, ads or tracking.",
+  "description": "A child-friendly Spanish game with five play modes, listening, speaking practice and a memory game. Dutch, English and Slovak. No account, ads or tracking.",
   "lang": "en",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "theme_color": "#7c3aed",
-  "background_color": "#fff7ed",
+  "theme_color": "#0e7a5f",
+  "background_color": "#fffaf0",
   "icons": [
-    {
-      "src": "icons/icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "icons/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
-    }
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
   ],
   "shortcuts": [
-    {
-      "name": "Start adventure",
-      "short_name": "Start",
-      "url": "./index.html",
-      "icons": [
-        {
-          "src": "icons/icon-192.png",
-          "sizes": "192x192"
-        }
-      ]
-    },
-    {
-      "name": "For teachers",
-      "short_name": "Info",
-      "url": "./voor-leerkrachten.html",
-      "icons": [
-        {
-          "src": "icons/icon-192.png",
-          "sizes": "192x192"
-        }
-      ]
-    }
+    { "name": "Start adventure", "short_name": "Start", "url": "./index.html", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "For teachers", "short_name": "Info", "url": "./voor-leerkrachten.html", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] }
   ]
 }
