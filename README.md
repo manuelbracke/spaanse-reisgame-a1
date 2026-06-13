@@ -2,6 +2,12 @@
 
 Kindvriendelijke Spaanse woordenschatgame als offline mobiele PWA.
 
+## Wat is nieuw in v2.1
+
+- **Drie minispelletjes** in een eigen hub (knop "Spelletjes"): *Geheugen* (woord ↔ beeld), *Vang het woord* (luister en tik snel het juiste plaatje, met levens en tijdsbalk) en *Bliksemrondje* (zo veel mogelijk goed in 30 seconden). Elk traint een ander leerdoel: herkenning, luisterbegrip en snelheid. Records worden lokaal bewaard.
+- **Gesproken feedback van Lola** in de taal van het kind ("Goed zo!", "Bijna!"), gekoppeld aan de 🔊-knop. Heeft het toestel geen stem voor die taal, dan valt Lola netjes terug op alleen visuele feedback in plaats van in de verkeerde taal te praten.
+- Service worker cache: `lola-espanol-kids-v2.1.0`.
+
 ## Wat is nieuw in v2.0
 
 Deze versie tilt de game van één werkvorm naar een echte taalgame met diepgang én speelplezier:

@@ -177,6 +177,31 @@
     @media (min-width:640px){.answers.pics .answer{font-size:54px}.hud{grid-template-columns:repeat(5,1fr)}}
     @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
     button:focus-visible{outline:4px solid var(--sun);outline-offset:2px}
+
+    /* games hub + minigames */
+    .hub-list{display:grid;gap:10px;margin-top:12px}
+    .hub-tile{display:flex;align-items:center;gap:14px;background:#fff;border:2px solid #c7ecda;border-radius:20px;padding:14px;text-align:left;box-shadow:var(--shadow-sm)}
+    .hub-tile .gi{font-size:40px;flex:0 0 auto}
+    .hub-tile .gm{flex:1;min-width:0}
+    .hub-tile .gn{font-weight:900;font-size:18px;color:var(--jungle-deep);line-height:1.05}
+    .hub-tile .gd{font-size:13px;color:var(--muted);font-weight:700}
+    .hub-tile .best{font-weight:900;color:var(--sun-deep);font-size:14px;white-space:nowrap}
+    .game-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
+    .hearts{display:flex;gap:4px;font-size:22px}
+    .heart.lost{filter:grayscale(1);opacity:.3}
+    .score-chip{font-weight:900;color:var(--jungle-deep);background:#eafaf2;border:1px solid #c7ecda;border-radius:999px;padding:6px 12px;font-size:14px}
+    .timerbar{height:12px;background:#eafaf2;border:1px solid #c7ecda;border-radius:999px;overflow:hidden;margin:8px 0 12px}
+    .timerbar>span{display:block;height:100%;width:100%;background:linear-gradient(90deg,var(--leaf),var(--sun))}
+    .timerbar.warn>span{background:linear-gradient(90deg,var(--sun-deep),var(--scarlet))}
+    .game-prompt{display:flex;align-items:center;gap:10px;margin-bottom:8px;min-height:52px}
+    .game-prompt .lola{font-size:42px}
+    .game-prompt .bubble{flex:1}
+    .game-stage{text-align:center;background:linear-gradient(180deg,#fffdf6,#fff);border:2px solid #ffe2a3;border-radius:20px;padding:14px;margin-bottom:10px}
+    .game-stage .es{font-size:clamp(30px,10vw,48px)}
+    .game-over{text-align:center;padding:6px}
+    .game-over .big{font-size:64px;animation:pop2 .6s ease}
+    .game-over .sc{font-size:40px;font-weight:900;color:var(--jungle-deep);margin:4px 0}
+    .newbest{display:inline-block;background:#fff3d6;border:1px solid #ffe2a3;color:#8a5a00;border-radius:999px;padding:4px 12px;font-weight:900;margin-top:4px}
   </style>
 </head>
 
@@ -235,7 +260,7 @@
         <div class="stars" id="endStars"></div>
         <p class="map-sub" id="endSub">Je hebt nieuwe Spaanse woorden geoefend.</p>
         <div class="review" id="endReview"></div>
-        <button class="cta sun" id="playMatchBtn" style="margin-bottom:8px">🃏 <span id="playMatchLabel">Speel het geheugenspel</span></button>
+        <button class="cta sun" id="playGamesBtn" style="margin-bottom:8px">🎮 <span id="playGamesLabel">Speel een minispel</span></button>
         <button class="cta" id="nextBtn">➡ <span id="nextLabel">Volgende missie</span></button>
       </div>
     </div>
@@ -249,6 +274,40 @@
       <div class="match-grid" id="matchGrid"></div>
       <div class="feedback info" id="matchFeedback" style="margin-top:12px">Tik twee kaartjes.</div>
       <button class="cta" id="matchBackBtn" style="margin-top:10px">🗺️ <span id="matchBackLabel">Terug naar de kaart</span></button>
+    </div>
+
+
+    <!-- GAMES HUB -->
+    <div id="screenGames" class="screen">
+      <h2 class="map-title" id="gamesTitle">Minispelletjes</h2>
+      <p class="map-sub" id="gamesSub">Speel en oefen je woorden op een nieuwe manier.</p>
+      <div class="hub-list" id="hubList"></div>
+      <button class="cta" id="gamesBackBtn" style="margin-top:12px">🗺️ <span id="gamesBackLabel">Terug naar de kaart</span></button>
+    </div>
+
+    <!-- CATCH THE WORD -->
+    <div id="screenCatch" class="screen">
+      <div class="game-head">
+        <span class="score-chip" id="catchScoreChip">⭐ 0</span>
+        <div class="hearts" id="catchHearts"></div>
+      </div>
+      <div class="timerbar" id="catchTimerBar"><span id="catchTimer"></span></div>
+      <div class="game-prompt"><span class="lola" id="catchLola">🦜</span><div class="bubble" id="catchBubble">Tik op wat Lola zegt.</div></div>
+      <div class="audio-row"><button class="pill-btn" id="catchReplay">🔊</button></div>
+      <div class="answers pics" id="catchGrid"></div>
+      <div id="catchOver" class="game-over" style="display:none"></div>
+    </div>
+
+    <!-- LIGHTNING ROUND -->
+    <div id="screenLightning" class="screen">
+      <div class="game-head">
+        <span class="score-chip" id="lrScoreChip">⭐ 0</span>
+        <span class="score-chip" id="lrTimeChip">⏱ 30</span>
+      </div>
+      <div class="timerbar" id="lrTimerBar"><span id="lrTimer"></span></div>
+      <div class="game-prompt"><span class="lola" id="lrLola">🦜</span><div class="bubble" id="lrBubble">Snel! Kies het juiste antwoord.</div></div>
+      <div id="lrBody"></div>
+      <div id="lrOver" class="game-over" style="display:none"></div>
     </div>
 
     <!-- STICKER BOOK -->
@@ -281,6 +340,7 @@
     <strong id="grownTitle">Voor ouders en leerkrachten</strong>
     <div class="menu-grid">
       <button class="ghost" id="missionsBtn">🗺️ <span id="missionsLbl">Kaart</span></button>
+      <button class="ghost" id="gamesBtn">🎮 <span id="gamesLbl">Spelletjes</span></button>
       <button class="ghost" id="bookBtn">📒 <span id="bookLbl">Stickerboek</span></button>
       <button class="ghost" id="teacherBtn">👨‍🏫 <span id="teacherLbl">Info</span></button>
       <button class="ghost" id="installBtn">📲 <span id="installLbl">Zet op beginscherm</span></button>
@@ -385,8 +445,25 @@ const EXTRA={
 };
 Object.keys(EXTRA).forEach(l=>Object.assign(T[l], EXTRA[l]));
 
+const EXTRA2={
+ nl:{praise:['Goed zo!','Knap!','Super!','Prima!'],encourage:['Bijna!','Probeer nog eens.','Net niet!'],
+   gamesLbl:'Spelletjes',gamesTitle:'Minispelletjes',gamesSub:'Speel en oefen je woorden op een nieuwe manier.',gamesBackLabel:'Terug naar de kaart',playGamesLabel:'Speel een minispel',
+   gMemory:'Geheugen',gMemoryD:'Vind het woord bij het plaatje.',gCatch:'Vang het woord',gCatchD:'Tik snel op wat Lola zegt.',gLightning:'Bliksemrondje',gLightningD:'Zo veel mogelijk goed in 30 seconden.',
+   best:'beste',newBest:'Nieuw record!',playAgain:'Nog eens',gamesBackToHub:'Andere spelletjes',catchPrompt:'Tik op wat Lola zegt.'},
+ en:{praise:['Great!','Well done!','Nice!','Super!'],encourage:['Almost!','Try again.','So close!'],
+   gamesLbl:'Games',gamesTitle:'Mini games',gamesSub:'Play and practise your words a new way.',gamesBackLabel:'Back to the map',playGamesLabel:'Play a mini game',
+   gMemory:'Memory',gMemoryD:'Match the word to the picture.',gCatch:'Catch the word',gCatchD:'Quickly tap what Lola says.',gLightning:'Lightning round',gLightningD:'As many right as you can in 30 seconds.',
+   best:'best',newBest:'New record!',playAgain:'Play again',gamesBackToHub:'Other games',catchPrompt:'Tap what Lola says.'},
+ sk:{praise:['Výborne!','Super!','Pekne!','Skvelé!'],encourage:['Skoro!','Skús znova.','Tesne!'],
+   gamesLbl:'Hry',gamesTitle:'Minihry',gamesSub:'Hraj a precvičuj slová po novom.',gamesBackLabel:'Späť na mapu',playGamesLabel:'Hraj minihru',
+   gMemory:'Pamäť',gMemoryD:'Priraď slovo k obrázku.',gCatch:'Chyť slovo',gCatchD:'Rýchlo klepni na to, čo Lola hovorí.',gLightning:'Bleskové kolo',gLightningD:'Čo najviac správne za 30 sekúnd.',
+   best:'najlepšie',newBest:'Nový rekord!',playAgain:'Hraj znova',gamesBackToHub:'Iné hry',catchPrompt:'Klepni na to, čo Lola hovorí.'}
+};
+Object.keys(EXTRA2).forEach(l=>Object.assign(T[l], EXTRA2[l]));
+
+
 /* ============ STATE ============ */
-const stateDefault={lang:'nl',audio:true,sfx:true,stars:0,xp:0,level:1,stickers:[],known:{},knownChunks:{},boxes:{},missionDone:{},streak:0,lastGoal:'',todayCount:0,lastMission:null,bestMatch:0};
+const stateDefault={lang:'nl',audio:true,sfx:true,stars:0,xp:0,level:1,stickers:[],known:{},knownChunks:{},boxes:{},missionDone:{},streak:0,lastGoal:'',todayCount:0,lastMission:null,bestMatch:0,bestCatch:0,bestLightning:0};
 let state=loadState();
 let currentMission=null, round=[], qIndex=0, currentItem=null, currentMode='listen', answered=false, roundCorrect=0, deferredPrompt=null;
 const XP_STEP=100;
@@ -410,6 +487,14 @@ function loadVoices(){try{const vs=speechSynthesis.getVoices();esVoice=vs.find(v
 if('speechSynthesis' in window){loadVoices();speechSynthesis.onvoiceschanged=loadVoices;}
 function speak(text,slow){ if(!state.audio||!('speechSynthesis'in window))return; try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='es-ES';if(esVoice)u.voice=esVoice;u.rate=slow?0.62:0.92;u.pitch=1.06;speechSynthesis.speak(u);}catch(e){} }
 
+const VOICES={};
+function voiceFor(lang){ if(VOICES[lang]) return VOICES[lang]; let v=null; try{const vs=speechSynthesis.getVoices(); const pref=({nl:'nl',en:'en',sk:'sk'})[lang]||lang; v=vs.find(x=>new RegExp('^'+pref,'i').test(x.lang))||null;}catch(e){} if(v)VOICES[lang]=v; return v; }
+function speakSeq(parts){ if(!state.audio||!('speechSynthesis'in window))return; try{speechSynthesis.cancel();}catch(e){} parts.forEach(p=>{ try{ const u=new SpeechSynthesisUtterance(p.text); if(p.lang==='es'){u.lang='es-ES'; if(esVoice)u.voice=esVoice; u.rate=p.slow?0.62:0.92; u.pitch=1.06;} else { const v=voiceFor(state.lang); if(!v) return; u.voice=v; u.lang=v.lang; u.rate=0.98; u.pitch=1.12; } speechSynthesis.speak(u); }catch(e){} }); }
+function praiseLine(){const a=tr('praise')||['¡Olé!'];return a[Math.floor(Math.random()*a.length)];}
+function encourageLine(){const a=tr('encourage')||['…'];return a[Math.floor(Math.random()*a.length)];}
+function feedbackSpeak(correct,it){ if(!state.audio)return; if(correct){speakSeq([{text:praiseLine()}]);} else {speakSeq([{text:encourageLine()},{text:(it?it.es:''),lang:'es',slow:true}]);} }
+
+
 let actx=null;
 function audioCtx(){if(!actx){try{actx=new (window.AudioContext||window.webkitAudioContext)();}catch(e){}}if(actx&&actx.state==='suspended')actx.resume();return actx;}
 function tone(freq,start,dur,type,vol){const c=audioCtx();if(!c)return;const o=c.createOscillator(),g=c.createGain();o.type=type||'sine';o.frequency.value=freq;o.connect(g);g.connect(c.destination);const t=c.currentTime+start;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol||0.18,t+0.02);g.gain.exponentialRampToValueAtTime(0.0001,t+dur);o.start(t);o.stop(t+dur+0.02);}
@@ -429,7 +514,7 @@ function lolaMood(el,mood){ if(!el)return; el.classList.remove('cheer','oops'); 
 function bubble(text){const b=$('qBubble');if(b)b.textContent=text;}
 
 /* ============ SCREENS ============ */
-function show(id){['screenStart','screenMissions','screenQuestion','screenEnd','screenMatch','screenBook'].forEach(s=>$(s).classList.toggle('active',s===id));window.scrollTo({top:0,behavior:'smooth'});}
+function show(id){clearGameTimers();['screenStart','screenMissions','screenQuestion','screenEnd','screenMatch','screenGames','screenCatch','screenLightning','screenBook'].forEach(s=>$(s).classList.toggle('active',s===id));window.scrollTo({top:0,behavior:'smooth'});}
 
 /* ============ TEXTS ============ */
 function setText(id,k){const el=$(id);if(el)el.textContent=tr(k);}
@@ -450,7 +535,8 @@ function updateTexts(){
   $('hDueLbl').textContent=(state.lang==='nl'?'Herhaal':state.lang==='sk'?'Opakovať':'Review');
   $('audioToggle').textContent=state.audio?'🔊':'🔇';
   $('sfxToggle').textContent=state.sfx?'🎵':'🔕';
-  renderLangs(); renderResume(); renderStartStats(); renderTrail(); updateHud(); renderBook();
+  setText('gamesLbl','gamesLbl'); setText('gamesTitle','gamesTitle'); setText('gamesSub','gamesSub'); setText('gamesBackLabel','gamesBackLabel'); setText('playGamesLabel','playGamesLabel');
+  renderLangs(); renderResume(); renderStartStats(); renderTrail(); updateHud(); renderBook(); renderHub();
 }
 function renderLangs(){const g=$('langGrid');g.innerHTML='';Object.entries(LANGS).forEach(([code,name])=>{const b=document.createElement('button');b.textContent=name;b.className=state.lang===code?'active':'';b.onclick=()=>{state.lang=code;save();updateTexts();if(currentItem)renderQuestion();};g.appendChild(b);});}
 function renderResume(){const r=$('resumeRow');r.innerHTML='';const doneCount=Object.keys(state.missionDone||{}).length;if(doneCount>0||state.lastMission){const idx=MISSIONS.findIndex(m=>state.missionDone[m.id])>=0?MISSIONS.findIndex(m=>!state.missionDone[m.id]):0;const target=MISSIONS.find(m=>!state.missionDone[m.id])||MISSIONS[0];const b=document.createElement('button');b.className='cta sun';b.innerHTML='➡ '+tr('resumeLabel');b.onclick=()=>{show('screenMissions');};r.appendChild(b);}}
@@ -504,9 +590,11 @@ function renderQuestion(){const it=currentItem,mode=currentMode;
   $('qPrompt').textContent=tr(promptKey);
 
   if(mode==='listen'||mode==='pic2word'){
-    // show stimulus
+    // show stimulus. NB: in 'listen' the icon is the MEANING the child must supply,
+    // so it must never appear in the prompt (it would give the answer away and let
+    // the child match emoji-to-emoji against the option icons).
     const stage=document.createElement('div');stage.className='stage-word';
-    if(mode==='listen'){stage.innerHTML=`<div class="es ${isChunk(it)?'small':''}">${it.es}</div><div class="pic">${it.icon}</div>`;}
+    if(mode==='listen'){stage.innerHTML=`<div class="es ${isChunk(it)?'small':''}">${it.es}</div>`;}
     else{stage.innerHTML=`<div class="pic" style="font-size:84px">${it.icon}</div>`;}
     body.appendChild(stage);
     body.appendChild(audioRow());
@@ -554,7 +642,7 @@ function doSpeak(btn){const SR=window.SpeechRecognition||window.webkitSpeechReco
 function normalize(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[.,!?¡¿]/g,'').trim();}
 function answerSpeak(ok){if(answered)return;answered=true;const it=currentItem;
   roundCorrect++;sfx('correct');lolaMood($('qLola'),'cheer');addStar(it,true);
-  $('feedback').className='feedback ok';$('feedback').textContent=tr('sayGood');bubble(tr('correctAlt'));
+  $('feedback').className='feedback ok';$('feedback').textContent=tr('sayGood');bubble(tr('correctAlt'));feedbackSpeak(true);
   setTimeout(nextQuestion,1000);}
 
 function answer(opt,btn){if(answered)return;answered=true;const it=currentItem;const correct=opt.id===it.id;
@@ -562,11 +650,11 @@ function answer(opt,btn){if(answered)return;answered=true;const it=currentItem;c
   // mark correct + chosen
   const buttons=[...$('qBody').querySelectorAll('.answer')];
   if(correct){btn.classList.add('ok');sfx('correct');lolaMood($('qLola'),'cheer');addStar(it,true);roundCorrect++;
-    $('feedback').className='feedback ok';$('feedback').textContent=Math.random()<0.5?tr('correct'):tr('correctAlt')+' ⭐';bubble('¡'+tr('correctAlt')+'!');}
+    $('feedback').className='feedback ok';$('feedback').textContent=Math.random()<0.5?tr('correct'):tr('correctAlt')+' ⭐';bubble('¡'+tr('correctAlt')+'!');feedbackSpeak(true);}
   else{btn.classList.add('bad');sfx('wrong');lolaMood($('qLola'),'oops');addStar(it,false);
     // reveal correct one
     buttons.forEach(b=>{const t=b.textContent||'';if(currentMode==='word2pic'||currentMode==='listen2pic'){if(b.getAttribute('aria-label')===labelFor(it))b.classList.add('ok');}else if(currentMode==='pic2word'){if(t.trim()===it.es)b.classList.add('ok');}else{if(t.includes(labelFor(it)))b.classList.add('ok');}});
-    $('feedback').className='feedback bad';$('feedback').textContent=`${tr('wrong')} ${it.es} = ${labelFor(it)}`;speak(it.es,true);}
+    $('feedback').className='feedback bad';$('feedback').textContent=`${tr('wrong')} ${it.es} = ${labelFor(it)}`;feedbackSpeak(false,it);}
   updateDaily(correct);save();updateHud();
   setTimeout(nextQuestion, correct?950:1900);}
 
@@ -630,10 +718,13 @@ $('startBtn').onclick=()=>{unlockAudio();show('screenMissions');};
 $('audioToggle').onclick=()=>{state.audio=!state.audio;save();updateTexts();};
 $('sfxToggle').onclick=()=>{state.sfx=!state.sfx;save();updateTexts();if(state.sfx)sfx('sparkle');};
 $('nextBtn').onclick=nextMission;
-$('playMatchBtn').onclick=()=>startMatch(round.map(r=>r.it));
-$('matchBackBtn').onclick=()=>show('screenMissions');
+$('playGamesBtn').onclick=openGames;
+$('matchBackBtn').onclick=openGames;
 $('missionsBtn').onclick=()=>show('screenMissions');
 $('bookBtn').onclick=()=>{renderBook();show('screenBook');};
+$('gamesBtn').onclick=openGames;
+$('gamesBackBtn').onclick=()=>show('screenMissions');
+$('catchReplay').onclick=()=>{if(catchTarget)speak(catchTarget.es);};
 $('bookBackBtn').onclick=()=>show('screenMissions');
 $('teacherBtn').onclick=()=>location.href=tr('teacherUrl');
 $('installBtn').onclick=installHelp;
@@ -650,9 +741,55 @@ function runSelfCheck(){if(!location.search.includes('test=1'))return;
   const missThemes=MISSIONS.filter(m=>!WORDS.some(w=>m.themes.includes(w.theme)));
   const langKeys=Object.keys(T.nl);const missLang=['en','sk'].flatMap(l=>langKeys.filter(k=>!(k in T[l])).map(k=>l+':'+k));
   const box=document.createElement('div');box.className='debug';
-  box.innerHTML=`<b>Zelfcheck v2.0</b><br>Woorden:${WORDS.length} · chunks:${CHUNKS.length} · missies:${MISSIONS.length}<br>Ontbrekend:${missing.length} · dubbele id:${dup} · chunkfouten:${chunkBad.length} · missiethema:${missThemes.length}<br>Vertaalgaten:${missLang.length}${missLang.length?' ('+missLang.slice(0,6).join(', ')+')':''}<br>Modes:listen,pic2word,word2pic,listen2pic,speak,match<br>Audio:${'speechSynthesis'in window?'ja':'nee'} · SpeechRec:${(window.SpeechRecognition||window.webkitSpeechRecognition)?'ja':'nee'} · WebAudio:${(window.AudioContext||window.webkitAudioContext)?'ja':'nee'} · SW:${'serviceWorker'in navigator?'ja':'nee'}`;
+  box.innerHTML=`<b>Zelfcheck v2.0</b><br>Woorden:${WORDS.length} · chunks:${CHUNKS.length} · missies:${MISSIONS.length}<br>Ontbrekend:${missing.length} · dubbele id:${dup} · chunkfouten:${chunkBad.length} · missiethema:${missThemes.length}<br>Vertaalgaten:${missLang.length}${missLang.length?' ('+missLang.slice(0,6).join(', ')+')':''}<br>Modes:listen,pic2word,word2pic,listen2pic,speak<br>Minispellen:memory,catch(${WORDS.length}),lightning · spoken feedback:${voiceFor(state.lang)?'ja ('+voiceFor(state.lang).lang+')':'geen stem voor '+state.lang}<br>Audio:${'speechSynthesis'in window?'ja':'nee'} · SpeechRec:${(window.SpeechRecognition||window.webkitSpeechRecognition)?'ja':'nee'} · WebAudio:${(window.AudioContext||window.webkitAudioContext)?'ja':'nee'} · SW:${'serviceWorker'in navigator?'ja':'nee'}`;
   document.querySelector('.menu').appendChild(box);
 }
+
+
+/* ============ MINIGAMES ============ */
+let gCatchTimer=null, gLrTimer=null;
+function clearGameTimers(){ if(gCatchTimer){clearInterval(gCatchTimer);gCatchTimer=null;} if(gLrTimer){clearInterval(gLrTimer);gLrTimer=null;} }
+function gameOptions(it,n){ const d=shuffle(WORDS.filter(x=>x.id!==it.id&&x.icon!==it.icon)).slice(0,(n||3)-1); return shuffle([it,...d]); }
+
+function openGames(){ renderHub(); show('screenGames'); }
+function renderHub(){ const l=$('hubList'); if(!l)return; l.innerHTML='';
+  const games=[
+    {gi:'🃏',n:tr('gMemory'),d:tr('gMemoryD'),best:state.bestMatch||0,go:()=>startMatch(pick(WORDS.filter(w=>!isChunk(w)),4))},
+    {gi:'🎯',n:tr('gCatch'),d:tr('gCatchD'),best:state.bestCatch||0,go:catchStart},
+    {gi:'⚡',n:tr('gLightning'),d:tr('gLightningD'),best:state.bestLightning||0,go:lrStart}
+  ];
+  games.forEach(g=>{const t=document.createElement('button');t.className='hub-tile';t.innerHTML=`<span class="gi">${g.gi}</span><span class="gm"><span class="gn">${g.n}</span><span class="gd">${g.d}</span></span><span class="best">${g.best?('🏆 '+g.best):''}</span>`;t.onclick=g.go;l.appendChild(t);});
+}
+
+/* --- Catch the word: listen, tap the matching picture, beat the clock --- */
+let catchScore=0,catchHearts=3,catchTarget=null,catchTL=0;
+function renderCatchHearts(){const h=$('catchHearts');h.innerHTML='';for(let i=0;i<3;i++){const s=document.createElement('span');s.className='heart'+(i<catchHearts?'':' lost');s.textContent='❤️';h.appendChild(s);}}
+function catchStart(){clearGameTimers();catchScore=0;catchHearts=3;$('catchOver').style.display='none';$('catchGrid').style.display='';$('catchScoreChip').textContent='⭐ 0';renderCatchHearts();show('screenCatch');catchNext();}
+function catchNext(){clearGameTimers();catchTarget=pick(WORDS.filter(w=>!isChunk(w)),1)[0];$('catchBubble').textContent=tr('catchPrompt');lolaMood($('catchLola'),'idle');setTimeout(()=>speak(catchTarget.es),250);
+  const grid=$('catchGrid');grid.innerHTML='';gameOptions(catchTarget,6).forEach(opt=>{const b=document.createElement('button');b.className='answer';b.innerHTML=`<span class="face">${opt.icon}</span>`;b.setAttribute('aria-label',labelFor(opt));b.onclick=()=>catchAnswer(opt,b);grid.appendChild(b);});
+  catchTL=100;const bar=$('catchTimer');bar.style.width='100%';$('catchTimerBar').classList.remove('warn');
+  gCatchTimer=setInterval(()=>{catchTL-=2.2;if(catchTL<=33)$('catchTimerBar').classList.add('warn');if(catchTL<=0){clearInterval(gCatchTimer);gCatchTimer=null;catchMiss();}else{bar.style.width=catchTL+'%';}},100);}
+function catchAnswer(opt,b){clearGameTimers();if(opt.id===catchTarget.id){catchScore++;$('catchScoreChip').textContent='⭐ '+catchScore;b.classList.add('ok');sfx('correct');lolaMood($('catchLola'),'cheer');state.stars=(state.stars||0)+1;save();updateHud();if(catchScore%5===0)speakSeq([{text:praiseLine()}]);setTimeout(catchNext,480);}else{b.classList.add('bad');sfx('wrong');catchMiss();}}
+function catchMiss(){catchHearts--;renderCatchHearts();lolaMood($('catchLola'),'oops');if(catchTarget)speakSeq([{text:catchTarget.es,lang:'es',slow:true}]);if(catchHearts<=0)setTimeout(catchEnd,800);else setTimeout(catchNext,900);}
+function catchEnd(){clearGameTimers();const isBest=catchScore>(state.bestCatch||0);if(isBest)state.bestCatch=catchScore;save();updateHud();
+  $('catchGrid').style.display='none';const o=$('catchOver');o.style.display='';o.innerHTML=`<div class="big">🎯</div><div class="sc">⭐ ${catchScore}</div>${isBest?`<div class="newbest">${tr('newBest')}</div>`:''}<div style="margin-top:12px"><button class="cta" id="catchAgain">↻ ${tr('playAgain')}</button></div><div style="margin-top:8px"><button class="cta sun" id="catchBack">🎮 ${tr('gamesBackToHub')}</button></div>`;
+  $('catchAgain').onclick=catchStart;$('catchBack').onclick=openGames;confetti();speakSeq([{text:praiseLine()}]);}
+
+/* --- Lightning round: 30s, as many right as possible --- */
+let lrScore=0,lrLeft=30,lrItem=null,lrMode='pic2word';
+function lrStart(){clearGameTimers();lrScore=0;lrLeft=30;$('lrOver').style.display='none';$('lrBody').style.display='';$('lrScoreChip').textContent='⭐ 0';$('lrTimeChip').textContent='⏱ 30';$('lrTimer').style.width='100%';$('lrTimerBar').classList.remove('warn');show('screenLightning');lrNext();
+  gLrTimer=setInterval(()=>{lrLeft--;$('lrTimeChip').textContent='⏱ '+Math.max(0,lrLeft);$('lrTimer').style.width=(Math.max(0,lrLeft)/30*100)+'%';if(lrLeft<=8)$('lrTimerBar').classList.add('warn');if(lrLeft<=0){clearInterval(gLrTimer);gLrTimer=null;lrEnd();}},1000);}
+function lrNext(){lrItem=pick(WORDS.filter(w=>!isChunk(w)),1)[0];lrMode=Math.random()<0.5?'pic2word':'word2pic';const body=$('lrBody');body.innerHTML='';
+  const stage=document.createElement('div');stage.className='game-stage';
+  stage.innerHTML=(lrMode==='pic2word')?`<div class="pic" style="font-size:72px">${lrItem.icon}</div>`:`<div class="es">${lrItem.es}</div>`;
+  body.appendChild(stage);
+  const ans=document.createElement('div');ans.className='answers'+(lrMode==='word2pic'?' pics':'');
+  gameOptions(lrItem,3).forEach(opt=>{const b=document.createElement('button');b.className='answer';if(lrMode==='pic2word'){b.innerHTML=`<span>${opt.es}</span>`;}else{b.innerHTML=`<span class="face">${opt.icon}</span>`;b.setAttribute('aria-label',labelFor(opt));}b.onclick=()=>lrAnswer(opt,b);ans.appendChild(b);});
+  body.appendChild(ans);}
+function lrAnswer(opt,b){if(opt.id===lrItem.id){lrScore++;$('lrScoreChip').textContent='⭐ '+lrScore;sfx('correct');state.stars=(state.stars||0)+1;lrNext();}else{b.classList.add('bad');sfx('wrong');setTimeout(lrNext,320);}}
+function lrEnd(){clearGameTimers();const isBest=lrScore>(state.bestLightning||0);if(isBest)state.bestLightning=lrScore;save();updateHud();
+  $('lrBody').style.display='none';const o=$('lrOver');o.style.display='';o.innerHTML=`<div class="big">⚡</div><div class="sc">⭐ ${lrScore}</div>${isBest?`<div class="newbest">${tr('newBest')}</div>`:''}<div style="margin-top:12px"><button class="cta" id="lrAgain">↻ ${tr('playAgain')}</button></div><div style="margin-top:8px"><button class="cta sun" id="lrBack">🎮 ${tr('gamesBackToHub')}</button></div>`;
+  $('lrAgain').onclick=lrStart;$('lrBack').onclick=openGames;confetti();speakSeq([{text:praiseLine()}]);}
 
 /* ============ BOOT ============ */
 ambient(); updateTexts(); runSelfCheck();
