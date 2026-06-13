@@ -1,20 +1,14 @@
 {
-  "id": "./",
-  "name": "Pasaporte A1 — Spanish Travel Vocabulary",
-  "short_name": "Pasaporte A1",
-  "description": "A mobile Spanish travel vocabulary PWA with audio, offline support, local progress and spaced review.",
+  "name": "Lola Español — Spanish with Lola",
+  "short_name": "Lola Español",
+  "description": "A child-friendly Spanish vocabulary game with Dutch, English and Slovak support. No account, ads or tracking.",
+  "lang": "en",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
+  "theme_color": "#7c3aed",
   "background_color": "#fff7ed",
-  "theme_color": "#1d4ed8",
-  "lang": "nl",
-  "categories": [
-    "education",
-    "games",
-    "travel"
-  ],
   "icons": [
     {
       "src": "icons/icon-192.png",
@@ -31,9 +25,26 @@
   ],
   "shortcuts": [
     {
-      "name": "Start leren",
+      "name": "Start adventure",
+      "short_name": "Start",
       "url": "./index.html",
-      "description": "Open Pasaporte A1"
+      "icons": [
+        {
+          "src": "icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "For teachers",
+      "short_name": "Info",
+      "url": "./voor-leerkrachten.html",
+      "icons": [
+        {
+          "src": "icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
     }
   ]
 }

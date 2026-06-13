@@ -1,27 +1,61 @@
-# Pasaporte A1 — PWA release
+# Lola Español — Spaans met Lola / Spanish with Lola / Španielčina s Lolou
 
-Upload all files and folders in this directory to the root of your GitHub Pages repository.
+Kindvriendelijke Spaanse woordenschatgame als mobiele PWA voor beginners.
 
-Required files:
-- index.html
-- manifest.webmanifest
-- service-worker.js
-- icons/icon-192.png
-- icons/icon-512.png
+## Bestanden uploaden naar GitHub Pages
 
-After uploading, open your GitHub Pages URL. The browser can then install the game as a PWA and cache it for offline use.
+Upload alle bestanden naar de root van de repository:
 
-Notes:
-- Audio uses the browser's built-in Web Speech API with a Spanish voice when available.
-- Progress is stored locally in the browser via localStorage. No account and no server are used.
-- Service workers work only via HTTPS or localhost. GitHub Pages uses HTTPS, so offline caching works there.
+- `index.html`
+- `manifest.webmanifest`
+- `service-worker.js`
+- `voor-leerkrachten.html`
+- `native-review-list.csv`
+- `README.md`
+- `icons/icon-192.png`
+- `icons/icon-512.png`
 
+## v1.3.0-agent — agentische upgrade
 
-## Testrapport
+Deze versie brengt de app dichter bij een echte kindertaalgame:
 
-Open `test-report.html` via dezelfde GitHub Pages-site om de echte woorddata, PWA-bestanden en basislogica automatisch te controleren.
+- missiekaart met 13 plekken/missies;
+- echt stickerboek met gevonden en verborgen stickers;
+- 132 Spaanse woorden;
+- 22 korte Spaanse chunks/zinnen;
+- 5 vragen per missie;
+- automatische Spaanse audio per vraag;
+- trage audio-knop;
+- antwoordknoppen met pictogrammen;
+- vriendelijkere foutfeedback;
+- lokale herhaling van moeilijke woorden;
+- lokale voortgang via `localStorage`;
+- `?test=1`-debug/zelfcheckmodus;
+- geen account, advertenties of externe tracking.
 
+## Privacy
 
-## Game-first layout
+De app verzamelt geen persoonsgegevens. Er is geen login, geen advertentiecode, geen analytics en geen externe tracking. Voortgang wordt lokaal op het toestel bewaard via de browser.
 
-Deze versie zet de actieve spelinhoud bovenaan. Appkop, status, installatie en instellingen staan onder de spelzone, zodat mobiele spelers onmiddellijk bij de oefening of landenkaart komen.
+## Native review
+
+De Spaanse woorden en zinnen zijn intern gecontroleerd op basisniveau en kindvriendelijkheid. Dit is geen officiële externe native-speaker-validatie. Gebruik `native-review-list.csv` om alle woorden en chunks door een native speaker Spaans en desgewenst Slovaaks te laten valideren.
+
+## Testen vóór gebruik met kinderen
+
+1. Open de app via GitHub Pages.
+2. Speel minstens drie verschillende missies.
+3. Test audio op iPhone Safari, Android Chrome en laptop.
+4. Test de app na “Zet op beginscherm”.
+5. Test offline na één eerste online bezoek.
+6. Open `index.html?test=1` om de ingebouwde zelfcheck te zien.
+7. Open `voor-leerkrachten.html`.
+8. Wis voortgang en controleer of alles opnieuw start.
+
+## Cache
+
+Service worker cache: `lola-espanol-kids-v1.3.0-agent`.
+
+## Publicatiestatus
+
+Geschikt als sterke testversie / release candidate voor gecontroleerde kindertests. Voor brede publieke verspreiding blijven aanbevolen: echte kindtest, native speaker review, test op echte toestellen en eventueel opgenomen native audio.
